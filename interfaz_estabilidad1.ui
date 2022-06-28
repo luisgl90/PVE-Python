@@ -26,6 +26,24 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Prueba de estabilidad</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
          <widget class="QLabel" name="label">
@@ -37,12 +55,12 @@
            </font>
           </property>
           <property name="text">
-           <string>v1</string>
+           <string>v (km/h)</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_v1">
+         <widget class="QLabel" name="label_v">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -55,7 +73,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -73,12 +91,12 @@
            </font>
           </property>
           <property name="text">
-           <string>v2</string>
+           <string>ay (m/s^2)</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_v2">
+         <widget class="QLabel" name="label_ay">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -91,7 +109,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -109,12 +127,12 @@
            </font>
           </property>
           <property name="text">
-           <string>v3</string>
+           <string>δ (°)</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_v3">
+         <widget class="QLabel" name="label_dh">
           <property name="font">
            <font>
             <pointsize>10</pointsize>
@@ -127,7 +145,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -163,7 +181,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -199,7 +217,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -235,7 +253,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -271,7 +289,7 @@
            <enum>QFrame::Sunken</enum>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>Empty</string>
           </property>
          </widget>
         </item>
@@ -295,6 +313,7 @@
    </property>
    <property name="font">
     <font>
+     <pointsize>10</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
@@ -306,14 +325,21 @@
   <widget class="QPushButton" name="countButton">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>120</x>
      <y>240</y>
      <width>75</width>
      <height>23</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="text">
-    <string>Contar</string>
+    <string>Detener</string>
    </property>
   </widget>
  </widget>

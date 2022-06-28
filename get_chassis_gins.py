@@ -24,10 +24,10 @@ def main(args):
 	## GINS200=serial('COM5','BaudRate',460800,'Parity','none','DataBits',8,'StopBits',1,'Terminator','CR')
 	#mSerial_gins=serial.Serial(serialPort,baudRate,bytesize=serial.EIGHTBITS, 
 	#	parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1)
-	mSerial_gins = MSerialPort(serialPort,baudRate)
+	mSerial_gins = MSerialPort(serialPort,baudRate) # Objeto para conexión serial con el GINS200
 	mSerial_gins.flush()
 
-	cdaq1 = task_cdaq()
+	cdaq1 = task_cdaq() #Objeto para el chasís
 	
 	db_Name = "pruebaDB.db"
 	db_Table = "Variables_Chassis_Gins"
