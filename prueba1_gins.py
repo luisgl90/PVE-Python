@@ -31,6 +31,7 @@ def main(args):
 		out = ''
 		while s.inWaiting() > 0: 
 			out = s.read(s.inWaiting())#.decode('uint8')
+			#out = s.read_until(b'\r') # Captura lenta - no se usa
 		if out != '':
 			print(out)
 			data = out.hex()
