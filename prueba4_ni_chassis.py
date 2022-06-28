@@ -27,25 +27,24 @@ def main(args):
 	t1 = threading.Thread(target = mSerial.read_data)
 	t1.start()
 	
-	# with nidaqmx.Task() as task:
-		# task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2")
-		# task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai2")
+	with nidaqmx.Task() as task:
+		task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2")
+		task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai2")
 		
-		
-		
-		# task.timing.cfg_samp_clk_timing(rate=1000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+		task.timing.cfg_samp_clk_timing(rate=1000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
 	
-		# for i in range(0,10000):
+		for i in range(0,10000):
 		
-			# #data[0] = task1.read(number_of_samples_per_channel=1)
-			# #data[1] = task2.read(number_of_samples_per_channel=1)
-			# dataNI = task.read()
-			# print(data)
-			# #print(task1.read(),task2.read())
-			# #plt.scatter(i,data[0],color='blue')
-			# #plt.pause(0.005)
-			# #plt.pause(Ts)
-	# task.close()
+			#data[0] = task1.read(number_of_samples_per_channel=1)
+			#data[1] = task2.read(number_of_samples_per_channel=1)
+			data = task.read()
+			print(f'{data}')
+			print(f'Dato GINS: {mSerial.message}')
+			#print(task1.read(),task2.read())
+			#plt.scatter(i,data[0],color='blue')
+			#plt.pause(0.005)
+			#plt.pause(Ts)
+	task.close()
 	
 	print('---------------------------')
 	for i in range(0,10):
