@@ -27,6 +27,8 @@ def main(args):
 	mSerial_gins = MSerialPort(serialPort,baudRate)
 	mSerial_gins.flush()
 
+	cdaq1 = task_cdaq()
+	
 	db_Name = "pruebaDB.db"
 	db_Table = "Variables_Chassis_Gins"
 	db1 = Database(db_Name,db_Table)
@@ -35,37 +37,26 @@ def main(args):
 		
 	t1 = threading.Thread(target = mSerial_gins.read_data)
 	t1.start()
-	#t2 = threading.Thread(target = mSerial2.read_data)
-	#t2.start()
+	t2 = threading.Thread(target = cdaq1.read_data)
+	t2.start()
 	time.sleep(2)
 
 	print('---------------------------')
-	with nidaqmx.Task() as task:
-		task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2")
-		task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai3")
-		
-		task.timing.cfg_samp_clk_timing(rate=100,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-	
-		for i in range(0,10000):
-			data = task.read()
-			print(f'Dato[{i}] cDAQ: {[round(v,5) for v in data]}')
-			data1 = mSerial_gins.message
-			print(f'Dato[{i}] GINS: {data1}')
-			print('---------------------------')
-	
-	#for i in range(0,100):
-	#	time.sleep(0.1)
-	#	
-	#	data1 = mSerial_gins.message
-	#	print(f'Dato GINS: {data1}')
-	#	
-	#	#db1.save_data(data1+data2)
-	#	print('---------------------------')
+	print('-----Inicia adquisición-----')
+	print('---------------------------')
+	for i in range(0,100):
+		time.sleep(0.1)
+		print(f'Dato[{i}] cDAQ: {[round(v,5) for v in cdaq1.data]}')
+		print(f'Dato[{i}] GINS: {mSerial_gins.message}')
+		print('---------------------------')
 
 	mSerial_gins.read_flag = True
 	mSerial_gins.port_close()
+	cdaq1.read_flag = True
+	cdaq1.close()
 	print('Puertos cerrados!')
 	t1.join()
+	t2.join()
 	print('Hilos finalizados!')
 
 def save_db(db_name,db_table):
@@ -183,35 +174,21 @@ class MSerialPort:
 				break
 
 
-class ni_task:
-	message=''
+class task_cdaq:
+	task = None
+	data=''
 	read_flag = False
-	def __init__(self,port,baud):
-		self.port=serial.Serial(port,baud,bytesize=serial.EIGHTBITS,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1) #Para el GINS200
-		if not self.port.isOpen():
-			self.port.open()
-	def port_open(self):
-		if not self.port.isOpen():
-			self.port.open()
-	def port_close(self):
-		self.port.close()
-	def send_data(self,data):
-		number=self.port.write(data)
-		return number
-	def flush(self):
-		self.port.flushInput()
-		self.port.flushOutput()
+	def __init__(self):
+		self.task = nidaqmx.Task()
+		self.task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2")
+		self.task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai3")
+		self.task.timing.cfg_samp_clk_timing(rate=100,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+	def close(self):
+		self.task.close()
 	def read_data(self):
-		print("Hilo iniciado!")
+		print("Tarea cDAQ iniciada en hilo!")
 		while True:
-			out = ''
-			while self.port.inWaiting() > 0: 
-				out = self.port.read(self.port.inWaiting())#.decode('uint8')
-			if out != '':
-				#datoS = get_gins_values(out.hex())
-				#print(f'DatoS = {datoS}')
-				#self.message = datoS
-				self.message = get_gins_values(out.hex())
+			self.data = self.task.read()
 			if self.read_flag:
 				self.read_flag = False
 				break
