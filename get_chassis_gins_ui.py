@@ -14,116 +14,92 @@ import sqlite3
 from bitstring import BitArray
 from PyQt5.QtWidgets import QDialog, QMainWindow, QApplication, QPushButton, QLabel
 from PyQt5 import uic
-
-def main(args):
-	global vals
-	vals = None
-
-	serialPort = 'COM7' # Debe revisarse el puerto al que se conecta el GINS
-	baudRate = 460800
-
-	print('Inicio')
-	## GINS200=serial('COM5','BaudRate',460800,'Parity','none','DataBits',8,'StopBits',1,'Terminator','CR')
-	#mSerial_gins=serial.Serial(serialPort,baudRate,bytesize=serial.EIGHTBITS, 
-	#	parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1)
-	mSerial_gins = MSerialPort(serialPort,baudRate) # Objeto para conexión serial con el GINS200
-	mSerial_gins.flush()
-
-	cdaq1 = task_cdaq() #Objeto para el chasís
-	
-	db_Name = "pruebaDB.db"
-	db_Table = "Variables_Chassis_Gins"
-	db1 = Database(db_Name,db_Table)
-
-	print('Conectado')
-		
-	t1 = threading.Thread(target = mSerial_gins.read_data)
-	t1.start()
-	t2 = threading.Thread(target = cdaq1.read_data)
-	t2.start()
-	time.sleep(2)
-
-	print('---------------------------')
-	print('-----Inicia adquisición-----')
-	print('---------------------------')
-	for i in range(0,100):
-		time.sleep(0.1)
-		print(f'Dato[{i}] cDAQ: {[round(v,5) for v in cdaq1.data]}')
-		print(f'Dato[{i}] GINS: {mSerial_gins.message}')
-		print('---------------------------')
-
-	mSerial_gins.read_flag = True
-	mSerial_gins.port_close()
-	cdaq1.read_flag = True
-	cdaq1.close()
-	print('Puertos cerrados!')
-	t1.join()
-	t2.join()
-	print('Hilos finalizados!')
-
-def save_db(db_name,db_table):
-	db_conn = None
-
-	try:
-		db_conn = sqlite3.connect("database/" + db_name)
-		cursor = db_conn.cursor()
-		cursor.execute("CREATE TABLE IF NOT EXISTS " + db_table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
-		
-		cursor.execute("INSERT INTO " + db_table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
-		db_conn.commit()
-		
-	except Exception as ex:
-		print(ex)
-
-# Se agregaron las funciones para tomar y convertir datos del GINS200
-def get_gins_values(data):
-	global vals
-	try:
-		#data = str(hex(int(BitArray(in_stream).bin,2)))
-		start_data = data.find('aa550364')
-		out_stream = data[start_data:start_data+200]
-		#print(out_stream)
-		
-		# Get values from separated bytes
-		sens_gyro = 1e-4 #Gyro sens
-		sens_acc = 1e-5 #Acc sens
-		sens_magn = 1e-2 #Magn sens
-		sens_hbar = 1e-2 #Hbar sens
-		gyro_x = sens_gyro*float(hex2sint(out_stream[8:14],3))
-		gyro_y = sens_gyro*float(hex2sint(out_stream[14:20],3))
-		gyro_z = sens_gyro*float(hex2sint(out_stream[20:26],3))
-		#print(f'[gyro_x,gyro_y,gyro_z]: [{gyro_x},{gyro_y},{gyro_z}]')
-		acc_x = sens_acc*float(hex2sint(out_stream[26:32],3))
-		acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-		acc_z = sens_acc*float(hex2sint(out_stream[38:44],3))
-		#print(f'[acc_x,acc_y,acc_z]: [{acc_x},{acc_y},{acc_z}]')
-		magn_x = sens_magn*float(hex2sint(out_stream[44:48],2))
-		magn_y = sens_magn*float(hex2sint(out_stream[48:52],2))
-		magn_z = sens_magn*float(hex2sint(out_stream[52:56],2))
-		#print(f'[magn_x,magn_y,magn_z]: [{magn_x},{magn_y},{magn_z}]')
-		h_bar = sens_hbar*float(hex2sint(out_stream[56:62],3))
-		#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-		#print(f'[h_bar]: [{h_bar}]')
-		vals = [round(v,5) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
-		return vals
-	except:
-		return vals
-
-def hex2sint(val,num_bytes):
-	sign = False
-	if num_bytes==3:
-		bin_data = "{0:024b}".format(int(val, 16))
-	elif num_bytes==2:
-		bin_data = "{0:016b}".format(int(val, 16))
-	else:
-		return None #No devuelve nada si el dato no tiene 2 o 3 bytes
-	return BitArray(bin=bin_data).int
+import sys
 
 class UI(QDialog):
 	def __init__(self):
 		super(UI,self).__init__()
-		uic.loadUi('interfaz_estabilidad1.ui',self)
+		self.main() #Inicializa las variables y objetos
+		uic.loadUi('interfaz_estabilidad1.ui',self) #Carga la interfaz hecha con Designer
+		
+		self.labelv = self.findChild(QLabel,"label_v")
+		self.labelay = self.findChild(QLabel,"label_ay")
+		
 		self.show()
+
+	def main(self):
+		
+		serialPort = 'COM7' # Debe revisarse el puerto al que se conecta el GINS
+		baudRate = 460800
+
+		print('Inicio')
+		## GINS200=serial('COM5','BaudRate',460800,'Parity','none','DataBits',8,'StopBits',1,'Terminator','CR')
+		#mSerial_gins=serial.Serial(serialPort,baudRate,bytesize=serial.EIGHTBITS, 
+		#	parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1)
+		self.mSerial_gins = MSerialPort(serialPort,baudRate) # Objeto para conexión serial con el GINS200
+		self.mSerial_gins.flush()
+
+		self.cdaq1 = task_cdaq() #Objeto para el chasís
+		
+		self.db_Name = "pruebaDB.db"
+		self.db_Table = "Variables_Chassis_Gins"
+		self.db1 = Database(self.db_Name,self.db_Table)
+
+		print('Conectado')
+			
+		self.t1 = threading.Thread(target = self.mSerial_gins.read_data)
+		self.t1.start()
+		self.t2 = threading.Thread(target = self.cdaq1.read_data)
+		self.t2.start()
+		self.t3 = threading.Thread(target = self.acquisition_main)
+		self.t3.start()
+
+		
+	def acquisition_main(self):
+		print('---------------------------')
+		print('-----Inicia adquisición-----')
+		print('---------------------------')
+		time.sleep(3) #Espera mientras se configuran los puertos para cDAQ y GINS
+		for i in range(0,100):
+			time.sleep(0.1)
+			self.cdaq_data = [round(v,3) for v in self.cdaq1.data]
+			self.gins_data = self.mSerial_gins.message
+			print(f'Dato[{i}] cDAQ: {self.cdaq_data}')
+			print(f'Dato[{i}] GINS: {self.gins_data}')
+
+			#v = self.cdaq_data
+			self.labelay.setText(f'{self.gins_data[4]}')
+			self.labelv.setText(f'{self.gins_data[0]}')
+
+			print('---------------------------')
+
+		self.mSerial_gins.read_flag = True
+		self.mSerial_gins.port_close()
+		self.cdaq1.read_flag = True
+		self.cdaq1.close()
+		print('Puertos cerrados!')
+		self.t1.join()
+		self.t2.join()
+		#self.t3.join()
+		print('Hilos finalizados!')
+
+
+	def save_db(self,db_name,db_table):
+		db_conn = None
+
+		try:
+			db_conn = sqlite3.connect("database/" + db_name)
+			cursor = db_conn.cursor()
+			cursor.execute("CREATE TABLE IF NOT EXISTS " + db_table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+			
+			cursor.execute("INSERT INTO " + db_table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+			db_conn.commit()
+			
+		except Exception as ex:
+			print(ex)
+
+	# Se agregaron las funciones para tomar y convertir datos del GINS200
+	
 
 class Database:
 	db_conn = None
@@ -149,6 +125,7 @@ class Database:
 
 
 class MSerialPort:
+	vals = None
 	message=''
 	read_flag = False
 	def __init__(self,port,baud):
@@ -176,10 +153,52 @@ class MSerialPort:
 				#datoS = get_gins_values(out.hex())
 				#print(f'DatoS = {datoS}')
 				#self.message = datoS
-				self.message = get_gins_values(out.hex())
+				self.message = self.get_gins_values(out.hex())
 			if self.read_flag:
 				self.read_flag = False
 				break
+	def get_gins_values(self,data):
+		global vals
+		try:
+			#data = str(hex(int(BitArray(in_stream).bin,2)))
+			start_data = data.find('aa550364')
+			out_stream = data[start_data:start_data+200]
+			#print(out_stream)
+			
+			# Get values from separated bytes
+			sens_gyro = 1e-4 #Gyro sens
+			sens_acc = 1e-5 #Acc sens
+			sens_magn = 1e-2 #Magn sens
+			sens_hbar = 1e-2 #Hbar sens
+			gyro_x = sens_gyro*float(self.hex2sint(out_stream[8:14],3))
+			gyro_y = sens_gyro*float(self.hex2sint(out_stream[14:20],3))
+			gyro_z = sens_gyro*float(self.hex2sint(out_stream[20:26],3))
+			#print(f'[gyro_x,gyro_y,gyro_z]: [{gyro_x},{gyro_y},{gyro_z}]')
+			acc_x = sens_acc*float(self.hex2sint(out_stream[26:32],3))
+			acc_y = sens_acc*float(self.hex2sint(out_stream[32:38],3))
+			acc_z = sens_acc*float(self.hex2sint(out_stream[38:44],3))
+			#print(f'[acc_x,acc_y,acc_z]: [{acc_x},{acc_y},{acc_z}]')
+			magn_x = sens_magn*float(self.hex2sint(out_stream[44:48],2))
+			magn_y = sens_magn*float(self.hex2sint(out_stream[48:52],2))
+			magn_z = sens_magn*float(self.hex2sint(out_stream[52:56],2))
+			#print(f'[magn_x,magn_y,magn_z]: [{magn_x},{magn_y},{magn_z}]')
+			h_bar = sens_hbar*float(self.hex2sint(out_stream[56:62],3))
+			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
+			#print(f'[h_bar]: [{h_bar}]')
+			self.vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
+			return self.vals
+		except:
+			return self.vals
+
+	def hex2sint(self,val,num_bytes):
+		sign = False
+		if num_bytes==3:
+			bin_data = "{0:024b}".format(int(val, 16))
+		elif num_bytes==2:
+			bin_data = "{0:016b}".format(int(val, 16))
+		else:
+			return None #No devuelve nada si el dato no tiene 2 o 3 bytes
+		return BitArray(bin=bin_data).int
 
 
 class task_cdaq:
@@ -206,5 +225,5 @@ if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	UIWindow = UI()
 	app.exec_()
-	sys.exit(main(sys.argv))
+	#sys.exit(main(sys.argv))
 	
