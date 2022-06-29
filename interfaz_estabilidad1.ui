@@ -91,12 +91,12 @@
            </font>
           </property>
           <property name="text">
-           <string>ay (m/s^2)</string>
+           <string>ax (m/s^2)</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_ay">
+         <widget class="QLabel" name="label_ax">
           <property name="font">
            <font>
             <pointsize>10</pointsize>

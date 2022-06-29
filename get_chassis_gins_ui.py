@@ -6,7 +6,7 @@
 import nidaqmx
 from nidaqmx.constants import TerminalConfiguration
 import time
-#from numpy import rint
+#import numpy 
 #import matplotlib.pyplot as plt
 import serial
 import threading
@@ -14,6 +14,7 @@ import sqlite3
 from bitstring import BitArray
 from PyQt5.QtWidgets import QDialog, QMainWindow, QApplication, QPushButton, QLabel
 from PyQt5 import uic
+import math
 import sys
 
 class UI(QDialog):
@@ -23,7 +24,8 @@ class UI(QDialog):
 		uic.loadUi('interfaz_estabilidad1.ui',self) #Carga la interfaz hecha con Designer
 		
 		self.labelv = self.findChild(QLabel,"label_v")
-		self.labelay = self.findChild(QLabel,"label_ay")
+		self.labelax = self.findChild(QLabel,"label_ax")
+		self.labeldh = self.findChild(QLabel,"label_dh")
 		
 		self.show()
 
@@ -60,17 +62,23 @@ class UI(QDialog):
 		print('-----Inicia adquisición-----')
 		print('---------------------------')
 		time.sleep(3) #Espera mientras se configuran los puertos para cDAQ y GINS
-		for i in range(0,100):
+		for i in range(0,200):
 			time.sleep(0.1)
 			self.cdaq_data = [round(v,3) for v in self.cdaq1.data]
 			self.gins_data = self.mSerial_gins.message
 			print(f'Dato[{i}] cDAQ: {self.cdaq_data}')
 			print(f'Dato[{i}] GINS: {self.gins_data}')
 
-			#v = self.cdaq_data
-			self.labelay.setText(f'{self.gins_data[4]}')
-			self.labelv.setText(f'{self.gins_data[0]}')
-
+			try:
+				#[gyro_z,acc_x,vel_E,vel_N,roll,yaw]
+				v = math.sqrt(pow(self.gins_data[2],2) + pow(self.gins_data[3],2))
+				#v = self.cdaq_data
+				self.labelv.setText(f'{v}')
+				self.labelax.setText(f'{self.gins_data[1]}')
+			except:
+				self.labelv.setText('0.000')
+				self.labelax.setText('0.000')
+			self.labeldh.setText(f'{self.cdaq_data[1]}')
 			print('---------------------------')
 
 		self.mSerial_gins.read_flag = True
@@ -129,9 +137,11 @@ class MSerialPort:
 	message=''
 	read_flag = False
 	def __init__(self,port,baud):
-		self.port=serial.Serial(port,baud,bytesize=serial.EIGHTBITS,parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1) #Para el GINS200
+		self.port=serial.Serial(port,baud,bytesize=serial.EIGHTBITS,
+			parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1) #Para el GINS200
 		if not self.port.isOpen():
 			self.port.open()
+		self.flush()
 	def port_open(self):
 		if not self.port.isOpen():
 			self.port.open()
@@ -158,7 +168,6 @@ class MSerialPort:
 				self.read_flag = False
 				break
 	def get_gins_values(self,data):
-		global vals
 		try:
 			#data = str(hex(int(BitArray(in_stream).bin,2)))
 			start_data = data.find('aa550364')
@@ -184,8 +193,14 @@ class MSerialPort:
 			#print(f'[magn_x,magn_y,magn_z]: [{magn_x},{magn_y},{magn_z}]')
 			h_bar = sens_hbar*float(self.hex2sint(out_stream[56:62],3))
 			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
+			ang_pitch = sens_acc*float(hex2sint(out_stream[130:134],3))
+			ang_roll = sens_acc*float(hex2sint(out_stream[134:138],3))
+			ang_yaw = sens_acc*float(hex2sint(out_stream[138:142],3))
+			vel_E = sens_acc*float(hex2sint(out_stream[142:148],3))
+			vel_N = sens_acc*float(hex2sint(out_stream[148:154],3))
 			#print(f'[h_bar]: [{h_bar}]')
-			self.vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
+			#self.vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
+			self.vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
 			return self.vals
 		except:
 			return self.vals
