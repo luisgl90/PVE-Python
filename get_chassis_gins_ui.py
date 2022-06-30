@@ -198,7 +198,7 @@ class MSerialPort:
 			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
 			ang_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
 			ang_roll = sens_att*float(hex2sint(out_stream[134:138],2))
-			ang_yaw = sens_att*float(hex2sint(out_stream[138:142],2))
+			ang_yaw = sens_att*float(hex2uint(out_stream[138:142],2))
 			#print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
 			vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
 			vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
@@ -219,6 +219,8 @@ class MSerialPort:
 			return None #No devuelve nada si el dato no tiene 2 o 3 bytes
 		return BitArray(bin=bin_data).int
 
+	def hex2uint(self,val,num_bytes):
+		return int(val,8*num_bytes)
 
 class task_cdaq:
 	task = None
