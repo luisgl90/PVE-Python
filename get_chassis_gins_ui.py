@@ -133,7 +133,7 @@ class Database:
 
 
 class MSerialPort:
-	vals = None
+	vals = []
 	message=''
 	read_flag = False
 	def __init__(self,port,baud):
@@ -179,6 +179,8 @@ class MSerialPort:
 			sens_acc = 1e-5 #Acc sens
 			sens_magn = 1e-2 #Magn sens
 			sens_hbar = 1e-2 #Hbar sens
+			sens_att = 1e-2 #Att sens
+			sens_vel = 1e-4 #Vel sens
 			gyro_x = sens_gyro*float(self.hex2sint(out_stream[8:14],3))
 			gyro_y = sens_gyro*float(self.hex2sint(out_stream[14:20],3))
 			gyro_z = sens_gyro*float(self.hex2sint(out_stream[20:26],3))
@@ -192,18 +194,20 @@ class MSerialPort:
 			magn_z = sens_magn*float(self.hex2sint(out_stream[52:56],2))
 			#print(f'[magn_x,magn_y,magn_z]: [{magn_x},{magn_y},{magn_z}]')
 			h_bar = sens_hbar*float(self.hex2sint(out_stream[56:62],3))
-			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-			ang_pitch = sens_acc*float(hex2sint(out_stream[130:134],3))
-			ang_roll = sens_acc*float(hex2sint(out_stream[134:138],3))
-			ang_yaw = sens_acc*float(hex2sint(out_stream[138:142],3))
-			vel_E = sens_acc*float(hex2sint(out_stream[142:148],3))
-			vel_N = sens_acc*float(hex2sint(out_stream[148:154],3))
 			#print(f'[h_bar]: [{h_bar}]')
+			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
+			ang_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
+			ang_roll = sens_att*float(hex2sint(out_stream[134:138],2))
+			ang_yaw = sens_att*float(hex2sint(out_stream[138:142],2))
+			#print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
+			vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
+			vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
+			#print(f'[vel_E,vel_N]: [{vel_E},{vel_N}]')
 			#self.vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
 			self.vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
 			return self.vals
-		except:
-			return self.vals
+		#except:
+		#	return self.vals
 
 	def hex2sint(self,val,num_bytes):
 		sign = False

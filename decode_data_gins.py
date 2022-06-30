@@ -11,6 +11,8 @@ def get_gins_values(data):
 	sens_acc = 1e-5
 	sens_magn = 1e-2
 	sens_hbar = 1e-2
+	sens_att = 1e-2
+	sens_vel = 1e-4
 	gyro_x = sens_gyro*float(hex2sint(out_stream[8:14],3))
 	gyro_y = sens_gyro*float(hex2sint(out_stream[14:20],3))
 	gyro_z = sens_gyro*float(hex2sint(out_stream[20:26],3))
@@ -26,6 +28,13 @@ def get_gins_values(data):
 	h_bar = sens_hbar*float(hex2sint(out_stream[56:62],3))
 	#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
 	print(f'[h_bar]: [{h_bar}]')
+	ang_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
+	ang_roll = sens_att*float(hex2sint(out_stream[134:138],2))
+	ang_yaw = sens_att*float(hex2sint(out_stream[138:142],2))
+	print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
+	vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
+	vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
+	print(f'[vel_E,vel_N]: [{vel_E},{vel_N}]')
 	
 def hex2sint(val,num_bytes):
 	sign = False
