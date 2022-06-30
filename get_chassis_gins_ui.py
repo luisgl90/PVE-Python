@@ -3,19 +3,19 @@
 # Comunicación serial - GINS200
 
 #import nidaqmx as daq
-import nidaqmx
-from nidaqmx.constants import TerminalConfiguration
+import math
 import time
 #import numpy 
 #import matplotlib.pyplot as plt
-import serial
-import threading
 import sqlite3
+import threading
+import serial
+import nidaqmx
+#from nidaqmx.constants import TerminalConfiguration
 from bitstring import BitArray
 from PyQt5.QtWidgets import QDialog, QMainWindow, QApplication, QPushButton, QLabel
 from PyQt5 import uic
-import math
-import sys
+
 
 class UI(QDialog):
 	def __init__(self):
@@ -56,7 +56,6 @@ class UI(QDialog):
 		self.t3 = threading.Thread(target = self.acquisition_main)
 		self.t3.start()
 
-		
 	def acquisition_main(self):
 		print('---------------------------')
 		print('-----Inicia adquisición-----')
@@ -196,18 +195,18 @@ class MSerialPort:
 			h_bar = sens_hbar*float(self.hex2sint(out_stream[56:62],3))
 			#print(f'[h_bar]: [{h_bar}]')
 			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-			ang_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
-			ang_roll = sens_att*float(hex2sint(out_stream[134:138],2))
-			ang_yaw = sens_att*float(hex2uint(out_stream[138:142],2))
+			ang_pitch = sens_att*float(self.hex2sint(out_stream[130:134],2))
+			ang_roll = sens_att*float(self.hex2sint(out_stream[134:138],2))
+			ang_yaw = sens_att*float(self.hex2uint(out_stream[138:142],2))
 			#print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
-			vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
-			vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
+			vel_E = sens_vel*float(self.hex2sint(out_stream[142:148],3))
+			vel_N = sens_vel*float(self.hex2sint(out_stream[148:154],3))
 			#print(f'[vel_E,vel_N]: [{vel_E},{vel_N}]')
 			#self.vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
 			self.vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
 			return self.vals
-		#except:
-		#	return self.vals
+		except:
+			return self.vals
 
 	def hex2sint(self,val,num_bytes):
 		sign = False
