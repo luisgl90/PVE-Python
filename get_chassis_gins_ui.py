@@ -61,7 +61,7 @@ class UI(QDialog):
 		print('-----Inicia adquisición-----')
 		print('---------------------------')
 		time.sleep(3) #Espera mientras se configuran los puertos para cDAQ y GINS
-		for i in range(0,200):
+		for i in range(0,500):
 			time.sleep(0.1)
 			self.cdaq_data = [round(v,3) for v in self.cdaq1.data]
 			self.gins_data = self.mSerial_gins.message
@@ -70,9 +70,9 @@ class UI(QDialog):
 
 			try:
 				#[gyro_z,acc_x,vel_E,vel_N,roll,yaw]
-				v = math.sqrt(pow(self.gins_data[2],2) + pow(self.gins_data[3],2))
+				#v = math.sqrt(pow(self.gins_data[2],2) + pow(self.gins_data[3],2))
 				#v = self.cdaq_data
-				self.labelv.setText(f'{v}')
+				self.labelv.setText(f'{self.gins_data[2]}')
 				self.labelax.setText(f'{self.gins_data[1]}')
 			except:
 				self.labelv.setText('0.000')
@@ -195,17 +195,19 @@ class MSerialPort:
 			h_bar = sens_hbar*float(self.hex2sint(out_stream[56:62],3))
 			#print(f'[h_bar]: [{h_bar}]')
 			#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-			ang_pitch = sens_att*float(self.hex2sint(out_stream[130:134],2))
-			ang_roll = sens_att*float(self.hex2sint(out_stream[134:138],2))
-			ang_yaw = sens_att*float(self.hex2uint(out_stream[138:142],2))
+			#ang_pitch = sens_att*float(self.hex2sint(out_stream[130:134],2))
+			#ang_roll = sens_att*float(self.hex2sint(out_stream[134:138],2))
+			#ang_yaw = sens_att*float(self.hex2sint(out_stream[138:142],2))
 			#print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
-			vel_E = sens_vel*float(self.hex2sint(out_stream[142:148],3))
-			vel_N = sens_vel*float(self.hex2sint(out_stream[148:154],3))
+			#vel_E = sens_vel*float(self.hex2sint(out_stream[142:148],3))
+			#vel_N = sens_vel*float(self.hex2sint(out_stream[148:154],3))
 			#print(f'[vel_E,vel_N]: [{vel_E},{vel_N}]')
 			#self.vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
-			self.vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
+			self.vals = [round(v,3) for v in [gyro_z,acc_x,magn_x,magn_y,magn_x,magn_y]]
+			#self.vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
 			return self.vals
-		except:
+		except Exception as ex:
+			#print(ex)
 			return self.vals
 
 	def hex2sint(self,val,num_bytes):
@@ -218,8 +220,8 @@ class MSerialPort:
 			return None #No devuelve nada si el dato no tiene 2 o 3 bytes
 		return BitArray(bin=bin_data).int
 
-	def hex2uint(self,val,num_bytes):
-		return int(val,8*num_bytes)
+	#def hex2uint(self,val,num_bytes):
+	#	return int(val,8*num_bytes)
 
 class task_cdaq:
 	task = None
