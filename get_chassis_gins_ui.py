@@ -2,7 +2,7 @@
 # Pruebas de adquisición de datos de varios canales - Chasís NI
 # Comunicación serial - GINS200
 
-#import nidaqmx as daq
+import nidaqmx as daq
 import math
 import time
 #import numpy 
@@ -11,7 +11,7 @@ import sqlite3
 import threading
 import serial
 import nidaqmx
-#from nidaqmx.constants import TerminalConfiguration
+from nidaqmx.constants import TerminalConfiguration
 from bitstring import BitArray
 from PyQt5.QtWidgets import QDialog, QMainWindow, QApplication, QPushButton, QLabel
 from PyQt5 import uic
