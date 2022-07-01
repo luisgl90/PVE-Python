@@ -17,7 +17,9 @@ def main(args):
 	global vals
 	vals = None
 
-	serialPort = 'COM7' # Debe revisarse el puerto al que se conecta el GINS
+	# Debe revisarse el puerto al que se conecta el GINS
+	serialPort = '/dev/ttyUSB0' 
+	#serialPort = 'COM7' 
 	baudRate = 460800
 
 	print('Inicio')
