@@ -55,7 +55,7 @@
            </font>
           </property>
           <property name="text">
-           <string>v (km/h)</string>
+           <string>vx (km/h)</string>
           </property>
          </widget>
         </item>
@@ -91,7 +91,7 @@
            </font>
           </property>
           <property name="text">
-           <string>ax (m/s^2)</string>
+           <string>ay (m/s^2)</string>
           </property>
          </widget>
         </item>

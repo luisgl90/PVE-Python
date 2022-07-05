@@ -228,9 +228,11 @@ class task_cdaq:
 	data=''
 	read_flag = False
 	def __init__(self):
+		devC = nidaqmx.system.device.Device('cDAQ9188')
+		devC.reserve_network_device(True)
 		self.task = nidaqmx.Task()
-		self.task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2")
-		self.task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai3")
+		self.task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai3")
+		self.task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai5")
 		self.task.timing.cfg_samp_clk_timing(rate=100,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
 	def close(self):
 		self.task.close()
