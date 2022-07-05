@@ -31,6 +31,7 @@ class UI(QDialog):
 
 	def main(self):
 		
+		#serialPort = '/dev/ttyUSB0' 
 		serialPort = 'COM7' # Debe revisarse el puerto al que se conecta el GINS
 		baudRate = 460800
 
