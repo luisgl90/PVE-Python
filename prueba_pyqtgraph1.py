@@ -1,6 +1,7 @@
 import time
 import sqlite3
 import threading
+from turtle import clear
 import pyqtgraph as pg
 import serial
 from PyQt5.QtWidgets import QDialog, QMainWindow, QApplication, QPushButton, QLabel
@@ -9,23 +10,19 @@ from PyQt5 import uic
 class UI(QMainWindow):
 	def __init__(self):
 		super(UI,self).__init__()
-		uic.loadUi("interfaz_app.ui",self)
+		uic.loadUi("prueba_pyqtgraph1.ui",self)
 		
 		self.label_f_vx = self.findChild(QLabel,"label_fre_vx")
-		self.label_f_ax = self.findChild(QLabel,"label_fre_ax")
-		self.label_f_fp = self.findChild(QLabel,"label_fre_fp")
 		
 		self.widget_fre_plot.plot([],[])
 		self.x_plot = []
 		self.y_plot = []
 
 		serialPort1 = 'COM8' # Debe revisarse el puerto al que se conecta el GINS
-		serialPort2 = 'COM9' # Debe revisarse el puerto al que se conecta el GINS
 		baudRate1 = 9600
 
 		print('Inicio')
 		self.mSerial1=MSerialPort(serialPort1,baudRate1)
-		self.mSerial2=MSerialPort(serialPort2,baudRate1)
 		
 		db_Name = "pruebaDB_USB.db"
 		db_Table = "Variables_USB"
@@ -35,41 +32,33 @@ class UI(QMainWindow):
 			
 		self.t1 = threading.Thread(target = self.mSerial1.read_data)
 		self.t1.start()
-		self.t2 = threading.Thread(target = self.mSerial2.read_data)
-		self.t2.start()
 		time.sleep(2)
 		self.show()
-		self.t3 = threading.Thread(target = self.acquisition_main)
+		self.t2 = threading.Thread(target = self.acquisition_main)
+		self.t2.start()
+		self.t3 = threading.Thread(target = self.update)
 		self.t3.start()
-
-
+			
 	def acquisition_main(self):
 		print('---------------------------')
 		print('-----Inicia adquisición-----')
 		print('---------------------------')
-		for i in range(0,50):
-			time.sleep(0.1)
+		for i in range(-25,26):
+			time.sleep(0.05)
 			
-			data1 = self.mSerial1.message
-			print(f'Dato 1: {data1}')
-			data1 = data1.replace("[","").replace("]","").replace("\r\n","")
-			data1 = list(map(float, data1.split(",")))
+			data = self.mSerial1.message
+			print(f'Dato 1: {data}')
+			data = data.replace("[","").replace("]","").replace("\r\n","")
+			data = list(map(float, data.split(",")))
 			
-			data2 = self.mSerial2.message
-			print(f'Dato 2: {data2}')
-			data2 = data2.replace("[","").replace("]","").replace("\r\n","")
-			data2 = list(map(float, data2.split(",")))
-			
-			data = data1+data2
 			#self.plot(i*0.01,round(data[0],4))
 			self.x_plot.append(i*0.01)
-			self.y_plot.append(round(data[0],4))
-			self.widget_fre_plot.plot(self.x_plot,self.y_plot)
+			self.y_plot.append(round(data[0]*(0.01*i**2),4))
+			#self.widget_fre_plot.plot(self.x_plot,self.y_plot)
+			self.update()
 			print(data)
 
 			self.label_f_vx.setText(str(round(i+data[0],4)))
-			self.label_f_ax.setText(str(round(0.001*(i+data[1]),4)))
-			self.label_f_fp.setText(str(round(120-(data[2]+2*i),4)))
 
 			#db1.save_data(data1+data2)
 			print('---------------------------')
@@ -77,14 +66,13 @@ class UI(QMainWindow):
 		self.mSerial1.read_flag = True
 		time.sleep(0.1)
 		self.mSerial1.port_close()
-		self.mSerial2.read_flag = True
-		time.sleep(0.1)
-		self.mSerial2.port_close()
 		print('Puertos cerrados!')
 		time.sleep(0.1)
 		self.t1.join()
-		self.t2.join()
 		print('Hilos finalizados!')
+
+	def update(self):
+		self.widget_fre_plot.plot(self.x_plot,self.y_plot,clear=True)
 
 	def plot(self,new_x,new_y):
 		self.x_plot.append(new_x)

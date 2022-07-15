@@ -51,7 +51,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="tab_frenado">
         <attribute name="title">
@@ -715,11 +715,11 @@
          </property>
         </widget>
        </widget>
-       <widget class="QWidget" name="tab">
+       <widget class="QWidget" name="tab_vibraciones">
         <attribute name="title">
          <string>Prueba de vibraciones</string>
         </attribute>
-        <widget class="QLabel" name="label_57">
+        <widget class="QLabel" name="label_vib_1">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -739,10 +739,10 @@
           <enum>QFrame::Box</enum>
          </property>
          <property name="text">
-          <string>vx (km/h)</string>
+          <string>ax (m/s^2)</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_est_delta_3">
+        <widget class="QLabel" name="label_vib_az">
          <property name="geometry">
           <rect>
            <x>170</x>
@@ -766,7 +766,7 @@
           <string>Empty</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_est_v_5">
+        <widget class="QLabel" name="label_vib_ay">
          <property name="geometry">
           <rect>
            <x>170</x>
@@ -790,7 +790,7 @@
           <string>Empty</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_58">
+        <widget class="QLabel" name="label_vib_3">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -810,10 +810,10 @@
           <enum>QFrame::Box</enum>
          </property>
          <property name="text">
-          <string>δ (°)</string>
+          <string>az (m/s^2)</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_est_ay_5">
+        <widget class="QLabel" name="label_vib_ax">
          <property name="geometry">
           <rect>
            <x>170</x>
@@ -837,7 +837,7 @@
           <string>Empty</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_59">
+        <widget class="QLabel" name="label_vib_titulo">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -857,7 +857,7 @@
           <string>Prueba de vibraciones</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_60">
+        <widget class="QLabel" name="label_vib_2">
          <property name="geometry">
           <rect>
            <x>30</x>
@@ -901,6 +901,338 @@
            <width>421</width>
            <height>421</height>
           </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_gravedad">
+        <attribute name="title">
+         <string>Prueba centro de gravedad</string>
+        </attribute>
+        <widget class="QLabel" name="label_vib_4">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>90</y>
+           <width>131</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>ay (m/s^2)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ax_2">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>50</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_2">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>90</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_az_2">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>130</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_5">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>130</y>
+           <width>131</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>az (m/s^2)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_6">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>50</y>
+           <width>131</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>ax (m/s^2)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cen_titulo">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>317</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Prueba de centro de gravedad</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_prueba">
+        <attribute name="title">
+         <string>Modo de prueba</string>
+        </attribute>
+        <widget class="QLabel" name="label_vib_7">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>90</y>
+           <width>131</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>ay (m/s^2)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ax_3">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>50</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_3">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>90</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_az_3">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>130</y>
+           <width>161</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_8">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>130</y>
+           <width>131</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>az (m/s^2)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_9">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>50</y>
+           <width>131</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="text">
+          <string>ax (m/s^2)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_titulo_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>317</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Modo de prueba de sensores</string>
          </property>
         </widget>
        </widget>

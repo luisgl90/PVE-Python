@@ -1,3 +1,5 @@
+#Código para la prueba de los sensores conectados al chasís NI cDAQ-9188
+
 import nidaqmx as daq
 import nidaqmx
 from nidaqmx import system
@@ -11,9 +13,11 @@ import time
 #print(system.Device.reserve_network_device())
 #devList = system.System.devices
 #print(f'Disp: {devList}')
-devC = nidaqmx.system.device.Device('cDAQ9188')
+device_name = 'cDAQ9188'
+devC = nidaqmx.system.device.Device(device_name)
 devC.reserve_network_device(True)
 print(devC)
+#print(f'Meas types: {devC.ai_meas_types}')
 print("Devs:---------------------------------------------")
 
 #devs1 = nidaqmx.system.system.System.devices
@@ -27,46 +31,105 @@ print("Devs:---------------------------------------------")
 #system.Device.reserve_network_device(devC)
 #get_daq_device_inventory(1, number_of_devices=1)
 
+#devC = nidaqmx.system.device.Device('cDAQ9188')
+#devC.reserve_network_device(True)
 
-with nidaqmx.Task() as task:
-	#task.ai.channels.add_ai_voltage_chan("cDAQ1Mod1/ai0:1")
-	
-	#Config módulo 2
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai0")	#Temp der
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai1")	#Temp izq
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2")	#Rueda delantera
-	#Config módulo 3
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai0")	#5ta rueda
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai1")	#Rueda izq
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai2")	#Rueda der
-	task.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai3")	#Volante
-	#Config módulo 7
-	task.ai_channels.add_ai_bridge_chan("cDAQ9188Mod7/ai0",
-		bridge_config=nidaqmx.constants.BridgeConfiguration.FULL_BRIDGE,
-		nominal_bridge_resistance=700.0)	#Pedal
-	#Config módulo 8
-	sensX=99.07e-3	#V/g	10.10e-3; %V/ms-2  
-	sensY=97.08e-3	#V/g	9.89e-3; %V/ms-2   
-	sensZ=101.7e-3	#V/g	10.38e-3; %V/ms-2 
-	task.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai0",
-		units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
-		sensitivity=sensX, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc x
-	task.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai1",
-		units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
-		sensitivity=sensY, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc y
-	task.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai2",
-		units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
-		sensitivity=sensZ, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc z
+min_V = -10
+max_V = 10
 
-	task.timing.cfg_samp_clk_timing(rate=100,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-	
-	for i in range(0,61):
-		#task.ai.channels.add_ai_voltage_chan("cDAQ9188Mod5/ai0:1")
+while True:
+	print("Escoja una prueba:\n\t1. Acelerómetros\n\t2. Temperatura en frenos\n\t3. Rueda delantera\n\t4. Ruedas y volante\n\t5. Pedal de freno\n\t6. Pedal y temperaturas\n\t0. Todos los sensores")
+	opt = int(input())
+
+	with nidaqmx.Task() as task1, nidaqmx.Task() as task2, nidaqmx.Task() as task3:
 		
-		data = task.read(number_of_samples_per_channel=11)
-		print(data)
-		time.sleep(0.5)
-		#plt.scatter(i,data[0],color='blue')
-		#plt.pause(0.005)
-		#plt.pause(Ts)
+		if opt in (0,5,6):
+			#Config módulo 7
+			c7_0 = task1.ai_channels.add_ai_bridge_chan("cDAQ9188Mod7/ai0",name_to_assign_to_channel='c7_0',
+				bridge_config=nidaqmx.constants.BridgeConfiguration.FULL_BRIDGE,
+				nominal_bridge_resistance=700.0)	#Pedal
+			#print(c7_0)
+			#print(c7_0.ai_meas_type)
+		if opt in (0,2,6):
+			#Config módulo 2
+			c2_0 = task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai0",name_to_assign_to_channel='c2_0',
+				min_val=min_V,max_val=max_V)	#Temp der
+			#print(c2_0)
+			#c2_0.ai_meas_type = nidaqmx.constants.UsageTypeAI.VOLTAGE
+			c2_1 = task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai1",name_to_assign_to_channel='c2_1',
+				min_val=min_V,max_val=max_V)	#Temp izq
+			#print(c2_1)
+			#c2_1.ai_meas_type = nidaqmx.constants.UsageTypeAI.VOLTAGE
+		if opt in (0,3):
+			task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai2",min_val=min_V,max_val=max_V)	#Rueda delantera
+		if opt in (0,4):
+			#Config módulo 3
+			task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai0",min_val=min_V,max_val=max_V)	#5ta rueda
+			task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai1",min_val=min_V,max_val=max_V)	#Rueda izq
+			task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai2",min_val=min_V,max_val=max_V)	#Rueda der
+			task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod3/ai3",min_val=min_V,max_val=max_V)	#Volante
+		if opt in (0,1):
+			#Config módulo 8
+			#sensX=99.07e-3	#mV/g	10.10e-3; %V/ms-2  
+			#sensY=97.08e-3	#mV/g	9.89e-3; %V/ms-2   
+			#sensZ=101.7e-3	#mV/g	10.38e-3; %V/ms-2 
+			sensX=10.10e-3	#V/ms-2  
+			sensY=9.89e-3	#V/ms-2   
+			sensZ=10.38e-3	#V/ms-2 
+			task3.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai0",
+				units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
+				sensitivity=sensX, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc x
+			task3.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai1",
+				units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
+				sensitivity=sensY, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc y
+			task3.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai2",
+				units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
+				sensitivity=sensZ, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc z
+		#else:
+		#	print("Escoja una prueba válida")
+		#	continue
+		
+		#print(f'Meas types: {devC.ai_meas_types}')
+		#print(f'Physical channels: {devC.ai_physical_chans}')
+		#print(nidaqmx.system._collections.physical_channel_collection.PhysicalChannelCollection(device_name).all)
+		task1.timing.cfg_samp_clk_timing(rate=1000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE)
+		task2.timing.cfg_samp_clk_timing(rate=1000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE)
+		task3.timing.cfg_samp_clk_timing(rate=1000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE)
+		
+		#print(f'c7_0.ai_meas_type = {c7_0.ai_meas_type}')
+		#print(f'c2_0.ai_meas_type = {c2_0.ai_meas_type}')
+		#print(f'c2_1.ai_meas_type = {c2_1.ai_meas_type}')
+
+		t = []
+
+		for i in range(0,500):
+			#task.ai.channels.add_ai_voltage_chan("cDAQ9188Mod5/ai0:1")
+			start_time = time.time()
+			#print(task.in_stream.channels_to_read)
+			data = task1.read(number_of_samples_per_channel=1) + task2.read(number_of_samples_per_channel=1) + task3.read(number_of_samples_per_channel=1)
+			# if opt==1:
+			# 	print(data)
+			# elif opt==2:
+			# 	sens_T=12.5e-3; #mV/oC
+			# 	print(f' {type(data)}: {data}')
+			# 	print([(temp[0])/sens_T for temp in data])
+			# 	print(data)
+			# elif opt==4:
+			# 	print(data)
+			# elif opt==5:
+			# 	pedal_offset = 1.59e-5
+			# 	Vpedal=(data[0]-pedal_offset)*1e3; #mV
+			# 	Mpedal=57.57*Vpedal; #Mass of the pedal
+			# 	Fpedal=Mpedal*9.8; #kgm/s2 / N
+			# 	print(f'{data[0]} -> {Fpedal}')
+			#time.sleep(0.01)
+			#plt.scatter(i,data[0],color='blue')
+			#plt.pause(0.005)
+			#plt.pause(Ts)
+			t.append(time.time() - start_time)
+			print(f'\n--- {t[i]} seconds ---')
+			print('[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]')
+			print(f'{data}\n')
+		
+		print(f'tprom = {(sum(t)/len(t))*1000} ms')
  
