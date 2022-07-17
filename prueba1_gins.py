@@ -11,6 +11,8 @@ import serial
 from bitstring import BitArray
 import struct
 
+vals = []
+
 def main(args):
 
 	serialPort = 'COM7' # Debe revisarse el puerto al que se conecta el GINS
@@ -27,18 +29,19 @@ def main(args):
 		print(f"Puerto {serialPort} abierto")
 	for i in range(51):
 		time.sleep(0.2)
-		print(f"---Data {i}---")
+		#print(f"---Data {i}---")
 		out = ''
 		while s.inWaiting() > 0: 
 			out = s.read(s.inWaiting())#.decode('uint8')
 			#out = s.read_until(b'\r') # Captura lenta - no se usa
 		if out != '':
-			print(out)
+			#print(out)
 			data = out.hex()
 			#start_data = data.find('aa550364')
 			#print(data[start_data:start_data+200])
 			#get_gins_values(data[start_data:start_data+200])
-			get_gins_values(data)
+			print(get_gins_values(data))
+			
 		#res = s.read().decode('ascii')
 		#print(res)
 	#s.close()
@@ -55,35 +58,50 @@ def main(args):
 	# mSerial.port_close()
 	
 def get_gins_values(data):
-	#data = str(hex(int(BitArray(in_stream).bin,2)))
+	global vals
 	try:
+		#data = str(hex(int(BitArray(in_stream).bin,2)))
 		start_data = data.find('aa550364')
 		out_stream = data[start_data:start_data+200]
-		print(out_stream)
+		#print(out_stream)
 		
 		# Get values from separated bytes
-		sens_gyro = 1e-4
-		sens_acc = 1e-5
-		sens_magn = 1e-2
-		sens_hbar = 1e-2
-		
+		sens_gyro = 1e-4 #Gyro sens
+		sens_acc = 1e-5 #Acc sens
+		sens_magn = 1e-2 #Magn sens
+		sens_hbar = 1e-2 #Hbar sens
+		sens_att = 1e-2 #Att sens
+		sens_vel = 1e-4 #Vel sens
 		gyro_x = sens_gyro*float(hex2sint(out_stream[8:14],3))
 		gyro_y = sens_gyro*float(hex2sint(out_stream[14:20],3))
 		gyro_z = sens_gyro*float(hex2sint(out_stream[20:26],3))
-		print(f'[gyro_x,gyro_y,gyro_z]: [{gyro_x},{gyro_y},{gyro_z}]')
+		#print(f'[gyro_x,gyro_y,gyro_z]: [{gyro_x},{gyro_y},{gyro_z}]')
 		acc_x = sens_acc*float(hex2sint(out_stream[26:32],3))
 		acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
 		acc_z = sens_acc*float(hex2sint(out_stream[38:44],3))
-		print(f'[acc_x,acc_y,acc_z]: [{acc_x},{acc_y},{acc_z}]')
+		#print(f'[acc_x,acc_y,acc_z]: [{acc_x},{acc_y},{acc_z}]')
 		magn_x = sens_magn*float(hex2sint(out_stream[44:48],2))
 		magn_y = sens_magn*float(hex2sint(out_stream[48:52],2))
 		magn_z = sens_magn*float(hex2sint(out_stream[52:56],2))
-		print(f'[magn_x,magn_y,magn_z]: [{magn_x},{magn_y},{magn_z}]')
+		#print(f'[magn_x,magn_y,magn_z]: [{magn_x},{magn_y},{magn_z}]')
 		h_bar = sens_hbar*float(hex2sint(out_stream[56:62],3))
+		#print(f'[h_bar]: [{h_bar}]')
 		#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-		print(f'[h_bar]: [{h_bar}]')
-	except:
-		print('---Dato incompleto---')
+		ang_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
+		ang_roll = sens_att*float(hex2sint(out_stream[134:138],2))
+		ang_yaw = sens_att*float(hex2sint(out_stream[138:142],2))
+		#print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
+		vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
+		vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
+		#print(f'[vel_E,vel_N]: [{vel_E},{vel_N}]')
+		#vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
+		#vals = [round(v,3) for v in [gyro_z,acc_x,magn_x,magn_y,magn_x,magn_y]]
+		#vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
+		vals = [round(v,3) for v in [3.6*vel_E,3.6*vel_N]] # vel km/h
+		return vals
+	except Exception as ex:
+		#print(ex)
+		return vals
 		
 	
 def hex2sint(val,num_bytes):

@@ -27,6 +27,9 @@ class UI(QDialog):
 		self.labelax = self.findChild(QLabel,"label_ax")
 		self.labeldh = self.findChild(QLabel,"label_dh")
 		
+		self.cdaq_data = None
+		self.gins_data = None
+
 		self.show()
 
 	def main(self):
