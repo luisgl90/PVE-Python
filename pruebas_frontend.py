@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
 
@@ -10,6 +10,17 @@ class UI(QMainWindow):
 		self.fase_frenado = 1
 		self.fases_frenado = ['Eficiencia en frío','Calentamiento','Eficiencia en caliente',
 			'Recuperación','Eficiencia de recuperación']
+		
+		self.tabs_pruebas = self.findChild(QTabWidget,"tabs_pruebas")
+		self.tabs_pruebas.currentChanged.connect(self.tab_change)
+		self.tab_index = self.tabs_pruebas.currentIndex()
+		print(f'Current tab: {self.tab_index}')
+
+		self.button_start = self.findChild(QPushButton,"button_start")
+		self.button_start.clicked.connect(self.start_acquisition)
+		self.button_stop = self.findChild(QPushButton,"button_stop")
+		self.button_stop.clicked.connect(self.stop_acquisition)
+		self.button_stop.setEnabled(False)
 
 		#Fase de frenado - Labels de salida
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
@@ -68,6 +79,9 @@ class UI(QMainWindow):
 		self.label_p_27 = self.findChild(QLabel,"label_prb_27")
 		self.label_p_28 = self.findChild(QLabel,"label_prb_28")
 		self.label_p_29 = self.findChild(QLabel,"label_prb_29")
+		self.label_p_30 = self.findChild(QLabel,"label_prb_30")
+		self.label_p_31 = self.findChild(QLabel,"label_prb_31")
+		self.label_p_32 = self.findChild(QLabel,"label_prb_32")
 		#Modo de prueba - Labels de salida
 		self.label_p_ax = self.findChild(QLabel,"label_prb_ax")
 		self.label_p_ay = self.findChild(QLabel,"label_prb_ay")
@@ -115,6 +129,9 @@ class UI(QMainWindow):
 		self.label_p_27.hide()
 		self.label_p_28.hide()
 		self.label_p_29.hide()
+		self.label_p_30.hide()
+		#self.label_p_31.hide()
+		self.label_p_32.hide()
 		self.label_p_Gz.hide()
 		self.label_p_Mx.hide()
 		self.label_p_My.hide()
@@ -132,9 +149,30 @@ class UI(QMainWindow):
 		self.label_p_LatGPS.hide()
 		self.label_p_AltGPS.hide()
 
+		self.label_p_31.setText('Sensores')
 		self.combo_prueba.activated.connect(self.cambiar_disp_prueba)
 
 		self.show()
+
+	@pyqtSlot()
+	def tab_change(self):
+		self.tab_index = self.tabs_pruebas.currentIndex()
+		print(f'Current tab: {self.tab_index}')
+
+	@pyqtSlot()
+	def start_acquisition(self):
+		self.button_start.setEnabled(False)
+		self.button_stop.setEnabled(True)
+		for index in (0,1,2,3,4):
+			if index!=self.tab_index:
+				self.tabs_pruebas.setTabEnabled(index,False)
+
+	@pyqtSlot()
+	def stop_acquisition(self):
+		self.button_start.setEnabled(True)
+		self.button_stop.setEnabled(False)
+		for index in (0,1,2,3,4):
+			self.tabs_pruebas.setTabEnabled(index,True)
 
 	@pyqtSlot()
 	def cambiar_fase(self):
@@ -171,6 +209,18 @@ class UI(QMainWindow):
 	@pyqtSlot()
 	def cambiar_disp_prueba(self):
 		if self.combo_prueba.currentIndex()==0:
+			self.label_p_4.setText('fp (N)')
+			self.label_p_5.setText('δ (°)')
+			self.label_p_11.setText('Vr_F (m/s)')
+			self.label_p_12.setText('Vr_R (m/s)')
+			self.label_p_13.setText('Vr_L (m/s)')
+			self.label_p_14.setText('V5_r (m/s)')
+			self.label_p_21.setText('Td (°C)')
+			self.label_p_22.setText('Ti (°C)')
+			self.label_p_23.setText('B1 (kg)')
+			self.label_p_24.setText('B2 (kg)')
+			self.label_p_31.setText('Sensores')
+
 			self.label_p_6.hide()
 			self.label_p_7.hide()
 			self.label_p_8.hide()
@@ -187,6 +237,9 @@ class UI(QMainWindow):
 			self.label_p_27.hide()
 			self.label_p_28.hide()
 			self.label_p_29.hide()
+			self.label_p_30.hide()
+			#self.label_p_31.hide()
+			self.label_p_32.hide()
 			self.label_p_Gz.hide()
 			self.label_p_Mx.hide()
 			self.label_p_My.hide()
@@ -203,7 +256,20 @@ class UI(QMainWindow):
 			self.label_p_LonGPS.hide()
 			self.label_p_LatGPS.hide()
 			self.label_p_AltGPS.hide()
+
 		if self.combo_prueba.currentIndex()==1:
+			self.label_p_4.setText('Gx (deg/s)')
+			self.label_p_5.setText('Gy (deg/s)')
+			self.label_p_11.setText('Roll (deg)')
+			self.label_p_12.setText('Pitch (deg)')
+			self.label_p_13.setText('Yaw (deg)')
+			self.label_p_14.setText('Vel_E (m/s)')
+			self.label_p_21.setText('Roll (deg)')
+			self.label_p_22.setText('Pitch (deg)')
+			self.label_p_23.setText('Yaw (deg)')
+			self.label_p_24.setText('Vel_E (m/s)')
+			self.label_p_31.setText('Navegación')
+
 			self.label_p_6.show()
 			self.label_p_7.show()
 			self.label_p_8.show()
@@ -220,6 +286,9 @@ class UI(QMainWindow):
 			self.label_p_27.show()
 			self.label_p_28.show()
 			self.label_p_29.show()
+			self.label_p_30.show()
+			#self.label_p_31.show()
+			self.label_p_32.show()
 			self.label_p_Gz.show()
 			self.label_p_Mx.show()
 			self.label_p_My.show()
