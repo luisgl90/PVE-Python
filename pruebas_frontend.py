@@ -44,6 +44,8 @@ class UI(QMainWindow):
 		self.label_f_t_dr.hide()
 		self.button_f_fase = self.findChild(QPushButton,"button_fre_fase")
 		self.button_f_fase.clicked.connect(self.cambiar_fase)
+		self.button_f_rst = self.findChild(QPushButton,"button_fre_rst")
+		self.button_f_rst.clicked.connect(self.reiniciar_fase)
 
 		##----------INSERTAR OTRAS PRUEBAS----------##
 
@@ -161,16 +163,21 @@ class UI(QMainWindow):
 
 	@pyqtSlot()
 	def start_acquisition(self):
+		print('Start acquisition')
 		self.button_start.setEnabled(False)
 		self.button_stop.setEnabled(True)
+		self.combo_prueba.setEnabled(False)
 		for index in (0,1,2,3,4):
 			if index!=self.tab_index:
 				self.tabs_pruebas.setTabEnabled(index,False)
 
 	@pyqtSlot()
 	def stop_acquisition(self):
+		print('Stop acquisition')
 		self.button_start.setEnabled(True)
 		self.button_stop.setEnabled(False)
+		self.combo_prueba.setEnabled(True)
+
 		for index in (0,1,2,3,4):
 			self.tabs_pruebas.setTabEnabled(index,True)
 
@@ -205,7 +212,12 @@ class UI(QMainWindow):
 			self.button_f_fase.setText('Finalizar')
 		else:
 			self.button_f_fase.setText('Siguiente fase')
-	
+
+	@pyqtSlot()
+	def reiniciar_fase(self):
+		self.fase_frenado = 0
+		self.cambiar_fase()
+
 	@pyqtSlot()
 	def cambiar_disp_prueba(self):
 		if self.combo_prueba.currentIndex()==0:

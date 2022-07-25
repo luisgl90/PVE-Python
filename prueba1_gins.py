@@ -27,8 +27,8 @@ def main(args):
 	if not s.isOpen():
 		s.open()
 		print(f"Puerto {serialPort} abierto")
-	for i in range(51):
-		time.sleep(0.2)
+	for i in range(500):
+		time.sleep(0.05)
 		#print(f"---Data {i}---")
 		out = ''
 		while s.inWaiting() > 0: 
@@ -72,6 +72,9 @@ def get_gins_values(data):
 		sens_hbar = 1e-2 #Hbar sens
 		sens_att = 1e-2 #Att sens
 		sens_vel = 1e-4 #Vel sens
+		sens_lon_lat = 1e-7 #Lon and Lat sens
+		sens_alt = 1e-2 # Alt sens
+
 		gyro_x = sens_gyro*float(hex2sint(out_stream[8:14],3))
 		gyro_y = sens_gyro*float(hex2sint(out_stream[14:20],3))
 		gyro_z = sens_gyro*float(hex2sint(out_stream[20:26],3))
@@ -87,17 +90,22 @@ def get_gins_values(data):
 		h_bar = sens_hbar*float(hex2sint(out_stream[56:62],3))
 		#print(f'[h_bar]: [{h_bar}]')
 		#acc_y = sens_acc*float(hex2sint(out_stream[32:38],3))
-		ang_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
-		ang_roll = sens_att*float(hex2sint(out_stream[134:138],2))
-		ang_yaw = sens_att*float(hex2sint(out_stream[138:142],2))
+		nav_pitch = sens_att*float(hex2sint(out_stream[130:134],2))
+		nav_roll = sens_att*float(hex2sint(out_stream[134:138],2))
+		nav_yaw = sens_att*float(hex2sint(out_stream[138:142],2))
 		#print(f'[pitch,roll,yaw]: [{ang_pitch},{ang_roll},{ang_yaw}]')
-		vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
-		vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
+		nav_vel_E = sens_vel*float(hex2sint(out_stream[142:148],3))
+		nav_vel_N = sens_vel*float(hex2sint(out_stream[148:154],3))
+		nav_vel_U = sens_vel*float(hex2sint(out_stream[154:160],3))
 		#print(f'[vel_E,vel_N]: [{vel_E},{vel_N}]')
+		nav_Lon = sens_lon_lat*float(hex2sint(out_stream[160:168],4))
+		nav_Lat = sens_lon_lat*float(hex2sint(out_stream[168:176],4))
+		nav_alt = sens_alt*float(hex2sint(out_stream[176:182],3))
 		#vals = [round(v,3) for v in [gyro_x,gyro_y,gyro_z,acc_x,acc_y,acc_z,magn_x,magn_y,magn_z,h_bar]]
 		#vals = [round(v,3) for v in [gyro_z,acc_x,magn_x,magn_y,magn_x,magn_y]]
 		#vals = [round(v,3) for v in [gyro_z,acc_x,vel_E,vel_N,ang_roll,ang_yaw]]
-		vals = [round(v,3) for v in [3.6*vel_E,3.6*vel_N]] # vel km/h
+		#vals = [round(v,3) for v in [3.6*nav_vel_E,3.6*nav_vel_N]] # vel km/h
+		vals = [round(v,3) for v in [nav_Lon,nav_Lat,nav_alt]] # vel km/h
 		return vals
 	except Exception as ex:
 		#print(ex)
@@ -106,9 +114,11 @@ def get_gins_values(data):
 	
 def hex2sint(val,num_bytes):
 	sign = False
-	if num_bytes==3:
+	if num_bytes==4:	# Dato de 4 bytes / 32 bits
+		bin_data = "{0:032b}".format(int(val, 16))
+	elif num_bytes==3:	# Dato de 3 bytes / 24 bits
 		bin_data = "{0:024b}".format(int(val, 16))
-	elif num_bytes==2:
+	elif num_bytes==2:	# Dato de 2 bytes / 16 bits
 		bin_data = "{0:016b}".format(int(val, 16))
 	return BitArray(bin=bin_data).int
 	
