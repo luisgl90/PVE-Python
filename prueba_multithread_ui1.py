@@ -2,6 +2,7 @@
 # Se tiene un objeto que hereda de QThread para cada conexión y un objeto 
 #  para la adquisición con un tiempo de muestreo determinado
 
+from ast import Continue
 import nidaqmx as daq
 import math
 import time
@@ -35,8 +36,11 @@ class UI(QMainWindow):
 		self.xdata = []
 		self.ydata = []
 		self.line1 = None
+		self.t = -0.1
 
 		self.start_workers()
+
+		self.timer = QTimer()
 
 	def setupUi(self):
 		uic.loadUi("prueba_pyqtgraph1.ui",self)
@@ -62,7 +66,7 @@ class UI(QMainWindow):
 	def start_workers(self):
 		serialPort1 = 'COM8' # Debe revisarse el puerto al que se conecta el GINS
 		serialPort2 = 'COM9' # Debe revisarse el puerto al que se conecta el GINS
-		baudRate = 9600
+		baudRate = 38400
 		
 		self.thread[1] = MSerialPort(serialPort1,baudRate,parent=None,index=1)
 		self.thread[1].start()
@@ -79,13 +83,16 @@ class UI(QMainWindow):
 
 	def start_aqcuisiton(self):
 		
-		self.thread[3] = MAcquisiton(parent=None,index=3)
-		self.thread[3].start()
-		self.thread[3].data.connect(self.print_labels)
-		self.thread[3].data.connect(self.plot_data)
+		self.timer.setInterval(98)
+		self.timer.timeout.connect(self.update_plot)
+		self.timer.start()
+
+		# self.thread[3] = MAcquisiton(parent=None,index=3)
+		# self.thread[3].start()
+		# self.thread[3].data.connect(self.show_data)
 		
-		self.thread[1].data.connect(lambda: self.thread[3].update_val1(self.val1))
-		self.thread[2].data.connect(lambda: self.thread[3].update_val2(self.val2))
+		# self.thread[1].data.connect(self.thread[3].update_val1)
+		# self.thread[2].data.connect(self.thread[3].update_val2)
 		
 		self.button_start.setEnabled(False)
 		self.button_stop.setEnabled(True)
@@ -118,8 +125,10 @@ class UI(QMainWindow):
 		# self.label_f_vx5.setText(f'{data["Td"]}')
 		# self.label_f_vx6.setText(f'{data["t_cdaq"]}')
 
-	def print_labels(self,val):
-		print(f'Print labels: {val}')
+	def update_plot(self):
+		#print(f'Print labels: {val}')
+		self.t += 0.1
+		val = [round(self.t,2)] + self.val1 + self.val2
 		self.label_f_vx1.setText(f'{val[0]}')
 		self.label_f_vx2.setText(f'{val[1]}')
 		self.label_f_vx3.setText(f'{val[2]}')
@@ -128,8 +137,6 @@ class UI(QMainWindow):
 		self.label_f_vx6.setText(f'{val[5]}')
 		self.label_f_vx7.setText(f'{val[6]}')
 
-	def plot_data(self,val):
-		# plot data: x, y values
 		if val[0]>0:
 			self.line1.clear()
 		if len(self.xdata)>=15:
@@ -137,10 +144,9 @@ class UI(QMainWindow):
 			del self.ydata[0]
 		self.xdata.append(val[0])
 		self.ydata.append(val[1])
-		print(f'len_x = {len(self.xdata)}')
+		#print(f'len_x = {len(self.xdata)}')
 		#self.line1.clear()
 		self.line1 = self.plot_widget.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=20, symbolBrush=('b'))
-		
 
 
 class MSerialPort(QThread):
@@ -159,13 +165,16 @@ class MSerialPort(QThread):
 			self.port.open()
 	def port_close(self):
 		self.port.close()
+	def flush(self):
+		self.port.flushInput()
+		self.port.flushOutput()
 	def send_data(self,data):
 		number=self.port.write(data)
 		return number
 	def run(self):
 		self.port_open()
 		while True:
-			time.sleep(0.001)
+			time.sleep(0.005)
 			if self.is_paused:
 				continue
 			if not self.is_running:
@@ -176,8 +185,10 @@ class MSerialPort(QThread):
 				self.message = list(map(float, data1.split(",")))
 				#print(data1)
 			except Exception as e:
-				print(e)
+				continue
+				#print(e)
 			self.data.emit(self.message)
+			self.port.flushOutput()
 	
 	def pause(self):
 		self.is_paused = True
@@ -224,8 +235,8 @@ class MAcquisiton(QThread):
 				continue
 			if not self.is_running:
 				break
-			self.data.emit([t]+self.val1+self.val2)
-			t += 1
+			self.data.emit([round(t,2)]+self.val1+self.val2)
+			t += 0.05
 	
 	def pause(self):
 		self.is_paused = True
