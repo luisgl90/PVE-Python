@@ -117,13 +117,6 @@ class UI(QMainWindow):
 	
 	def update_labels2(self,data):
 		self.val2 = data
-		#self.label_f_vx1.setText(f'{self.val1}')
-		# self.label_f_vx1.setText(f'{data["gyro_x"]}')
-		# self.label_f_vx2.setText(f'{data["gyro_y"]}')
-		# self.label_f_vx3.setText(f'{data["t_gins"]}')
-		# self.label_f_vx4.setText(f'{data["fp"]}')
-		# self.label_f_vx5.setText(f'{data["Td"]}')
-		# self.label_f_vx6.setText(f'{data["t_cdaq"]}')
 
 	def update_plot(self):
 		#print(f'Print labels: {val}')
