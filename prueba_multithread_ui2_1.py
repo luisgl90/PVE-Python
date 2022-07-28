@@ -17,7 +17,7 @@ import nidaqmx
 #from nidaqmx.constants import TerminalConfiguration
 from bitstring import BitArray
 from pyqtgraph import PlotWidget, plot, mkPen
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget, QMessageBox, QAction
 from PyQt5.QtCore import pyqtSlot,QTimer,Qt,QObject, QThread, pyqtSignal
 from PyQt5 import uic
 
@@ -225,6 +225,9 @@ class UI(QMainWindow):
 
 		self.red_pen = mkPen(color=(255, 0, 0), width=4)
 
+		finish = QAction("Quit", self)
+		finish.triggered.connect(self.closeEvent)
+
 		self.show()
 
 	@pyqtSlot()
@@ -238,7 +241,7 @@ class UI(QMainWindow):
 	@pyqtSlot()
 	def start_acquisition(self):
 		print('Configuring devices...') # Mostrar un mensaje en pantalla
-		time.sleep(5)
+		time.sleep(1)
 		print('Start acquisition')
 		self.button_start.setEnabled(False)
 		self.button_stop.setEnabled(True)
@@ -639,6 +642,14 @@ class UI(QMainWindow):
 		# self.ydata.append(val[1])
 		# self.line1 = self.plot_widget.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=20, symbolBrush=('b'))
 
+	def closeEvent(self, event):
+		close = QMessageBox.question(self,"SALIR","¿Desea salir del aplicativo?",QMessageBox.Yes | QMessageBox.No)
+		if close == QMessageBox.Yes:
+			print('Bye!')
+			self.stop_workers()
+			event.accept()
+		else:
+			event.ignore()
 
 class MSerialPort(QThread):
 	finished = pyqtSignal()
@@ -876,12 +887,12 @@ class CDaq(QThread):
 			units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
 			sensitivity=sensZ, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc z
 		
-		#self.task1.timing.cfg_samp_clk_timing(rate=50000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-		#self.task2.timing.cfg_samp_clk_timing(rate=50000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-		#self.task3.timing.cfg_samp_clk_timing(rate=50000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-		self.task1.timing.cfg_samp_clk_timing(rate=10000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=1000)
-		self.task2.timing.cfg_samp_clk_timing(rate=10000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=1000)
-		self.task3.timing.cfg_samp_clk_timing(rate=10000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=1000)
+		# self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+		# self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+		# self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+		self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
+		self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
+		self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
 
 	def task_close(self):
 		self.task1.close()
@@ -904,10 +915,10 @@ class CDaq(QThread):
 		return res
 
 	def run(self):
-		print("Tarea cDAQ iniciada en hilo",self.index)
+		print("Tarea cDAQ iniciada en hilo ->",self.index)
 		while True:
 			t1 = time.time()
-			time.sleep(0.000001)
+			#time.sleep(0.000001)
 			if not self.is_running:
 				break
 			self.datos = self.list2dict(self.task1.read(number_of_samples_per_channel=1) + self.task2.read(number_of_samples_per_channel=1) + self.task3.read(number_of_samples_per_channel=1))
@@ -918,7 +929,7 @@ class CDaq(QThread):
 			print(f't_cdaq={t*1000}ms')
 	def stop(self):
 		self.is_running = False
-		print("Tarea cDAQ terminada en hilo",self.index)
+		print("Tarea cDAQ terminada en hilo ->",self.index)
 		self.task_close()
 		self.terminate()
 
