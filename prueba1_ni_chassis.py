@@ -92,9 +92,13 @@ while True:
 		#print(f'Meas types: {devC.ai_meas_types}')
 		#print(f'Physical channels: {devC.ai_physical_chans}')
 		#print(nidaqmx.system._collections.physical_channel_collection.PhysicalChannelCollection(device_name).all)
-		task1.timing.cfg_samp_clk_timing(rate=10000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE)
-		task2.timing.cfg_samp_clk_timing(rate=10000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE)
-		task3.timing.cfg_samp_clk_timing(rate=10000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE)
+		spc = 200
+		# task1.timing.cfg_samp_clk_timing(rate=3000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=spc)
+		# task2.timing.cfg_samp_clk_timing(rate=3000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=spc)
+		# task3.timing.cfg_samp_clk_timing(rate=3000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=spc)
+		task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+		task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
+		task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
 		
 		#print(f'c7_0.ai_meas_type = {c7_0.ai_meas_type}')
 		#print(f'c2_0.ai_meas_type = {c2_0.ai_meas_type}')
@@ -108,33 +112,35 @@ while True:
 		v_cicle = False
 		v_ant = 0
 
-		for i in range(0,1000):
+		for i in range(0,3000):
 			#task.ai.channels.add_ai_voltage_chan("cDAQ9188Mod5/ai0:1")
 			start_time = time.time()
 			#print(task.in_stream.channels_to_read)
 			#if opt==3:
-			data = task2.read(number_of_samples_per_channel=1)
+			#data = task2.read(number_of_samples_per_channel=1)
 			#else:
-			#	data = task1.read(number_of_samples_per_channel=1) + task2.read(number_of_samples_per_channel=1) + task3.read(number_of_samples_per_channel=1)
+			data = task1.read(number_of_samples_per_channel=1) + task2.read(number_of_samples_per_channel=1) + task3.read(number_of_samples_per_channel=1)
 			
-			res = []
-			for d in data:
-				if isinstance(d,list):
-					res.append(float(d[0]))
-				else:
-					res.append(float(d))
-			print(f'res: {res[0]}')
+			# res = []
+			# for d in data:
+			# 	if isinstance(d,list):
+			# 		res.append(float(d[0]))
+			# 	else:
+			# 		res.append(float(d))
+			# print(f'res: {res[0]}')
 			
-			#if opt==3:
-			if v_ant<2 and res[0]>=4.0:
-				print('flanco')
-				tn=time.time()
-				t_ant=tn-t_ant
-				v_ant = res[0]
-				vel = (4/tn)*(0.3/360)
-			else:
-				vel = 0
-			print(f'vel={vel}')
+			# #if opt==3:
+			# if v_ant<2 and res[0]>=4.0:
+			# 	print('flanco')
+			# 	tn=time.time()
+			# 	t_ant=tn-t_ant
+			# 	v_ant = res[0]
+			# 	vel = (4/tn)*(0.3/360)
+			# else:
+			# 	vel = 0
+			# print(f'vel={vel}')
+
+
 			#for d in data:
 			#	if isinstance(d, list):
 			#		res.append(d[0])
@@ -160,12 +166,13 @@ while True:
 			#plt.scatter(i,data[0],color='blue')
 			#plt.pause(0.005)
 			#plt.pause(Ts)
-			t.append(time.time() - start_time)
-			print(f'--- {t[i]} seconds ---')
+			#time.sleep(0.00005)
+			t.append((time.time() - start_time)*1000)
+			print(f'--- {t[i]} ms ---')
 			#print('[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]')
-			print(f'{data}\n')
+			#print(f'{data}\n')
 			#print(f'{res}\n')
 		
-		print(f'tprom = {(sum(t)/len(t))*1000} ms')
+		print(f'tprom = {(sum(t)/len(t))} ms')
 
 

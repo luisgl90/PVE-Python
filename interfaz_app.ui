@@ -165,7 +165,7 @@
         <widget class="Line" name="line_2">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>320</x>
            <y>10</y>
            <width>16</width>
            <height>421</height>
@@ -460,7 +460,7 @@
         <widget class="QPushButton" name="button_fre_rst">
          <property name="geometry">
           <rect>
-           <x>180</x>
+           <x>170</x>
            <y>380</y>
            <width>151</width>
            <height>41</height>
@@ -480,7 +480,7 @@
         <widget class="QPushButton" name="button_fre_fase">
          <property name="geometry">
           <rect>
-           <x>30</x>
+           <x>20</x>
            <y>380</y>
            <width>151</width>
            <height>41</height>
@@ -711,7 +711,7 @@
         <widget class="Line" name="line">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>320</x>
            <y>10</y>
            <width>16</width>
            <height>421</height>
@@ -1044,10 +1044,10 @@
         <widget class="QLabel" name="label_cog_2">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>90</y>
+           <x>40</x>
+           <y>80</y>
            <width>131</width>
-           <height>41</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="font">
@@ -1058,43 +1058,19 @@
           </font>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="text">
-          <string>ay (m/s^2)</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ax_2">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>50</y>
-           <width>161</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Box</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text">
-          <string>Empty</string>
+          <string>Báscula 1 (kg)</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_vib_ay_2">
          <property name="geometry">
           <rect>
-           <x>170</x>
-           <y>90</y>
+           <x>180</x>
+           <y>80</y>
            <width>161</width>
-           <height>41</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="font">
@@ -1103,7 +1079,7 @@
           </font>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Sunken</enum>
@@ -1115,10 +1091,10 @@
         <widget class="QLabel" name="label_vib_az_2">
          <property name="geometry">
           <rect>
-           <x>170</x>
-           <y>130</y>
+           <x>180</x>
+           <y>110</y>
            <width>161</width>
-           <height>41</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="font">
@@ -1127,7 +1103,7 @@
           </font>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Sunken</enum>
@@ -1139,10 +1115,10 @@
         <widget class="QLabel" name="label_cog_3">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>130</y>
+           <x>40</x>
+           <y>110</y>
            <width>131</width>
-           <height>41</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="font">
@@ -1153,10 +1129,10 @@
           </font>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="text">
-          <string>az (m/s^2)</string>
+          <string>Báscula 2 (kg)</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_cog_1">
@@ -1165,7 +1141,7 @@
            <x>30</x>
            <y>50</y>
            <width>131</width>
-           <height>41</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="font">
@@ -1176,10 +1152,10 @@
           </font>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Box</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="text">
-          <string>ax (m/s^2)</string>
+          <string>Masa</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_cen_titulo">
@@ -1202,46 +1178,6 @@
           <string>Prueba de centro de gravedad</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="button_fre_rst_2">
-         <property name="geometry">
-          <rect>
-           <x>180</x>
-           <y>380</y>
-           <width>151</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Reiniciar</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="button_fre_fase_2">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>380</y>
-           <width>151</width>
-           <height>41</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Siguiente fase</string>
-         </property>
-        </widget>
         <widget class="Line" name="line_3">
          <property name="geometry">
           <rect>
@@ -1253,6 +1189,447 @@
          </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>400</x>
+           <y>10</y>
+           <width>361</width>
+           <height>421</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap>param_prb_cog.jpg</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_3">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>200</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_4">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>200</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>l_a (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_5">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>170</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>Parámetros</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_4">
+         <property name="geometry">
+          <rect>
+           <x>310</x>
+           <y>200</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_6">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>200</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>d_a (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_5">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>230</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_7">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>230</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>d_r (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_6">
+         <property name="geometry">
+          <rect>
+           <x>310</x>
+           <y>230</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_8">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>230</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>l_l (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_7">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>260</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_10">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>260</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>h (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_8">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>340</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_9">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>400</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_9">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>340</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>Xcg (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_vib_ay_10">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>370</y>
+           <width>101</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="text">
+          <string>Empty</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_11">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>370</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>Ycgl (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_12">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>310</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>Resultado</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_13">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>400</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>Zcg (mm)</string>
          </property>
         </widget>
        </widget>
