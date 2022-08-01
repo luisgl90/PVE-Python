@@ -311,7 +311,7 @@ class UI(QMainWindow):
 
 	@pyqtSlot()
 	def cambiar_disp_prueba(self):
-		if self.combo_prueba.currentIndex()==0:
+		if self.combo_prueba.currentIndex()==0: #Prueba sensores cDAQ-9188
 			self.label_p_4.setText('fp (N)')
 			self.label_p_5.setText('δ (°)')
 			self.label_p_11.setText('Vr_F (m/s)')
@@ -335,6 +335,8 @@ class UI(QMainWindow):
 			self.label_p_18.hide()
 			self.label_p_19.hide()
 			self.label_p_20.hide()
+			self.label_p_21.show()
+			self.label_p_22.show()
 			self.label_p_25.hide()
 			self.label_p_26.hide()
 			self.label_p_27.hide()
@@ -360,15 +362,15 @@ class UI(QMainWindow):
 			self.label_p_LatGPS.hide()
 			self.label_p_AltGPS.hide()
 
-		if self.combo_prueba.currentIndex()==1:
+		if self.combo_prueba.currentIndex()==1: #Prueba sensores GINS
 			self.label_p_4.setText('Gx (deg/s)')
 			self.label_p_5.setText('Gy (deg/s)')
 			self.label_p_11.setText('Roll (deg)')
 			self.label_p_12.setText('Pitch (deg)')
 			self.label_p_13.setText('Yaw (deg)')
 			self.label_p_14.setText('Vel_E (m/s)')
-			self.label_p_21.setText('Roll (deg)')
-			self.label_p_22.setText('Pitch (deg)')
+			#self.label_p_21.setText('Roll (deg)')
+			#self.label_p_22.setText('Pitch (deg)')
 			self.label_p_23.setText('Yaw (deg)')
 			self.label_p_24.setText('Vel_E (m/s)')
 			self.label_p_31.setText('Navegación')
@@ -384,6 +386,8 @@ class UI(QMainWindow):
 			self.label_p_18.show()
 			self.label_p_19.show()
 			self.label_p_20.show()
+			self.label_p_21.hide()
+			self.label_p_22.hide()
 			self.label_p_25.show()
 			self.label_p_26.show()
 			self.label_p_27.show()
@@ -403,6 +407,8 @@ class UI(QMainWindow):
 			self.label_p_LatNav.show()
 			self.label_p_altNav.show()
 			self.label_p_Hbar.show()
+			self.label_p_Td_rollGPS.hide()
+			self.label_p_Ti_pitchGPS.hide()
 			self.label_p_velNGPS.show()
 			self.label_p_velUGPS.show()
 			self.label_p_LonGPS.show()
@@ -426,10 +432,10 @@ class UI(QMainWindow):
 		baudRate = 460800
 		self.thread[1] = Gins(serialPort,baudRate,parent=None,index=1)
 		self.thread[1].data.connect(self.update_gins_data)
-		self.thread[1].start()
-		
 		self.thread[2] = CDaq(parent=None,index=2)
 		self.thread[2].data.connect(self.update_cdaq_data)
+		
+		self.thread[1].start()
 		self.thread[2].start()
 
 	def stop_workers(self):

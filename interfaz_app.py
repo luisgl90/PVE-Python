@@ -34,8 +34,8 @@ class UI(QMainWindow):
 		print('Conectado')
 			
 		self.t1 = threading.Thread(target = self.mSerial1.read_data)
-		self.t1.start()
 		self.t2 = threading.Thread(target = self.mSerial2.read_data)
+		self.t1.start()
 		self.t2.start()
 		time.sleep(2)
 		self.show()

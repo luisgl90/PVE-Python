@@ -29,6 +29,9 @@
    <string notr="true">QWidget { 
 	background-color: #f0f0f0 }
 
+QLineEdit { 
+	background-color: #ffffff }
+
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -180,7 +183,7 @@
           <rect>
            <x>170</x>
            <y>250</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -204,7 +207,7 @@
           <rect>
            <x>170</x>
            <y>90</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -228,7 +231,7 @@
           <rect>
            <x>170</x>
            <y>170</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -298,7 +301,7 @@
           <rect>
            <x>170</x>
            <y>210</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -345,7 +348,7 @@
           <rect>
            <x>170</x>
            <y>130</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -415,7 +418,7 @@
           <rect>
            <x>170</x>
            <y>290</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -595,7 +598,7 @@
           <rect>
            <x>170</x>
            <y>130</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -619,7 +622,7 @@
           <rect>
            <x>170</x>
            <y>90</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -666,7 +669,7 @@
           <rect>
            <x>170</x>
            <y>50</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -772,7 +775,7 @@
           <rect>
            <x>170</x>
            <y>170</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -796,7 +799,7 @@
           <rect>
            <x>170</x>
            <y>210</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -848,7 +851,7 @@
           <rect>
            <x>170</x>
            <y>130</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -872,7 +875,7 @@
           <rect>
            <x>170</x>
            <y>90</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -919,7 +922,7 @@
           <rect>
            <x>170</x>
            <y>50</y>
-           <width>161</width>
+           <width>151</width>
            <height>41</height>
           </rect>
          </property>
@@ -984,7 +987,7 @@
         <widget class="Line" name="line_9">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>320</x>
            <y>10</y>
            <width>16</width>
            <height>421</height>
@@ -1041,11 +1044,11 @@
         <attribute name="title">
          <string>Prueba centro de gravedad</string>
         </attribute>
-        <widget class="QLabel" name="label_cog_2">
+        <widget class="QLabel" name="label_cog_6">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>80</y>
+           <x>30</x>
+           <y>220</y>
            <width>131</width>
            <height>31</height>
           </rect>
@@ -1064,11 +1067,11 @@
           <string>Báscula 1 (kg)</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_vib_ay_2">
+        <widget class="QLabel" name="label_cog_B1">
          <property name="geometry">
           <rect>
-           <x>180</x>
-           <y>80</y>
+           <x>170</x>
+           <y>220</y>
            <width>161</width>
            <height>31</height>
           </rect>
@@ -1088,11 +1091,11 @@
           <string>Empty</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_vib_az_2">
+        <widget class="QLabel" name="label_cog_B2">
          <property name="geometry">
           <rect>
-           <x>180</x>
-           <y>110</y>
+           <x>170</x>
+           <y>250</y>
            <width>161</width>
            <height>31</height>
           </rect>
@@ -1112,11 +1115,11 @@
           <string>Empty</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_cog_3">
+        <widget class="QLabel" name="label_cog_7">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>110</y>
+           <x>30</x>
+           <y>250</y>
            <width>131</width>
            <height>31</height>
           </rect>
@@ -1135,11 +1138,11 @@
           <string>Báscula 2 (kg)</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_cog_1">
+        <widget class="QLabel" name="label_cog_tit_2">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>50</y>
+           <x>20</x>
+           <y>190</y>
            <width>131</width>
            <height>31</height>
           </rect>
@@ -1158,7 +1161,7 @@
           <string>Masa</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_cen_titulo">
+        <widget class="QLabel" name="label_cog_titulo">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -1191,7 +1194,7 @@
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="label_img">
          <property name="geometry">
           <rect>
            <x>400</x>
@@ -1210,12 +1213,12 @@
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QLabel" name="label_vib_ay_3">
+        <widget class="QLabel" name="label_cog_Xcg">
          <property name="geometry">
           <rect>
-           <x>140</x>
-           <y>200</y>
-           <width>71</width>
+           <x>130</x>
+           <y>330</y>
+           <width>101</width>
            <height>31</height>
           </rect>
          </property>
@@ -1234,152 +1237,12 @@
           <string>Empty</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_cog_4">
+        <widget class="QLabel" name="label_cog_Zcg">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>200</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>l_a (mm)</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_cog_5">
-         <property name="geometry">
-          <rect>
-           <x>30</x>
-           <y>170</y>
-           <width>131</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>Parámetros</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ay_4">
-         <property name="geometry">
-          <rect>
-           <x>310</x>
-           <y>200</y>
-           <width>71</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text">
-          <string>Empty</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_cog_6">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>200</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>d_a (mm)</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ay_5">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>230</y>
-           <width>71</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text">
-          <string>Empty</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_cog_7">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>230</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>d_r (mm)</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ay_6">
-         <property name="geometry">
-          <rect>
-           <x>310</x>
-           <y>230</y>
-           <width>71</width>
+           <x>130</x>
+           <y>390</y>
+           <width>101</width>
            <height>31</height>
           </rect>
          </property>
@@ -1401,8 +1264,8 @@
         <widget class="QLabel" name="label_cog_8">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>230</y>
+           <x>30</x>
+           <y>330</y>
            <width>91</width>
            <height>31</height>
           </rect>
@@ -1418,85 +1281,14 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="text">
-          <string>l_l (mm)</string>
+          <string>Xcg (mm)</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_vib_ay_7">
+        <widget class="QLabel" name="label_cog_Ycg">
          <property name="geometry">
           <rect>
-           <x>140</x>
-           <y>260</y>
-           <width>71</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text">
-          <string>Empty</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_cog_10">
-         <property name="geometry">
-          <rect>
-           <x>40</x>
-           <y>260</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>h (mm)</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ay_8">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>340</y>
-           <width>101</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text">
-          <string>Empty</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ay_9">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>400</y>
+           <x>130</x>
+           <y>360</y>
            <width>101</width>
            <height>31</height>
           </rect>
@@ -1519,55 +1311,8 @@
         <widget class="QLabel" name="label_cog_9">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>340</y>
-           <width>91</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>Xcg (mm)</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vib_ay_10">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>370</y>
-           <width>101</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>12</pointsize>
-          </font>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="text">
-          <string>Empty</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_cog_11">
-         <property name="geometry">
-          <rect>
-           <x>40</x>
-           <y>370</y>
+           <x>30</x>
+           <y>360</y>
            <width>91</width>
            <height>31</height>
           </rect>
@@ -1586,11 +1331,11 @@
           <string>Ycgl (mm)</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_cog_12">
+        <widget class="QLabel" name="label_cog_tit_3">
          <property name="geometry">
           <rect>
-           <x>30</x>
-           <y>310</y>
+           <x>20</x>
+           <y>300</y>
            <width>131</width>
            <height>31</height>
           </rect>
@@ -1609,11 +1354,11 @@
           <string>Resultado</string>
          </property>
         </widget>
-        <widget class="QLabel" name="label_cog_13">
+        <widget class="QLabel" name="label_cog_10">
          <property name="geometry">
           <rect>
-           <x>40</x>
-           <y>400</y>
+           <x>30</x>
+           <y>390</y>
            <width>91</width>
            <height>31</height>
           </rect>
@@ -1630,6 +1375,219 @@
          </property>
          <property name="text">
           <string>Zcg (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_4">
+         <property name="geometry">
+          <rect>
+           <x>210</x>
+           <y>80</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>d_a (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_1">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>80</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>l_a (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_2">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>110</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>l_l (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_5">
+         <property name="geometry">
+          <rect>
+           <x>210</x>
+           <y>110</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>d_r (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_tit_1">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>Parámetros</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_cog_3">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>140</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="text">
+          <string>h (mm)</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="edit_cog_la">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>80</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="edit_cog_ll">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>110</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="edit_cog_h">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>140</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="edit_cog_da">
+         <property name="geometry">
+          <rect>
+           <x>310</x>
+           <y>80</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="edit_cog_dr">
+         <property name="geometry">
+          <rect>
+           <x>310</x>
+           <y>110</y>
+           <width>71</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
          </property>
         </widget>
        </widget>
@@ -3218,10 +3176,16 @@
     <property name="title">
      <string>Menú</string>
     </property>
+    <addaction name="actionConfiguraci_n"/>
    </widget>
    <addaction name="menuMen"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionConfiguraci_n">
+   <property name="text">
+    <string>Configuración</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
