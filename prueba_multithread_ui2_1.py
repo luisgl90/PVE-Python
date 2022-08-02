@@ -46,6 +46,14 @@ class UI(QMainWindow):
 		self.line3 = None
 		self.t = -0.1
 
+		db_Name1 = "pruebaDB_gins1.db"
+		db_Table1 = "Variables_gins1"
+		self.d2db1 = Dict2Db(db_Table1,db_Name1)
+		db_Name2 = "pruebaDB_cdaq1.db"
+		db_Table2 = "Variables_cdaq1"
+		self.d2db2 = Dict2Db(db_Table2,db_Name2)
+
+
 		self.start_workers()
 
 		self.timer = QTimer()
@@ -252,6 +260,7 @@ class UI(QMainWindow):
 
 		self.timer.setInterval(80)
 		self.timer.timeout.connect(self.update_plot)
+		self.timer.timeout.connect(self.save_db)
 		self.timer.start()
 
 		self.button_start.setEnabled(False)
@@ -480,6 +489,12 @@ class UI(QMainWindow):
 	
 	def update_cdaq_data(self,data):
 		self.cdaq_data = data
+
+	def save_db(self):
+		gins = self.gins_data
+		cdaq = self.cdaq_data		
+		self.d2db1.insert2db(gins)
+		self.d2db2.insert2db(cdaq)
 
 	def update_plot(self):
 		#print(f'Print labels: {val}')
@@ -715,7 +730,7 @@ class MSerialPort(QThread):
 
 
 class Gins(QThread):
-	vals = dict()
+	vals = {}
 	message = None
 	read_flag = False
 	data = pyqtSignal(dict)
@@ -740,9 +755,9 @@ class Gins(QThread):
 	def run(self):
 		print("GINS iniciado en hilo ->",self.index)
 		while True:
-			time.sleep(0.01)
-			#t1 = time.time()
+			t1 = time.time()
 			#t1 = datetime.now()
+			time.sleep(0.01)
 			if not self.is_running:
 				break
 			out = ''
@@ -752,7 +767,8 @@ class Gins(QThread):
 				self.message = self.get_gins_values(out.hex())
 				#t = datetime.now() - t1
 				#dt = t.total_seconds()
-				#self.message["t_gins"] = dt
+				dt = time.time() - t1
+				self.message["t_gins"] = dt
 				self.data.emit(self.message)
 				
 			#time.sleep(0.05)
@@ -938,6 +954,46 @@ class CDaq(QThread):
 		print("Tarea cDAQ terminada en hilo ->",self.index)
 		self.task_close()
 		self.terminate()
+
+class Dict2Db():
+	list_indexes = []
+	list_values = []
+	create_table_str = ''
+	db_conn = None
+	def __init__(self,db_table,db_name):
+		super(Dict2Db, self).__init__()
+		self.db_table = db_table
+		self.db_name = db_name
+		self.db_conn = sqlite3.connect("database/" + self.db_name)
+		self.cursor = self.db_conn.cursor()
+		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " ("
+
+	def __conv_dict(self,data):
+		list_indexes = []
+		list_values = []
+		create_table_str = self.create_table_str
+		for indx,val in data.items():
+			create_table_str += indx + " REAL NOT NULL, "
+			list_indexes.append(indx)
+			list_values.append(val)
+		create_table_str += "PRIMARY KEY (" + list_indexes[0] + "))" 
+
+		return list_indexes,list_values,create_table_str
+
+		#print(create_table_str)
+		#print(f"\n\nINSERT INTO {db_Table} {(tuple(list_indexes))} VALUES {str(tuple(list_values))}")
+	
+	def insert2db(self,data):
+		list_indexes,list_values,create_table_str = self.__conv_dict(data)
+		try:
+			#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+			self.cursor.execute(create_table_str)
+			#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+			self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {(tuple(list_indexes))} VALUES {str(tuple(list_values))}")
+			self.db_conn.commit()
+		except Exception as ex:
+			print(ex)
+
 
 if __name__ == '__main__':
 	import sys

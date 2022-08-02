@@ -20,9 +20,9 @@ class Dict2Db():
 		list_indexes = []
 		list_values = []
 		create_table_str = self.create_table_str
-		for ind,val in data.items():
-			create_table_str += ind + " REAL NOT NULL, "
-			list_indexes.append(ind)
+		for indx,val in data.items():
+			create_table_str += indx + " REAL NOT NULL, "
+			list_indexes.append(indx)
 			list_values.append(val)
 		create_table_str += "PRIMARY KEY (" + list_indexes[0] + "))" 
 
