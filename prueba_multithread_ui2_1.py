@@ -258,18 +258,24 @@ class UI(QMainWindow):
 			if index!=self.tab_index:
 				self.tabs_pruebas.setTabEnabled(index,False)
 
-		self.timer.setInterval(80)
-		self.timer.timeout.connect(self.update_plot)
-		self.timer.timeout.connect(self.save_db)
-		self.timer.start()
+		# self.timer.setInterval(80)
+		# self.timer.timeout.connect(self.update_plot)
+		# self.timer.timeout.connect(self.save_db)
+		# self.timer.start()
+		self.thread[3].start() # Inicia hilo para plotear
 
 		self.button_start.setEnabled(False)
 		self.button_stop.setEnabled(True)
 
+	# def hello(self):
+	# 		print('Hello DoEvery ({:.4f})'.format(time.time()))
+	# 		#time.sleep(.5)
+
 	@pyqtSlot()
 	def stop_acquisition(self):
 		print('Stop acquisition')
-		self.timer.stop()
+		#self.timer.stop()
+		self.thread[3].stop()
 
 		self.button_start.setEnabled(True)
 		self.button_stop.setEnabled(False)
@@ -443,6 +449,8 @@ class UI(QMainWindow):
 		self.thread[1].data.connect(self.update_gins_data)
 		self.thread[2] = CDaq(parent=None,index=2)
 		self.thread[2].data.connect(self.update_cdaq_data)
+		self.thread[3] = DoEvery(0.1)
+		self.thread[3].sig.connect(self.update_plot)
 		
 		self.thread[1].start()
 		self.thread[2].start()
@@ -450,6 +458,7 @@ class UI(QMainWindow):
 	def stop_workers(self):
 		self.thread[1].stop()
 		self.thread[2].stop()
+		self.thread[3].stop()
 		#self.pushButton.setEnabled(True)
 
 	# def start_aqcuisiton(self):
@@ -948,11 +957,37 @@ class CDaq(QThread):
 			t = time.time() - t1
 			#self.datos["t_cdaq"] = t
 			self.data.emit(self.datos)
-			print(f't_cdaq={t*1000}ms')
+			#print(f't_cdaq={t*1000}ms')
 	def stop(self):
 		self.is_running = False
 		print("Tarea cDAQ terminada en hilo ->",self.index)
 		self.task_close()
+		self.terminate()
+
+class DoEvery(QThread):
+	sig = pyqtSignal()
+	def __init__(self,period,parent=None):
+		super(DoEvery, self).__init__(parent)
+		self.period = period
+		self.is_running = True
+	def g_tick(self):
+		t = time.time()
+		while True:
+			t += self.period
+			yield max(t - time.time(),0)
+	def run(self):
+		print("DoEvery started!")
+		g = self.g_tick()
+		while True:
+			if not self.is_running:
+				break
+			time.sleep(next(g))
+			#self.f(*args)
+			#self.f()
+			self.sig.emit()
+	def stop(self):
+		self.is_running = False
+		print("DoEvery stopped!")
 		self.terminate()
 
 class Dict2Db():
