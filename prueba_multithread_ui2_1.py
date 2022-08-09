@@ -523,9 +523,9 @@ class UI(QMainWindow):
 				else:
 					self.ydata = [[],[],[]]
 				if len(self.xdata)>=15:
-					del self.xdata[0]
-					for f in self.ydata:
-						del f[0]
+					self.xdata = self.xdata[1:]
+					for i in enumerate(self.ydata):
+						self.ydata[i] = self.ydata[i][1:]
 				self.xdata.append(self.t)
 				self.ydata[0].append(vx)
 				self.ydata[1].append(gins["acc_y"])
