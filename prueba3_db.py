@@ -14,7 +14,7 @@ class Dict2Db():
 		self.db_name = db_name
 		self.db_conn = sqlite3.connect("database/" + self.db_name)
 		self.cursor = self.db_conn.cursor()
-		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " ("
+		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " (t REAL AUTO_INCREMENT, "
 
 	def dict2tup(self,data):
 		create_table_str = self.create_table_str
@@ -22,7 +22,7 @@ class Dict2Db():
 		dict_values = list(data.values())
 		for indx in dict_keys:
 			create_table_str += indx + " REAL NOT NULL, "
-		create_table_str += "PRIMARY KEY (" + dict_keys[0] + "))" 
+		create_table_str += "PRIMARY KEY (t))" 
 
 		return tuple(dict_keys),tuple(dict_values),create_table_str
 	
@@ -32,8 +32,8 @@ class Dict2Db():
 		dict_values = list(data.values())
 		for indx in dict_keys:
 			create_table_str += indx + " REAL NOT NULL, "
-		create_table_str += "PRIMARY KEY (" + dict_keys[0] + "))" 
-		#print(f'k_data = {dict_keys}')
+		create_table_str += "PRIMARY KEY (t))" 
+		# print(f'k_data = {dict_keys}')
 		tup_list = []
 		for i in range(len(dict_values[0])):
 			tup = []
@@ -82,21 +82,21 @@ class Dict2Db():
 				print(ex)
 
 
-db_Name = "pruebaDB_cDAQ2.db"
-db_Table = "Variables_cDAQ2"
+db_Name = "pruebaDB_cDAQ1.db"
+db_Table = "Variables_cDAQ1"
 
 data_cdaq = {}
-data_cdaq["t"] = [0.0,0.1,0.2,0.3,0.4,0.5]
+# data_cdaq["t"] = [0.0,0.1,0.2,0.3,0.4,0.5]
 data_cdaq["fp"] = [1.0,1.1,1.2,1.3,1.4,1.5,1.6]
-data_cdaq["Td"] = [0.0,0.1,0.2,0.3,0.4,0.5]
+data_cdaq["Td"] = [0.0,0.1,0.2,0.3,0.4,0.5,0.6]
 data_cdaq["Ti"] = [1.0,1.1,1.2,1.3,1.4,1.5,1.6]
-data_cdaq["Rdel"] = [0.0,0.1,0.2,0.3,0.4,0.5]
+data_cdaq["Rdel"] = [0.0,0.1,0.2,0.3,0.4,0.5,0.6]
 data_cdaq["R5a"] = [1.0,1.1,1.2,1.3,1.4,1.5,1.6]
-data_cdaq["Rder"] = [0.0,0.1,0.2,0.3,0.4,0.5]
+data_cdaq["Rder"] = [0.0,0.1,0.2,0.3,0.4,0.5,0.6]
 data_cdaq["Rizq"] = [1.0,1.1,1.2,1.3,1.4,1.5,1.6]
-data_cdaq["Vol"] = [0.0,0.1,0.2,0.3,0.4,0.5]
+data_cdaq["Vol"] = [0.0,0.1,0.2,0.3,0.4,0.5,0.6]
 data_cdaq["AccX"] = [1.0,1.1,1.2,1.3,1.4,1.5,1.6]
-data_cdaq["AccY"] = [0.0,0.1,0.2,0.3,0.4,0.5]
+data_cdaq["AccY"] = [0.0,0.1,0.2,0.3,0.4,0.5,0.6]
 data_cdaq["AccZ"] = [1.0,1.1,1.2,1.3,1.4,1.5,1.6]
 
 # data_cdaq["t"] = 0.0
@@ -116,10 +116,10 @@ print(type(list(data_cdaq.values())[0]))
 
 d2db = Dict2Db(db_Table,db_Name)
 d2db.insert2db(data_cdaq)
-data_cdaq["t"] = [x+0.6 for x in data_cdaq["t"]]
-d2db.insert2db(data_cdaq)
-data_cdaq["t"] = [x+0.6 for x in data_cdaq["t"]]
-d2db.insert2db(data_cdaq)
+# data_cdaq["t"] = [x+0.6 for x in data_cdaq["t"]]
+# d2db.insert2db(data_cdaq)
+# data_cdaq["t"] = [x+0.6 for x in data_cdaq["t"]]
+# d2db.insert2db(data_cdaq)
 
 # d = [(1,2),(1,3)]
 # print(len(d[0]))

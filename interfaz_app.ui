@@ -1207,7 +1207,7 @@ QLineEdit {
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap>param_prb_cog.jpg</pixmap>
+          <pixmap>../../../../.designer/backup/param_prb_cog.jpg</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -3169,7 +3169,7 @@ QLineEdit {
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMen">

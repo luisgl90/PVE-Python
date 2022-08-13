@@ -2,7 +2,8 @@
 # Se tiene un objeto que hereda de QThread para cada conexión y un objeto 
 #  para la adquisición con un tiempo de muestreo determinado
 # Se agregan funcionalidades a los labels y gráficas por prueba
-
+import numpy as np
+from nidaqmx import constants
 from ast import Continue
 #import nidaqmx as daq
 from math import sqrt
@@ -12,6 +13,7 @@ import time
 from datetime import datetime
 import sqlite3
 import threading
+from nidaqmx import stream_readers
 import serial
 import nidaqmx
 #from nidaqmx.constants import TerminalConfiguration
@@ -39,21 +41,16 @@ class UI(QMainWindow):
 		self.cdaq_data = {}
 		self.sensors_data = {}
 
-		self.xdata = []
-		self.ydata = [[]]
+		self.xdata = [x*0.1 for x in list(range(15))]
+		self.ydata = [x*0 for x in list(range(15))]
+		self.ydata = [self.ydata, self.ydata, self.ydata, self.ydata,self.ydata,self.ydata]
 		self.line1 = None
 		self.line2 = None
 		self.line3 = None
 		self.t = -0.1
-
-		db_Name1 = "pruebaDB_gins1.db"
-		db_Table1 = "Variables_gins1"
-		self.d2db1 = Dict2Db(db_Table1,db_Name1)
-		db_Name2 = "pruebaDB_cdaq1.db"
-		db_Table2 = "Variables_cdaq1"
-		self.d2db2 = Dict2Db(db_Table2,db_Name2)
-
-
+		self.line1 = self.fre_widget_plot.plot(self.xdata,self.ydata[0],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+		self.line2 = self.est_widget_plot.plot(self.xdata,self.ydata[0],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+		self.line3 = self.vib_widget_plot.plot(self.xdata,self.ydata[0],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
 		self.start_workers()
 
 		self.timer = QTimer()
@@ -242,8 +239,9 @@ class UI(QMainWindow):
 	def tab_change(self):
 		self.tab_index = self.tabs_pruebas.currentIndex()
 		print(f'Current tab: {self.tab_index}')
-		self.ydata = []
-		self.xdata = []
+		self.xdata = [x*0.1 for x in list(range(15))]
+		self.ydata = [x*0 for x in list(range(15))]
+		self.ydata = [self.ydata, self.ydata, self.ydata, self.ydata,self.ydata,self.ydata]
 		self.t = -0.1
 
 	@pyqtSlot()
@@ -258,37 +256,33 @@ class UI(QMainWindow):
 			if index!=self.tab_index:
 				self.tabs_pruebas.setTabEnabled(index,False)
 
-		self.timer.setInterval(98)
+		self.timer.setInterval(100)
 		self.timer.timeout.connect(self.update_plot)
-		# self.timer.timeout.connect(self.save_db)
 		self.timer.start()
-		#self.thread[3].start() # Inicia hilo para plotear
 
 		self.button_start.setEnabled(False)
 		self.button_stop.setEnabled(True)
 
-	# def hello(self):
-	# 		print('Hello DoEvery ({:.4f})'.format(time.time()))
-	# 		#time.sleep(.5)
-
 	@pyqtSlot()
 	def stop_acquisition(self):
 		print('Stop acquisition')
-		#self.timer.stop()
-		self.thread[3].stop()
+		self.timer.stop()
 
 		self.button_start.setEnabled(True)
 		self.button_stop.setEnabled(False)
 		self.combo_prueba.setEnabled(True)
-
 		for index in (0,1,2,3,4):
 			self.tabs_pruebas.setTabEnabled(index,True)
 
 	@pyqtSlot()
 	def cambiar_fase(self):
-		self.ydata = []
-		self.xdata = []
+		self.xdata = [x*0.1 for x in list(range(15))]
+		self.ydata = [x*0 for x in list(range(15))]
+		self.ydata = [self.ydata, self.ydata, self.ydata, self.ydata,self.ydata,self.ydata]
 		self.t = -0.1
+		#self.line1 = self.fre_widget_plot.plot(self.xdata,self.ydata[0],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+		
+		
 		self.fase_frenado = self.fase_frenado + 1
 		if self.fase_frenado>5:
 			self.fase_frenado=1
@@ -326,7 +320,7 @@ class UI(QMainWindow):
 
 	@pyqtSlot()
 	def cambiar_disp_prueba(self):
-		if self.combo_prueba.currentIndex()==0: #Prueba sensores cDAQ-9188
+		if self.combo_prueba.currentIndex()==0:
 			self.label_p_4.setText('fp (N)')
 			self.label_p_5.setText('δ (°)')
 			self.label_p_11.setText('Vr_F (m/s)')
@@ -350,8 +344,6 @@ class UI(QMainWindow):
 			self.label_p_18.hide()
 			self.label_p_19.hide()
 			self.label_p_20.hide()
-			self.label_p_21.show()
-			self.label_p_22.show()
 			self.label_p_25.hide()
 			self.label_p_26.hide()
 			self.label_p_27.hide()
@@ -377,15 +369,15 @@ class UI(QMainWindow):
 			self.label_p_LatGPS.hide()
 			self.label_p_AltGPS.hide()
 
-		if self.combo_prueba.currentIndex()==1: #Prueba sensores GINS
+		if self.combo_prueba.currentIndex()==1:
 			self.label_p_4.setText('Gx (deg/s)')
 			self.label_p_5.setText('Gy (deg/s)')
 			self.label_p_11.setText('Roll (deg)')
 			self.label_p_12.setText('Pitch (deg)')
 			self.label_p_13.setText('Yaw (deg)')
 			self.label_p_14.setText('Vel_E (m/s)')
-			#self.label_p_21.setText('Roll (deg)')
-			#self.label_p_22.setText('Pitch (deg)')
+			self.label_p_21.setText('Roll (deg)')
+			self.label_p_22.setText('Pitch (deg)')
 			self.label_p_23.setText('Yaw (deg)')
 			self.label_p_24.setText('Vel_E (m/s)')
 			self.label_p_31.setText('Navegación')
@@ -401,8 +393,6 @@ class UI(QMainWindow):
 			self.label_p_18.show()
 			self.label_p_19.show()
 			self.label_p_20.show()
-			self.label_p_21.hide()
-			self.label_p_22.hide()
 			self.label_p_25.show()
 			self.label_p_26.show()
 			self.label_p_27.show()
@@ -422,8 +412,6 @@ class UI(QMainWindow):
 			self.label_p_LatNav.show()
 			self.label_p_altNav.show()
 			self.label_p_Hbar.show()
-			self.label_p_Td_rollGPS.hide()
-			self.label_p_Ti_pitchGPS.hide()
 			self.label_p_velNGPS.show()
 			self.label_p_velUGPS.show()
 			self.label_p_LonGPS.show()
@@ -447,18 +435,15 @@ class UI(QMainWindow):
 		baudRate = 460800
 		self.thread[1] = Gins(serialPort,baudRate,parent=None,index=1)
 		self.thread[1].data.connect(self.update_gins_data)
+		self.thread[1].start()
+		
 		self.thread[2] = CDaq(parent=None,index=2)
 		self.thread[2].data.connect(self.update_cdaq_data)
-		#self.thread[3] = DoEvery(0.1)
-		#self.thread[3].sig.connect(self.update_plot)
-		
-		self.thread[1].start()
 		self.thread[2].start()
 
 	def stop_workers(self):
 		self.thread[1].stop()
 		self.thread[2].stop()
-		#self.thread[3].stop()
 		#self.pushButton.setEnabled(True)
 
 	# def start_aqcuisiton(self):
@@ -497,13 +482,8 @@ class UI(QMainWindow):
 		self.gins_data = data
 	
 	def update_cdaq_data(self,data):
-		self.cdaq_data = data
-
-	def save_db(self):
-		gins = self.gins_data
-		cdaq = self.cdaq_data		
-		self.d2db1.insert2db(gins)
-		self.d2db2.insert2db(cdaq)
+		for i,v in data.items():
+			self.cdaq_data[i] = v[-1]
 
 	def update_plot(self):
 		#print(f'Print labels: {val}')
@@ -512,27 +492,23 @@ class UI(QMainWindow):
 		self.t += 0.1
 		#val = round(self.t,2)] + self.val1 + self.val2
 		if self.tabs_pruebas.currentIndex()==0: #Prueba de frenado
-			vx = sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
-				(gins["nav_vel_U"])**2)
+			vx = 3.6*sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
+				(gins["nav_vel_U"])**2) #km/h
 			if self.fase_frenado in (1,3,5):
 				self.label_f_vx.setText(f'{vx}')
 				self.label_f_ax.setText(f'{gins["acc_y"]}')
 				self.label_f_fp.setText(f'{cdaq["fp"]}')
-				if self.t>0:
-					self.line1.clear()
-				else:
-					self.ydata = [[],[],[]]
-				if len(self.xdata)>15:
-					self.xdata = []
-					self.ydata[0] = []
-					self.ydata[1] = []
-					self.ydata[2] = []
-				self.xdata.append(self.t)
+				
+				self.ydata[0] = self.ydata[0][1:]  # Remove the first
+				self.ydata[1] = self.ydata[1][1:]  # Remove the first
+				self.ydata[2] = self.ydata[2][1:]  # Remove the first
+
 				self.ydata[0].append(vx)
 				self.ydata[1].append(gins["acc_y"])
 				self.ydata[2].append(cdaq["fp"])
 				i = self.combo_f_plot.currentIndex()
-				self.line1 = self.fre_widget_plot.plot(self.xdata,self.ydata[i],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+				self.line1.setData(self.xdata,self.ydata[i])
+			
 			elif self.fase_frenado==2:
 				self.label_f_vx.setText(f'{vx}')
 				self.label_f_ax.setText(f'{gins["acc_y"]}')
@@ -540,15 +516,15 @@ class UI(QMainWindow):
 				self.label_f_df_Td.setText(f'{cdaq["Td"]}')
 				self.label_f_Ti.setText(f'{cdaq["Ti"]}')
 				self.label_f_t_dr.setText(f'{self.t}')
-				if self.t>0:
-					self.line1.clear()
-				else:
-					self.ydata = [[],[],[],[],[],[]]
-				if len(self.xdata)>=15:
-					del self.xdata[0]
-					for f in self.ydata:
-						del f[0]
-				self.xdata.append(self.t)
+				
+				self.ydata[0] = self.ydata[0][1:]  # Remove the first
+				self.ydata[1] = self.ydata[1][1:]  # Remove the first
+				self.ydata[2] = self.ydata[2][1:]  # Remove the first
+				self.ydata[3] = self.ydata[3][1:]  # Remove the first
+				self.ydata[4] = self.ydata[4][1:]  # Remove the first
+				self.ydata[5] = self.ydata[5][1:]  # Remove the first
+
+				#self.xdata.append(self.t)
 				self.ydata[0].append(vx)
 				self.ydata[1].append(gins["acc_y"])
 				self.ydata[2].append(cdaq["fp"])
@@ -556,52 +532,62 @@ class UI(QMainWindow):
 				self.ydata[4].append(cdaq["Ti"])
 				self.ydata[5].append(self.t)
 				i = self.combo_f_plot.currentIndex()
-				self.line1 = self.fre_widget_plot.plot(self.xdata,self.ydata[i],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+				self.line1.setData(self.xdata,self.ydata[i])
 			
-			# elif self.fase_frenado==4:
-			# 	self.label_f_vx.setText(f'{val[4]}')
-			# 	self.label_f_ax.setText(f'{val[5]}')
-			# 	self.label_f_fp.setText(f'{val[6]}')
+			elif self.fase_frenado==4:
+				self.label_f_vx.setText(f'{vx}')
+				self.label_f_ax.setText(f'{gins["acc_y"]}')
+				self.label_f_fp.setText(f'{cdaq["fp"]}')
+				self.label_f_df_Td.setText(f'{cdaq["Td"]}')
+				self.label_f_Ti.setText(f'{cdaq["Ti"]}')
+				#self.label_f_t_dr.setText(f'{self.t}')
+				
+				self.ydata[0] = self.ydata[0][1:]  # Remove the first
+				self.ydata[1] = self.ydata[1][1:]  # Remove the first
+				self.ydata[2] = self.ydata[2][1:]  # Remove the first
+				self.ydata[3] = self.ydata[3][1:]  # Remove the first
+				self.ydata[4] = self.ydata[4][1:]  # Remove the first
+
+				#self.xdata.append(self.t)
+				self.ydata[0].append(vx)
+				self.ydata[1].append(gins["acc_y"])
+				self.ydata[2].append(cdaq["fp"])
+				self.ydata[3].append(cdaq["Td"])
+				self.ydata[4].append(cdaq["Ti"])
+				i = self.combo_f_plot.currentIndex()
+				self.line1.setData(self.xdata,self.ydata[i])
 			
 		if self.tabs_pruebas.currentIndex()==1: #Prueba de estabilidad
-			vx = sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
+			vx = 3.6*sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
 				(gins["nav_vel_U"])**2)
 			self.label_e_vx.setText(f'{vx}')
 			self.label_e_ay.setText(f'{gins["acc_x"]}') # Aceleración lateral
 			self.label_e_delta.setText(f'{cdaq["Vol"]}')
-			if self.t>0:
-				self.line2.clear()
-			else:
-				self.ydata = [[],[],[]]
-			if len(self.xdata)>=15:
-				del self.xdata[0]
-				for f in self.ydata:
-					del f[0]
-			self.xdata.append(self.t)
+			
+			self.ydata[0] = self.ydata[0][1:]  # Remove the first
+			self.ydata[1] = self.ydata[1][1:]  # Remove the first
+			self.ydata[2] = self.ydata[2][1:]  # Remove the first
+			
 			self.ydata[0].append(vx)
 			self.ydata[1].append(gins["acc_x"])
 			self.ydata[2].append(cdaq["Vol"])
 			i = self.combo_e_plot.currentIndex()
-			self.line2 = self.est_widget_plot.plot(self.xdata,self.ydata[i],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+			self.line2.setData(self.xdata, self.ydata[i])
 		
 		if self.tabs_pruebas.currentIndex()==2: #Prueba de vibraciones
-			self.label_v_ax.setText(f'{cdaq["AccY"]}')
-			self.label_v_ay.setText(f'{cdaq["AccX"]}') # Aceleración lateral
-			self.label_v_az.setText(f'{cdaq["AccZ"]}')
-			if self.t>0:
-				self.line3.clear()
-			else:
-				self.ydata = [[],[],[]]
-			if len(self.xdata)>=15:
-				del self.xdata[0]
-				for f in self.ydata:
-					del f[0]
-			self.xdata.append(self.t)
-			self.ydata[0].append(cdaq["AccY"])
-			self.ydata[1].append(cdaq["AccX"])
-			self.ydata[2].append(cdaq["AccZ"])
+			self.label_v_ax.setText(f'{round(1*cdaq["AccX"],4)}')
+			self.label_v_ay.setText(f'{round(1*cdaq["AccY"],4)}') # Aceleración lateral
+			self.label_v_az.setText(f'{round(1*cdaq["AccZ"],4)}')
+
+			self.ydata[0] = self.ydata[0][1:]  # Remove the first
+			self.ydata[1] = self.ydata[1][1:]  # Remove the first
+			self.ydata[2] = self.ydata[2][1:]  # Remove the first	
+			
+			self.ydata[0].append(1*cdaq["AccY"])
+			self.ydata[1].append(1*cdaq["AccX"])
+			self.ydata[2].append(1*cdaq["AccZ"])
 			i = self.combo_v_plot.currentIndex()
-			self.line3 = self.vib_widget_plot.plot(self.xdata,self.ydata[i],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+			self.line3.setData(self.xdata, self.ydata[i])  # Update the data.
 		
 		if self.tabs_pruebas.currentIndex()==4: #Modo de prueba
 			if self.combo_prueba.currentIndex()==0: #cDAQ-9188
@@ -618,7 +604,7 @@ class UI(QMainWindow):
 				self.label_p_vrF_rollNav.setText(f'{cdaq["Rdel"]}')
 				self.label_p_vrR_pitchNav.setText(f'{cdaq["Rder"]}')
 				self.label_p_vrL_yawNav.setText(f'{cdaq["Rizq"]}')
-				self.label_p_v5r_velENav.setText(f'{cdaq["R5a"]}')
+				self.label_p_v5r_velENav.setText(f'{cdaq["5aR"]}')
 				# self.label_p_velNNav.setText()
 				# self.label_p_velUNav.setText()
 				# self.label_p_LonNav.setText()
@@ -682,65 +668,9 @@ class UI(QMainWindow):
 		else:
 			event.ignore()
 
-class MSerialPort(QThread):
-	finished = pyqtSignal()
-	data = pyqtSignal(list)
-	def __init__(self,port,baud,parent=None,index=0):
-		super(MSerialPort,self).__init__(parent)
-		self.is_running = True
-		self.is_paused = False
-		self.index = index
-		self.message = []
-		self.port=serial.Serial(port,baud)
-		self.port_open()
-	def port_open(self):
-		if not self.port.isOpen():
-			self.port.open()
-	def port_close(self):
-		self.port.close()
-	def flush(self):
-		self.port.flushInput()
-		self.port.flushOutput()
-	def send_data(self,data):
-		number=self.port.write(data)
-		return number
-	def run(self):
-		self.port_open()
-		while True:
-			time.sleep(0.005)
-			if self.is_paused:
-				continue
-			if not self.is_running:
-				break
-			try:
-				data1 = self.port.readline().decode('ascii')
-				data1 = data1.replace("[","").replace("]","").replace("\r\n","")
-				self.message = list(map(float, data1.split(",")))
-				#print(data1)
-			except Exception as e:
-				continue
-				#print(e)
-			self.data.emit(self.message)
-			self.port.flushOutput()
-	
-	def pause(self):
-		self.is_paused = True
-		print(f'Tarea pausada en hilo {self.index}')
-
-	def resume(self):
-		self.is_paused = False
-		print(f'Tarea continuada en hilo {self.index}')
-
-	def stop(self):
-		self.is_running = False
-		print(f'Tarea terminada en hilo {self.index}')
-		#self.finished.emit()
-		self.port_close()
-		self.terminate()
-
 
 class Gins(QThread):
-	vals = {}
+	vals = dict()
 	message = None
 	read_flag = False
 	data = pyqtSignal(dict)
@@ -765,9 +695,9 @@ class Gins(QThread):
 	def run(self):
 		print("GINS iniciado en hilo ->",self.index)
 		while True:
-			t1 = time.time()
-			#t1 = datetime.now()
 			time.sleep(0.01)
+			#t1 = time.time()
+			#t1 = datetime.now()
 			if not self.is_running:
 				break
 			out = ''
@@ -777,8 +707,7 @@ class Gins(QThread):
 				self.message = self.get_gins_values(out.hex())
 				#t = datetime.now() - t1
 				#dt = t.total_seconds()
-				dt = time.time() - t1
-				self.message["t_gins"] = dt
+				#self.message["t_gins"] = dt
 				self.data.emit(self.message)
 				
 			#time.sleep(0.05)
@@ -871,6 +800,11 @@ class CDaq(QThread):
 	devC.reserve_network_device(True)
 	min_V = -10
 	max_V = 10
+	data_task1=np.zeros((1, 1200))
+	data_task2=np.zeros((7, 1200))
+	data_task3=np.zeros((3, 1200))
+
+	
 	def __init__(self,index=0,parent=None):
 		super(CDaq, self).__init__(parent)
 		self.index=index
@@ -906,9 +840,9 @@ class CDaq(QThread):
 		#sensX=99.07e-3	#mV/g	10.10e-3; %V/ms-2  
 		#sensY=97.08e-3	#mV/g	9.89e-3; %V/ms-2   
 		#sensZ=101.7e-3	#mV/g	10.38e-3; %V/ms-2 
-		sensX=99.07e-6	#V/g
-		sensY=97.08e-6	#V/g
-		sensZ=101.7e-6	#V/g
+		sensX=99.07e-3	#V/g
+		sensY=97.08e-3	#V/g
+		sensZ=101.7e-3	#V/g
 		self.task3.ai_channels.add_ai_accel_chan("cDAQ9188Mod8/ai0",
 			units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
 			sensitivity=sensX, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc x
@@ -919,77 +853,101 @@ class CDaq(QThread):
 			units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
 			sensitivity=sensZ, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc z
 		
-		# self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-		# self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-		# self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS)
-		self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
-		self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
-		self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
+		bufsize_callback=1200
+		self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=144000)
+		self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=144000)
+		self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=144000)
+		#self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
+		#self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
+		#self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
+		
+		self.readertask1 = stream_readers.AnalogMultiChannelReader(self.task1.in_stream)
+		self.readertask2 = stream_readers.AnalogMultiChannelReader(self.task2.in_stream)
+		self.readertask3 = stream_readers.AnalogMultiChannelReader(self.task3.in_stream)
+		
+		self.task1.register_every_n_samples_acquired_into_buffer_event(bufsize_callback,
+                                                            self.reading_task1_callback)
+		self.task2.register_every_n_samples_acquired_into_buffer_event(bufsize_callback,
+                                                            self.reading_task2_callback)
+		self.task3.register_every_n_samples_acquired_into_buffer_event(bufsize_callback,
+                                                            self.reading_task3_callback)
+		
+		self.task1.start()
+		self.task2.start()
+		self.task3.start()
 
 	def task_close(self):
 		self.task1.close()
 		self.task2.close()
 		self.task3.close()
 
-	def list2dict(self,data):
+	def list2dict(self):
 		res = dict() #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
-		res["fp"] = float(data[0])
-		res["Td"] = float(data[1][0])
-		res["Ti"] = float(data[2][0])
-		res["Rdel"] = float(data[3][0])
-		res["R5a"] = float(data[4][0])
-		res["Rder"] = float(data[5][0])
-		res["Rizq"] = float(data[6][0])
-		res["Vol"] = float(data[7][0])
-		res["AccX"] = float(data[8][0])
-		res["AccY"] = float(data[9][0])
-		res["AccZ"] = float(data[10][0])
+		res["fp"] = self.data_task1[0,:]
+		res["Td"] = self.data_task2[0,:]
+		res["Ti"] = self.data_task2[1,:]
+		res["Rdel"] = self.data_task2[2,:]
+		res["5aR"] = self.data_task2[3,:]
+		res["Rder"] = self.data_task2[4,:]
+		res["Rizq"] = self.data_task2[5,:]
+		res["Vol"] = self.data_task2[6,:]
+		res["AccX"] = self.data_task3[0,:]
+		res["AccY"] = self.data_task3[1,:]
+		res["AccZ"] = self.data_task3[2,:]	
 		return res
 
+	def reading_task1_callback(self, task_idx, event_type, num_samples, callback_data):
+		buffertask1 = np.zeros((1, num_samples))
+		self.readertask1.read_many_sample(buffertask1, num_samples,
+                                   timeout=constants.WAIT_INFINITELY)
+		# Convert the data from channel as a row order to channel as a column
+		self.data_task1 = buffertask1
+		#print('Datos='+str(self.data_task1)+' Tamano buffer='+str(len(self.data_task1[0])))
+		
+		return 0
+		
+	def reading_task2_callback(self,task_idx, event_type, num_samples, callback_data):
+		buffertask2 = np.zeros((7, num_samples))
+		self.readertask2.read_many_sample(buffertask2, num_samples,
+                                   timeout=constants.WAIT_INFINITELY)
+		# Convert the data from channel as a row order to channel as a column
+		self.data_task2 = buffertask2
+		return 0
+
+	def reading_task3_callback(self,task_idx, event_type, num_samples, callback_data):
+		
+		buffertask3 = np.zeros((3, num_samples))
+		self.readertask3.read_many_sample(buffertask3, num_samples,
+                                   timeout=constants.WAIT_INFINITELY)
+		# Convert the data from channel as a row order to channel as a column
+		self.data_task3 = buffertask3
+		self.datos=self.list2dict()
+		return 0
+		
 	def run(self):
 		print("Tarea cDAQ iniciada en hilo ->",self.index)
 		while True:
-			t1 = time.time()
+			
 			#time.sleep(0.000001)
 			if not self.is_running:
 				break
-			self.datos = self.list2dict(self.task1.read(number_of_samples_per_channel=1) + self.task2.read(number_of_samples_per_channel=1) + self.task3.read(number_of_samples_per_channel=1))
-			#print(self.datos)
-			t = time.time() - t1
+			#t1 = time.time()
+				#time.sleep(0.000001)
+			
+				#time.sleep(0.000001)
+			self.data.emit(self.datos)			
+			#t = time.time() - t1
 			#self.datos["t_cdaq"] = t
-			self.data.emit(self.datos)
+			#print(str(self.datos["AccX"])+str(self.datos["AccX"][0]))
 			#print(f't_cdaq={t*1000}ms')
+			#self.datos["t_cdaq"] = t
+
 	def stop(self):
 		self.is_running = False
 		print("Tarea cDAQ terminada en hilo ->",self.index)
 		self.task_close()
 		self.terminate()
 
-class DoEvery(QThread):
-	sig = pyqtSignal()
-	def __init__(self,period,parent=None):
-		super(DoEvery, self).__init__(parent)
-		self.period = period
-		self.is_running = True
-	def g_tick(self):
-		t = time.time()
-		while True:
-			t += self.period
-			yield max(t - time.time(),0)
-	def run(self):
-		print("DoEvery started!")
-		g = self.g_tick()
-		while True:
-			if not self.is_running:
-				break
-			time.sleep(next(g))
-			#self.f(*args)
-			#self.f()
-			self.sig.emit()
-	def stop(self):
-		self.is_running = False
-		print("DoEvery stopped!")
-		self.terminate()
 
 class Dict2Db():
 	list_indexes = []
@@ -1002,33 +960,72 @@ class Dict2Db():
 		self.db_name = db_name
 		self.db_conn = sqlite3.connect("database/" + self.db_name)
 		self.cursor = self.db_conn.cursor()
-		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " ("
+		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " (t REAL AUTO_INCREMENT, "
 
-	def __conv_dict(self,data):
-		list_indexes = []
-		list_values = []
+	def dict2tup(self,data):
 		create_table_str = self.create_table_str
-		for indx,val in data.items():
+		dict_keys = list(data.keys())
+		dict_values = list(data.values())
+		for indx in dict_keys:
 			create_table_str += indx + " REAL NOT NULL, "
-			list_indexes.append(indx)
-			list_values.append(val)
-		create_table_str += "PRIMARY KEY (" + list_indexes[0] + "))" 
+		create_table_str += "PRIMARY KEY (t))" 
 
-		return list_indexes,list_values,create_table_str
-
-		#print(create_table_str)
-		#print(f"\n\nINSERT INTO {db_Table} {(tuple(list_indexes))} VALUES {str(tuple(list_values))}")
+		return tuple(dict_keys),tuple(dict_values),create_table_str
 	
+	def dict2tuplist(self,data):
+		create_table_str = self.create_table_str
+		dict_keys = list(data.keys())
+		dict_values = list(data.values())
+		for indx in dict_keys:
+			create_table_str += indx + " REAL NOT NULL, "
+		create_table_str += "PRIMARY KEY (t))" 
+		# print(f'k_data = {dict_keys}')
+		tup_list = []
+		for i in range(len(dict_values[0])):
+			tup = []
+			for k in dict_values:
+				tup.append(k[i])
+			tup_list.append(tuple(tup))
+		return tuple(dict_keys),tup_list,create_table_str
+
 	def insert2db(self,data):
-		list_indexes,list_values,create_table_str = self.__conv_dict(data)
-		try:
-			#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
-			self.cursor.execute(create_table_str)
-			#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
-			self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {(tuple(list_indexes))} VALUES {str(tuple(list_values))}")
-			self.db_conn.commit()
-		except Exception as ex:
-			print(ex)
+		if isinstance(list(data.values())[0],list):
+			tup_keys,list_values,create_table_str = self.dict2tuplist(data)
+			#tup_keys,tup_values,create_table_str = self.dict2tup(data)
+			#print(f'tup_values = {tup_values}')
+			print(f'tup_keys = {tup_keys}')
+			print(f'list_values = {list_values}')
+			try:
+				#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+				self.cursor.execute(create_table_str)
+				#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
+				#values = ', '.join(map(str, list_values))
+				sql = "INSERT INTO " + self.db_table + " " + str(tup_keys) + " VALUES ("
+				for i in range(len(tup_keys)):
+					if i==0:
+						sql += "?"
+					else:
+						sql += ",?"
+				sql += ")"
+				print(f'sql = {sql}')
+				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
+				self.cursor.executemany(sql,list_values)
+				self.db_conn.commit()
+			except Exception as ex:
+				print(ex)
+		else:
+			tup_keys,tup_values,create_table_str = self.dict2tup(data)
+			#print(f'tup_values = {tup_values}')
+			try:
+				#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+				self.cursor.execute(create_table_str)
+				#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
+				self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
+				self.db_conn.commit()
+			except Exception as ex:
+				print(ex)
 
 
 if __name__ == '__main__':
