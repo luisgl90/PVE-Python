@@ -3169,7 +3169,7 @@ QLineEdit {
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMen">
@@ -3178,12 +3178,42 @@ QLineEdit {
     </property>
     <addaction name="actionConfiguraci_n"/>
    </widget>
+   <widget class="QMenu" name="menuModos">
+    <property name="title">
+     <string>Modos</string>
+    </property>
+    <addaction name="actionModo_administrador"/>
+    <addaction name="actionModo_experimental"/>
+    <addaction name="actionModo_ensayos"/>
+    <addaction name="actionModo_reportes"/>
+   </widget>
    <addaction name="menuMen"/>
+   <addaction name="menuModos"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionConfiguraci_n">
    <property name="text">
     <string>Configuración</string>
+   </property>
+  </action>
+  <action name="actionModo_administrador">
+   <property name="text">
+    <string>Modo administrador</string>
+   </property>
+  </action>
+  <action name="actionModo_experimental">
+   <property name="text">
+    <string>Modo experimental</string>
+   </property>
+  </action>
+  <action name="actionModo_ensayos">
+   <property name="text">
+    <string>Modo ensayos</string>
+   </property>
+  </action>
+  <action name="actionModo_reportes">
+   <property name="text">
+    <string>Modo reportes</string>
    </property>
   </action>
  </widget>
