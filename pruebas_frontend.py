@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget,QAction
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
 
@@ -21,6 +21,10 @@ class UI(QMainWindow):
 		self.button_stop = self.findChild(QPushButton,"button_stop")
 		self.button_stop.clicked.connect(self.stop_acquisition)
 		self.button_stop.setEnabled(False)
+
+		#Menú y submenús
+		self.menuConfig = self.findChild(QAction,"actionConfiguracion")
+		self.menuConfig.triggered.connect(self.printConfigMsg)
 
 		#Fase de frenado - Labels de salida
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
@@ -157,6 +161,10 @@ class UI(QMainWindow):
 		self.show()
 
 	@pyqtSlot()
+	def printConfigMsg(self):
+		print("printConfigMsg")
+
+	@pyqtSlot()
 	def tab_change(self):
 		self.tab_index = self.tabs_pruebas.currentIndex()
 		print(f'Current tab: {self.tab_index}')
@@ -260,7 +268,7 @@ class UI(QMainWindow):
 			self.label_p_Mz.hide()
 			self.label_p_T.hide()
 			self.label_p_velNNav.hide()
-			self.label_p_velUNav.hide()
+			self.label_p_velUNav.hide()	
 			self.label_p_LonNav.hide()
 			self.label_p_LatNav.hide()
 			self.label_p_altNav.hide()
