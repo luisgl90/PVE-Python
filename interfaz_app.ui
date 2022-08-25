@@ -3174,9 +3174,12 @@ QLineEdit {
    </property>
    <widget class="QMenu" name="menuMen">
     <property name="title">
-     <string>Menú</string>
+     <string>Inicio</string>
     </property>
     <addaction name="actionConfiguraci_n"/>
+    <addaction name="actionLista_de_usuarios"/>
+    <addaction name="separator"/>
+    <addaction name="actionSalir"/>
    </widget>
    <widget class="QMenu" name="menuModos">
     <property name="title">
@@ -3193,7 +3196,7 @@ QLineEdit {
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionConfiguraci_n">
    <property name="text">
-    <string>Configuración</string>
+    <string>Configurar unidades</string>
    </property>
   </action>
   <action name="actionModo_administrador">
@@ -3214,6 +3217,16 @@ QLineEdit {
   <action name="actionModo_reportes">
    <property name="text">
     <string>Modo reportes</string>
+   </property>
+  </action>
+  <action name="actionLista_de_usuarios">
+   <property name="text">
+    <string>Lista de usuarios</string>
+   </property>
+  </action>
+  <action name="actionSalir">
+   <property name="text">
+    <string>Salir</string>
    </property>
   </action>
  </widget>
