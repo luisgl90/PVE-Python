@@ -7,6 +7,17 @@ class UI(QMainWindow):
 		super(UI,self).__init__()
 		uic.loadUi("interfaz_app.ui",self)
 		
+		usuarios = {
+			"admin": {
+				"nombre": "Admin PVE",
+				"password": "pve2022"
+			},
+			"operario1": {
+				"nombre": "Operario 1",
+				"password": "pve2022"
+			}
+		}
+
 		self.fase_frenado = 1
 		self.fases_frenado = ['Eficiencia en frío','Calentamiento','Eficiencia en caliente',
 			'Recuperación','Eficiencia de recuperación']
@@ -24,7 +35,19 @@ class UI(QMainWindow):
 
 		#Menú y submenús
 		self.menuConfig = self.findChild(QAction,"actionConfiguracion")
-		self.menuConfig.triggered.connect(self.printConfigMsg)
+		self.menuConfig.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
+		self.menuListaUsuarios = self.findChild(QAction,"actionListaUsuarios")
+		self.menuListaUsuarios.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
+
+		self.modoAdmin = self.findChild(QAction,"actionModoAdmin")
+		self.modoAdmin.triggered.connect(self.activeModoAdmin) #Debe abrir el menú de configuración
+		self.modoExper = self.findChild(QAction,"actionModoExper")
+		self.modoExper.triggered.connect(self.activeModoExper) #Debe abrir el menú de configuración
+		self.modoEnsay = self.findChild(QAction,"actionModoEnsay")
+		self.modoEnsay.triggered.connect(self.activeModoEnsay) #Debe abrir el menú de configuración
+		self.modoRepor = self.findChild(QAction,"actionModoRepor")
+		self.modoRepor.triggered.connect(self.activeModoRepor) #Debe abrir el menú de configuración
+
 
 		#Fase de frenado - Labels de salida
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
@@ -164,6 +187,38 @@ class UI(QMainWindow):
 	def printConfigMsg(self):
 		print("printConfigMsg")
 
+	@pyqtSlot()
+	def activeModoAdmin(self):
+		print("modo admin")
+		self.tabs_pruebas.setTabEnabled(0, False)
+		self.tabs_pruebas.setTabEnabled(1, False)
+		self.tabs_pruebas.setTabEnabled(2, False)
+		self.tabs_pruebas.setTabEnabled(3, False)
+		self.tabs_pruebas.setTabEnabled(4, False)
+	@pyqtSlot()
+	def activeModoExper(self):
+		print("modo exper")
+		self.tabs_pruebas.setTabEnabled(0, False)
+		self.tabs_pruebas.setTabEnabled(1, False)
+		self.tabs_pruebas.setTabEnabled(2, False)
+		self.tabs_pruebas.setTabEnabled(3, False)
+		self.tabs_pruebas.setTabEnabled(4, True)		
+	@pyqtSlot()
+	def activeModoEnsay(self):
+		print("modo ensay")
+		self.tabs_pruebas.setTabEnabled(0, True)
+		self.tabs_pruebas.setTabEnabled(1, True)
+		self.tabs_pruebas.setTabEnabled(2, True)
+		self.tabs_pruebas.setTabEnabled(3, True)
+		self.tabs_pruebas.setTabEnabled(4, False)
+	@pyqtSlot()
+	def activeModoRepor(self):
+		print("modo repor")
+		self.tabs_pruebas.setTabEnabled(0, False)
+		self.tabs_pruebas.setTabEnabled(1, False)
+		self.tabs_pruebas.setTabEnabled(2, False)
+		self.tabs_pruebas.setTabEnabled(3, False)
+		self.tabs_pruebas.setTabEnabled(4, False)
 	@pyqtSlot()
 	def tab_change(self):
 		self.tab_index = self.tabs_pruebas.currentIndex()
