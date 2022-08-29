@@ -38,6 +38,8 @@ class UI(QMainWindow):
 		self.menuConfig.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
 		self.menuListaUsuarios = self.findChild(QAction,"actionListaUsuarios")
 		self.menuListaUsuarios.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
+		self.menuSalir = self.findChild(QAction,"actionSalir")
+		self.menuSalir.triggered.connect(self.close) #Debe abrir el menú de configuración
 
 		self.modoAdmin = self.findChild(QAction,"actionModoAdmin")
 		self.modoAdmin.triggered.connect(self.activeModoAdmin) #Debe abrir el menú de configuración
