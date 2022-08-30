@@ -1,12 +1,21 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget,QAction
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
+from pyqtgraph import PlotWidget, plot, mkPen
 
 class UI(QMainWindow):
 	def __init__(self):
 		super(UI,self).__init__()
 		uic.loadUi("interfaz_app.ui",self)
 		
+		self.xdata = [x*0.1 for x in list(range(15))]
+		self.ydata = [x*0 for x in list(range(15))]
+
+		self.line1 = None
+		self.line2 = None
+		self.line3 = None
+		#self.t = -0.1
+
 		usuarios = {
 			"admin": {
 				"nombre": "Admin PVE",
@@ -53,9 +62,13 @@ class UI(QMainWindow):
 
 		#Fase de frenado - Labels de salida
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
+		self.label_f_1.setText("v<sub>x</sub> (km/h)")
 		self.label_f_2 = self.findChild(QLabel,"label_fre_2")
+		self.label_f_2.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_f_3 = self.findChild(QLabel,"label_fre_3")
+		self.label_f_3.setText("f<sub>p</sub> (N)")
 		self.label_f_4 = self.findChild(QLabel,"label_fre_4")
+		self.label_f_4.setText("d<sub>f</sub> (m)")
 		self.label_f_5 = self.findChild(QLabel,"label_fre_5")
 		self.label_f_6 = self.findChild(QLabel,"label_fre_6")
 		#Fase de frenado - Labels de título
@@ -65,6 +78,7 @@ class UI(QMainWindow):
 		self.label_f_fp = self.findChild(QLabel,"label_fre_fp")
 		self.label_f_df_Td = self.findChild(QLabel,"label_fre_df_Td")
 		self.label_f_Ti = self.findChild(QLabel,"label_fre_Ti")
+		self.label_f_Ti.setText("T<sub>i</sub> (°C)")
 		self.label_f_t_dr = self.findChild(QLabel,"label_fre_t_dr")
 		#Fase de frenado - Ocultar labels iniciales
 		self.label_f_5.hide()
@@ -76,37 +90,93 @@ class UI(QMainWindow):
 		self.button_f_rst = self.findChild(QPushButton,"button_fre_rst")
 		self.button_f_rst.clicked.connect(self.reiniciar_fase)
 
-		##----------INSERTAR OTRAS PRUEBAS----------##
+		#Prueba de estabilidad - Labels de salida
+		self.label_e_1 = self.findChild(QLabel,"label_est_1")
+		self.label_e_1.setText("v<sub>x</sub> (km/h)")
+		self.label_e_2 = self.findChild(QLabel,"label_est_2")
+		self.label_e_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
+		
+		#Prueba de aceleración - Labels de salida
+		self.label_v_1 = self.findChild(QLabel,"label_vib_1")
+		self.label_v_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
+		self.label_v_2 = self.findChild(QLabel,"label_vib_2")
+		self.label_v_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
+		self.label_v_3 = self.findChild(QLabel,"label_vib_3")
+		self.label_v_3.setText("a<sub>z</sub> (m/s<sup>2</sup>)")
+		
+		
+		#Fase de centro de gravedad - Labels de salida
+		self.label_c_1 = self.findChild(QLabel,"label_cog_1")
+		self.label_c_1.setText("l<sub>a</sub> (mm)")
+		self.label_c_2 = self.findChild(QLabel,"label_cog_2")
+		self.label_c_2.setText("l<sub>l</sub> (mm)")
+		self.label_c_3 = self.findChild(QLabel,"label_cog_3")
+		self.label_c_3.setText("h (m)")
+		self.label_c_4 = self.findChild(QLabel,"label_cog_4")
+		self.label_c_4.setText("d<sub>a</sub> (m)")
+		self.label_c_5 = self.findChild(QLabel,"label_cog_5")
+		self.label_c_5.setText("d<sub>r</sub> (m)")
+		self.label_c_6 = self.findChild(QLabel,"label_cog_6")
+		self.label_c_6.setText("B<sub>1</sub> (kg)")
+		self.label_c_7 = self.findChild(QLabel,"label_cog_7")
+		self.label_c_7.setText("B<sub>2</sub> (kg)")
+		self.label_c_8 = self.findChild(QLabel,"label_cog_8")
+		self.label_c_8.setText("X<sub>cog</sub> (mm)")
+		self.label_c_9 = self.findChild(QLabel,"label_cog_9")
+		self.label_c_9.setText("Y<sub>cog</sub> (mm)")
+		self.label_c_10 = self.findChild(QLabel,"label_cog_10")
+		self.label_c_10.setText("Z<sub>cog</sub> (mm)")
 
 		#Modo de prueba - ComboBox
 		self.combo_prueba = self.findChild(QComboBox,"combo_prueba")
 		#Modo de prueba - Labels de título
 		self.label_p_1 = self.findChild(QLabel,"label_prb_1")
+		self.label_p_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_p_2 = self.findChild(QLabel,"label_prb_2")
+		self.label_p_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
 		self.label_p_3 = self.findChild(QLabel,"label_prb_3")
+		self.label_p_3.setText("a<sub>z</sub> (m/s<sup>2</sup>)")
 		self.label_p_4 = self.findChild(QLabel,"label_prb_4")
+		self.label_p_4.setText("f<sub>p</sub> (N)")
 		self.label_p_5 = self.findChild(QLabel,"label_prb_5")
 		self.label_p_6 = self.findChild(QLabel,"label_prb_6")
+		self.label_p_6.setText("G<sub>z</sub> (°/s)")
 		self.label_p_7 = self.findChild(QLabel,"label_prb_7")
+		self.label_p_7.setText("M<sub>x</sub> (μT)")
 		self.label_p_8 = self.findChild(QLabel,"label_prb_8")
+		self.label_p_8.setText("M<sub>y</sub> (μT)")
 		self.label_p_9 = self.findChild(QLabel,"label_prb_9")
+		self.label_p_9.setText("M<sub>z</sub> (μT)")
 		self.label_p_10 = self.findChild(QLabel,"label_prb_10")
 		self.label_p_11 = self.findChild(QLabel,"label_prb_11")
+		self.label_p_11.setText("Vr<sub>F</sub> (km/h)")
 		self.label_p_12 = self.findChild(QLabel,"label_prb_12")
+		self.label_p_12.setText("Vr<sub>R</sub> (km/h)")
 		self.label_p_13 = self.findChild(QLabel,"label_prb_13")
+		self.label_p_13.setText("Vr<sub>L</sub> (km/h)")
 		self.label_p_14 = self.findChild(QLabel,"label_prb_14")
+		self.label_p_14.setText("V<sub>5r</sub> (km/h)")
 		self.label_p_15 = self.findChild(QLabel,"label_prb_15")
+		self.label_p_15.setText("Vel<sub>N</sub> (km/h)")
 		self.label_p_16 = self.findChild(QLabel,"label_prb_16")
+		self.label_p_16.setText("Vel<sub>U</sub> (km/h)")
 		self.label_p_17 = self.findChild(QLabel,"label_prb_17")
 		self.label_p_18 = self.findChild(QLabel,"label_prb_18")
 		self.label_p_19 = self.findChild(QLabel,"label_prb_19")
 		self.label_p_20 = self.findChild(QLabel,"label_prb_20")
+		self.label_p_20.setText("H<sub>bar</sub> (m)")
 		self.label_p_21 = self.findChild(QLabel,"label_prb_21")
+		self.label_p_21.setText("T<sub>d</sub> (°C)")
 		self.label_p_22 = self.findChild(QLabel,"label_prb_22")
+		self.label_p_22.setText("T<sub>i</sub> (°C)")
 		self.label_p_23 = self.findChild(QLabel,"label_prb_23")
+		self.label_p_23.setText("B<sub>1</sub> (kg)")
 		self.label_p_24 = self.findChild(QLabel,"label_prb_24")
+		self.label_p_24.setText("B<sub>2</sub> (kg)")
 		self.label_p_25 = self.findChild(QLabel,"label_prb_25")
+		self.label_p_25.setText("Vel<sub>N</sub> (km/h)")
 		self.label_p_26 = self.findChild(QLabel,"label_prb_26")
+		self.label_p_26.setText("Vel<sub>U</sub> (km/h)")
 		self.label_p_27 = self.findChild(QLabel,"label_prb_27")
 		self.label_p_28 = self.findChild(QLabel,"label_prb_28")
 		self.label_p_29 = self.findChild(QLabel,"label_prb_29")
@@ -182,6 +252,21 @@ class UI(QMainWindow):
 
 		self.label_p_31.setText('Sensores')
 		self.combo_prueba.activated.connect(self.cambiar_disp_prueba)
+
+		self.fre_widget_plot = self.findChild(PlotWidget,"fre_widget_plot")
+		self.fre_widget_plot.setBackground('w')
+
+		self.est_widget_plot = self.findChild(PlotWidget,"est_widget_plot")
+		self.est_widget_plot.setBackground('w')
+		
+		self.vib_widget_plot = self.findChild(PlotWidget,"vib_widget_plot")
+		self.vib_widget_plot.setBackground('w')
+
+		self.red_pen = mkPen(color=(255, 0, 0), width=1)
+		
+		self.line1 = self.fre_widget_plot.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+		self.line2 = self.est_widget_plot.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
+		self.line3 = self.vib_widget_plot.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
 
 		self.show()
 
@@ -260,18 +345,18 @@ class UI(QMainWindow):
 			self.label_f_t_dr.show()
 			
 			if self.fase_frenado==2:
-				self.label_f_4.setText('Td (°C)')
+				self.label_f_4.setText('T<sub>d</sub> (°C)')
 				self.label_f_6.setText('t (s)')
 
 			if self.fase_frenado==4:
-				self.label_f_4.setText('Td (°C)')
-				self.label_f_6.setText('dr (m)')
+				self.label_f_4.setText('T<sub>d</sub> (°C)')
+				self.label_f_6.setText('d<sub>r</sub> (m)')
 		else:
 			self.label_f_5.hide()
 			self.label_f_6.hide()
 			self.label_f_Ti.hide()
 			self.label_f_t_dr.hide()
-			self.label_f_4.setText('df (m)')
+			self.label_f_4.setText('d<sub>f</sub> (m)')
 		
 		if self.fase_frenado>=5:
 			self.button_f_fase.setText('Finalizar')
@@ -286,16 +371,16 @@ class UI(QMainWindow):
 	@pyqtSlot()
 	def cambiar_disp_prueba(self):
 		if self.combo_prueba.currentIndex()==0:
-			self.label_p_4.setText('fp (N)')
+			self.label_p_4.setText('f<sub>p</sub> (N)')
 			self.label_p_5.setText('δ (°)')
-			self.label_p_11.setText('Vr_F (m/s)')
-			self.label_p_12.setText('Vr_R (m/s)')
-			self.label_p_13.setText('Vr_L (m/s)')
-			self.label_p_14.setText('V5_r (m/s)')
-			self.label_p_21.setText('Td (°C)')
-			self.label_p_22.setText('Ti (°C)')
-			self.label_p_23.setText('B1 (kg)')
-			self.label_p_24.setText('B2 (kg)')
+			self.label_p_11.setText('V<sub>r<sub>F</sub></sub> (km/h)')
+			self.label_p_12.setText('V<sub>r<sub>R</sub></sub> (km/h)')
+			self.label_p_13.setText('V<sub>r<sub>L</sub></sub> (km/h)')
+			self.label_p_14.setText('V<sub>5<sub>r</sub></sub> (km/h)')
+			self.label_p_21.setText('T<sub>d</sub> (°C)')
+			self.label_p_22.setText('T<sub>i</sub> (°C)')
+			self.label_p_23.setText('B<sub>1</sub> (kg)')
+			self.label_p_24.setText('B<sub>2</sub> (kg)')
 			self.label_p_31.setText('Sensores')
 
 			self.label_p_6.hide()
@@ -339,16 +424,16 @@ class UI(QMainWindow):
 			self.label_p_AltGPS.hide()
 
 		if self.combo_prueba.currentIndex()==1:
-			self.label_p_4.setText('Gx (deg/s)')
-			self.label_p_5.setText('Gy (deg/s)')
-			self.label_p_11.setText('Roll (deg)')
-			self.label_p_12.setText('Pitch (deg)')
-			self.label_p_13.setText('Yaw (deg)')
-			self.label_p_14.setText('Vel_E (m/s)')
+			self.label_p_4.setText('G<sub>x</sub> (°/s)')
+			self.label_p_5.setText('G<sub>y</sub> (°/s)')
+			self.label_p_11.setText('Roll (°)')
+			self.label_p_12.setText('Pitch (°)')
+			self.label_p_13.setText('Yaw (°)')
+			self.label_p_14.setText('Vel<sub>E</sub> (km/h)')
 			#self.label_p_21.setText('Roll (deg)')
 			#self.label_p_22.setText('Pitch (deg)')
-			self.label_p_23.setText('Yaw (deg)')
-			self.label_p_24.setText('Vel_E (m/s)')
+			self.label_p_23.setText('Yaw (°)')
+			self.label_p_24.setText('Vel<sub>E</sub> (km/h)')
 			self.label_p_31.setText('Navegación')
 
 			self.label_p_6.show()
