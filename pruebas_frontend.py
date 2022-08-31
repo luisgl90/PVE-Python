@@ -70,6 +70,7 @@ class UI(QMainWindow):
 		self.label_f_4 = self.findChild(QLabel,"label_fre_4")
 		self.label_f_4.setText("d<sub>f</sub> (m)")
 		self.label_f_5 = self.findChild(QLabel,"label_fre_5")
+		self.label_f_5.setText("T<sub>i</sub> (°C)")
 		self.label_f_6 = self.findChild(QLabel,"label_fre_6")
 		#Fase de frenado - Labels de título
 		self.label_f_fase = self.findChild(QLabel,"label_fre_fase")
@@ -78,7 +79,6 @@ class UI(QMainWindow):
 		self.label_f_fp = self.findChild(QLabel,"label_fre_fp")
 		self.label_f_df_Td = self.findChild(QLabel,"label_fre_df_Td")
 		self.label_f_Ti = self.findChild(QLabel,"label_fre_Ti")
-		self.label_f_Ti.setText("T<sub>i</sub> (°C)")
 		self.label_f_t_dr = self.findChild(QLabel,"label_fre_t_dr")
 		#Fase de frenado - Ocultar labels iniciales
 		self.label_f_5.hide()
@@ -306,6 +306,7 @@ class UI(QMainWindow):
 		self.tabs_pruebas.setTabEnabled(2, False)
 		self.tabs_pruebas.setTabEnabled(3, False)
 		self.tabs_pruebas.setTabEnabled(4, False)
+	
 	@pyqtSlot()
 	def tab_change(self):
 		self.tab_index = self.tabs_pruebas.currentIndex()

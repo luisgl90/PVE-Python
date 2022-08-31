@@ -41,6 +41,11 @@ class UI(QMainWindow):
 		self.cdaq_data = {}
 		self.sensors_data = {}
 
+		db_Name = "pruebaDB_cDAQ3.db"
+		db_Table = "Variables_cDAQ"
+		self.cdaq2db = Dict2Db(db_Table,db_Name)
+		
+
 		self.xdata = [x*0.1 for x in list(range(15))]
 		self.ydata = [x*0 for x in list(range(15))]
 		self.ydata = [self.ydata, self.ydata, self.ydata, self.ydata,self.ydata,self.ydata]
@@ -71,10 +76,15 @@ class UI(QMainWindow):
 
 		#Fase de frenado - Labels de salida
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
+		self.label_f_1.setText("v<sub>x</sub> (km/h)")
 		self.label_f_2 = self.findChild(QLabel,"label_fre_2")
+		self.label_f_2.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_f_3 = self.findChild(QLabel,"label_fre_3")
+		self.label_f_3.setText("f<sub>p</sub> (N)")
 		self.label_f_4 = self.findChild(QLabel,"label_fre_4")
+		self.label_f_4.setText("d<sub>f</sub> (m)")
 		self.label_f_5 = self.findChild(QLabel,"label_fre_5")
+		self.label_f_5.setText("T<sub>i</sub> (°C)")
 		self.label_f_6 = self.findChild(QLabel,"label_fre_6")
 		#Fase de frenado - Labels de título
 		self.label_f_fase = self.findChild(QLabel,"label_fre_fase")
@@ -97,6 +107,10 @@ class UI(QMainWindow):
 		#self.combo_f_plot.activated.connect(self.cambiar_f_plot)
 
 		#Prueba de estabilidad - Labels de salida
+		self.label_e_1 = self.findChild(QLabel,"label_est_1")
+		self.label_e_1.setText("v<sub>x</sub> (km/h)")
+		self.label_e_2 = self.findChild(QLabel,"label_est_2")
+		self.label_e_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
 		self.label_e_vx = self.findChild(QLabel,"label_est_vx")
 		self.label_e_ay = self.findChild(QLabel,"label_est_ay")
 		self.label_e_delta = self.findChild(QLabel,"label_est_delta")
@@ -105,44 +119,91 @@ class UI(QMainWindow):
 		self.combo_e_plot = self.findChild(QComboBox,"combo_est_plot")
 
 		#Prueba de vibraciones - Labels de salida
+		self.label_v_1 = self.findChild(QLabel,"label_vib_1")
+		self.label_v_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
+		self.label_v_2 = self.findChild(QLabel,"label_vib_2")
+		self.label_v_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
+		self.label_v_3 = self.findChild(QLabel,"label_vib_3")
+		self.label_v_3.setText("a<sub>z</sub> (m/s<sup>2</sup>)")
 		self.label_v_ax = self.findChild(QLabel,"label_vib_ax")
 		self.label_v_ay = self.findChild(QLabel,"label_vib_ay")
 		self.label_v_az = self.findChild(QLabel,"label_vib_az")
 		self.combo_v_plot = self.findChild(QComboBox,"combo_vib_plot")
 
 
-		##----------INSERTAR OTRAS PRUEBAS----------##
+		#Fase de centro de gravedad - Labels de salida
+		self.label_c_1 = self.findChild(QLabel,"label_cog_1")
+		self.label_c_1.setText("l<sub>a</sub> (mm)")
+		self.label_c_2 = self.findChild(QLabel,"label_cog_2")
+		self.label_c_2.setText("l<sub>l</sub> (mm)")
+		self.label_c_3 = self.findChild(QLabel,"label_cog_3")
+		self.label_c_3.setText("h (m)")
+		self.label_c_4 = self.findChild(QLabel,"label_cog_4")
+		self.label_c_4.setText("d<sub>a</sub> (m)")
+		self.label_c_5 = self.findChild(QLabel,"label_cog_5")
+		self.label_c_5.setText("d<sub>r</sub> (m)")
+		self.label_c_6 = self.findChild(QLabel,"label_cog_6")
+		self.label_c_6.setText("B<sub>1</sub> (kg)")
+		self.label_c_7 = self.findChild(QLabel,"label_cog_7")
+		self.label_c_7.setText("B<sub>2</sub> (kg)")
+		self.label_c_8 = self.findChild(QLabel,"label_cog_8")
+		self.label_c_8.setText("X<sub>cog</sub> (mm)")
+		self.label_c_9 = self.findChild(QLabel,"label_cog_9")
+		self.label_c_9.setText("Y<sub>cog</sub> (mm)")
+		self.label_c_10 = self.findChild(QLabel,"label_cog_10")
+		self.label_c_10.setText("Z<sub>cog</sub> (mm)")
+
 
 		#Modo de prueba - ComboBox
 		self.combo_prueba = self.findChild(QComboBox,"combo_prueba")
-		#self.combo_prueba.activated.connect(self.cambiar_disp_prueba)
 		#Modo de prueba - Labels de título
 		self.label_p_1 = self.findChild(QLabel,"label_prb_1")
+		self.label_p_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_p_2 = self.findChild(QLabel,"label_prb_2")
+		self.label_p_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
 		self.label_p_3 = self.findChild(QLabel,"label_prb_3")
+		self.label_p_3.setText("a<sub>z</sub> (m/s<sup>2</sup>)")
 		self.label_p_4 = self.findChild(QLabel,"label_prb_4")
+		self.label_p_4.setText("f<sub>p</sub> (N)")
 		self.label_p_5 = self.findChild(QLabel,"label_prb_5")
 		self.label_p_6 = self.findChild(QLabel,"label_prb_6")
+		self.label_p_6.setText("G<sub>z</sub> (°/s)")
 		self.label_p_7 = self.findChild(QLabel,"label_prb_7")
+		self.label_p_7.setText("M<sub>x</sub> (μT)")
 		self.label_p_8 = self.findChild(QLabel,"label_prb_8")
+		self.label_p_8.setText("M<sub>y</sub> (μT)")
 		self.label_p_9 = self.findChild(QLabel,"label_prb_9")
+		self.label_p_9.setText("M<sub>z</sub> (μT)")
 		self.label_p_10 = self.findChild(QLabel,"label_prb_10")
 		self.label_p_11 = self.findChild(QLabel,"label_prb_11")
+		self.label_p_11.setText("Vr<sub>F</sub> (km/h)")
 		self.label_p_12 = self.findChild(QLabel,"label_prb_12")
+		self.label_p_12.setText("Vr<sub>R</sub> (km/h)")
 		self.label_p_13 = self.findChild(QLabel,"label_prb_13")
+		self.label_p_13.setText("Vr<sub>L</sub> (km/h)")
 		self.label_p_14 = self.findChild(QLabel,"label_prb_14")
+		self.label_p_14.setText("V<sub>5r</sub> (km/h)")
 		self.label_p_15 = self.findChild(QLabel,"label_prb_15")
+		self.label_p_15.setText("Vel<sub>N</sub> (km/h)")
 		self.label_p_16 = self.findChild(QLabel,"label_prb_16")
+		self.label_p_16.setText("Vel<sub>U</sub> (km/h)")
 		self.label_p_17 = self.findChild(QLabel,"label_prb_17")
 		self.label_p_18 = self.findChild(QLabel,"label_prb_18")
 		self.label_p_19 = self.findChild(QLabel,"label_prb_19")
 		self.label_p_20 = self.findChild(QLabel,"label_prb_20")
+		self.label_p_20.setText("H<sub>bar</sub> (m)")
 		self.label_p_21 = self.findChild(QLabel,"label_prb_21")
+		self.label_p_21.setText("T<sub>d</sub> (°C)")
 		self.label_p_22 = self.findChild(QLabel,"label_prb_22")
+		self.label_p_22.setText("T<sub>i</sub> (°C)")
 		self.label_p_23 = self.findChild(QLabel,"label_prb_23")
+		self.label_p_23.setText("B<sub>1</sub> (kg)")
 		self.label_p_24 = self.findChild(QLabel,"label_prb_24")
+		self.label_p_24.setText("B<sub>2</sub> (kg)")
 		self.label_p_25 = self.findChild(QLabel,"label_prb_25")
+		self.label_p_25.setText("Vel<sub>N</sub> (km/h)")
 		self.label_p_26 = self.findChild(QLabel,"label_prb_26")
+		self.label_p_26.setText("Vel<sub>U</sub> (km/h)")
 		self.label_p_27 = self.findChild(QLabel,"label_prb_27")
 		self.label_p_28 = self.findChild(QLabel,"label_prb_28")
 		self.label_p_29 = self.findChild(QLabel,"label_prb_29")
@@ -235,6 +296,41 @@ class UI(QMainWindow):
 
 		self.show()
 
+
+	@pyqtSlot()
+	def activeModoAdmin(self):
+		print("modo admin")
+		self.tabs_pruebas.setTabEnabled(0, False)
+		self.tabs_pruebas.setTabEnabled(1, False)
+		self.tabs_pruebas.setTabEnabled(2, False)
+		self.tabs_pruebas.setTabEnabled(3, False)
+		self.tabs_pruebas.setTabEnabled(4, False)
+	@pyqtSlot()
+	def activeModoExper(self):
+		print("modo exper")
+		self.tabs_pruebas.setTabEnabled(0, False)
+		self.tabs_pruebas.setTabEnabled(1, False)
+		self.tabs_pruebas.setTabEnabled(2, False)
+		self.tabs_pruebas.setTabEnabled(3, False)
+		self.tabs_pruebas.setTabEnabled(4, True)		
+	@pyqtSlot()
+	def activeModoEnsay(self):
+		print("modo ensay")
+		self.tabs_pruebas.setTabEnabled(0, True)
+		self.tabs_pruebas.setTabEnabled(1, True)
+		self.tabs_pruebas.setTabEnabled(2, True)
+		self.tabs_pruebas.setTabEnabled(3, True)
+		self.tabs_pruebas.setTabEnabled(4, False)
+	@pyqtSlot()
+	def activeModoRepor(self):
+		print("modo repor")
+		self.tabs_pruebas.setTabEnabled(0, False)
+		self.tabs_pruebas.setTabEnabled(1, False)
+		self.tabs_pruebas.setTabEnabled(2, False)
+		self.tabs_pruebas.setTabEnabled(3, False)
+		self.tabs_pruebas.setTabEnabled(4, False)
+
+
 	@pyqtSlot()
 	def tab_change(self):
 		self.tab_index = self.tabs_pruebas.currentIndex()
@@ -258,6 +354,7 @@ class UI(QMainWindow):
 
 		self.timer.setInterval(100)
 		self.timer.timeout.connect(self.update_plot)
+		#self.timer.timeout.connect(lambda: self.cdaq2db.insert2db(self.cdaq_data))
 		self.timer.start()
 
 		self.button_start.setEnabled(False)
@@ -295,18 +392,18 @@ class UI(QMainWindow):
 			self.label_f_t_dr.show()
 			
 			if self.fase_frenado==2:
-				self.label_f_4.setText('Td (°C)')
+				self.label_f_4.setText('T<sub>d</sub> (°C)')
 				self.label_f_6.setText('t (s)')
 
 			if self.fase_frenado==4:
-				self.label_f_4.setText('Td (°C)')
-				self.label_f_6.setText('dr (m)')
+				self.label_f_4.setText('T<sub>d</sub> (°C)')
+				self.label_f_6.setText('d<sub>r</sub> (m)')
 		else:
 			self.label_f_5.hide()
 			self.label_f_6.hide()
 			self.label_f_Ti.hide()
 			self.label_f_t_dr.hide()
-			self.label_f_4.setText('df (m)')
+			self.label_f_4.setText('d<sub>f</sub> (m)')
 		
 		if self.fase_frenado>=5:
 			self.button_f_fase.setText('Finalizar')
@@ -321,16 +418,16 @@ class UI(QMainWindow):
 	@pyqtSlot()
 	def cambiar_disp_prueba(self):
 		if self.combo_prueba.currentIndex()==0:
-			self.label_p_4.setText('fp (N)')
+			self.label_p_4.setText('f<sub>p</sub> (N)')
 			self.label_p_5.setText('δ (°)')
-			self.label_p_11.setText('Vr_F (m/s)')
-			self.label_p_12.setText('Vr_R (m/s)')
-			self.label_p_13.setText('Vr_L (m/s)')
-			self.label_p_14.setText('V5_r (m/s)')
-			self.label_p_21.setText('Td (°C)')
-			self.label_p_22.setText('Ti (°C)')
-			self.label_p_23.setText('B1 (kg)')
-			self.label_p_24.setText('B2 (kg)')
+			self.label_p_11.setText('V<sub>r<sub>F</sub></sub> (km/h)')
+			self.label_p_12.setText('V<sub>r<sub>R</sub></sub> (km/h)')
+			self.label_p_13.setText('V<sub>r<sub>L</sub></sub> (km/h)')
+			self.label_p_14.setText('V<sub>5<sub>r</sub></sub> (km/h)')
+			self.label_p_21.setText('T<sub>d</sub> (°C)')
+			self.label_p_22.setText('T<sub>i</sub> (°C)')
+			self.label_p_23.setText('B<sub>1</sub> (kg)')
+			self.label_p_24.setText('B<sub>2</sub> (kg)')
 			self.label_p_31.setText('Sensores')
 
 			self.label_p_6.hide()
@@ -344,6 +441,8 @@ class UI(QMainWindow):
 			self.label_p_18.hide()
 			self.label_p_19.hide()
 			self.label_p_20.hide()
+			self.label_p_21.show()
+			self.label_p_22.show()
 			self.label_p_25.hide()
 			self.label_p_26.hide()
 			self.label_p_27.hide()
@@ -363,6 +462,8 @@ class UI(QMainWindow):
 			self.label_p_LatNav.hide()
 			self.label_p_altNav.hide()
 			self.label_p_Hbar.hide()
+			self.label_p_Td_rollGPS.show() 
+			self.label_p_Ti_pitchGPS.show()
 			self.label_p_velNGPS.hide()
 			self.label_p_velUGPS.hide()
 			self.label_p_LonGPS.hide()
@@ -370,16 +471,16 @@ class UI(QMainWindow):
 			self.label_p_AltGPS.hide()
 
 		if self.combo_prueba.currentIndex()==1:
-			self.label_p_4.setText('Gx (deg/s)')
-			self.label_p_5.setText('Gy (deg/s)')
-			self.label_p_11.setText('Roll (deg)')
-			self.label_p_12.setText('Pitch (deg)')
-			self.label_p_13.setText('Yaw (deg)')
-			self.label_p_14.setText('Vel_E (m/s)')
-			self.label_p_21.setText('Roll (deg)')
-			self.label_p_22.setText('Pitch (deg)')
-			self.label_p_23.setText('Yaw (deg)')
-			self.label_p_24.setText('Vel_E (m/s)')
+			self.label_p_4.setText('G<sub>x</sub> (°/s)')
+			self.label_p_5.setText('G<sub>y</sub> (°/s)')
+			self.label_p_11.setText('Roll (°)')
+			self.label_p_12.setText('Pitch (°)')
+			self.label_p_13.setText('Yaw (°)')
+			self.label_p_14.setText('Vel<sub>E</sub> (km/h)')
+			#self.label_p_21.setText('Roll (deg)')
+			#self.label_p_22.setText('Pitch (deg)')
+			self.label_p_23.setText('Yaw (°)')
+			self.label_p_24.setText('Vel<sub>E</sub> (km/h)')
 			self.label_p_31.setText('Navegación')
 
 			self.label_p_6.show()
@@ -393,6 +494,8 @@ class UI(QMainWindow):
 			self.label_p_18.show()
 			self.label_p_19.show()
 			self.label_p_20.show()
+			self.label_p_21.hide()
+			self.label_p_22.hide()
 			self.label_p_25.show()
 			self.label_p_26.show()
 			self.label_p_27.show()
@@ -412,6 +515,8 @@ class UI(QMainWindow):
 			self.label_p_LatNav.show()
 			self.label_p_altNav.show()
 			self.label_p_Hbar.show()
+			self.label_p_Td_rollGPS.hide() 
+			self.label_p_Ti_pitchGPS.hide()
 			self.label_p_velNGPS.show()
 			self.label_p_velUGPS.show()
 			self.label_p_LonGPS.show()
@@ -437,13 +542,20 @@ class UI(QMainWindow):
 		self.thread[1].data.connect(self.update_gins_data)
 		self.thread[1].start()
 		
+		self.thread[4] = Dict2Db("cDAQ data","prueba-29-08-22.db",parent=None,index=4)
+		# self.thread[3].data.connect(self.update_cdaq_data)
+		# self.thread[2].data_db.connect(self.cdaq2db.insert2db)
+		self.thread[4].start()
+
 		self.thread[2] = CDaq(parent=None,index=2)
 		self.thread[2].data.connect(self.update_cdaq_data)
+		self.thread[2].data_db.connect(self.thread[4].insert2db)
 		self.thread[2].start()
 
 	def stop_workers(self):
 		self.thread[1].stop()
 		self.thread[2].stop()
+		self.thread[4].stop()
 		#self.pushButton.setEnabled(True)
 
 	# def start_aqcuisiton(self):
@@ -472,10 +584,10 @@ class UI(QMainWindow):
 	def pause_resume_aqcuisiton(self):
 		self.pause = not self.pause
 		if self.pause:
-			self.thread[3].pause()
+			self.thread[3].pause() #Revisar				<--------------------------------
 			self.button_pause.setText("Resume")
 		else:
-			self.thread[3].resume()
+			self.thread[3].resume() #Revisar			<--------------------------------
 			self.button_pause.setText("Pause")
 	
 	def update_gins_data(self,data):
@@ -484,12 +596,16 @@ class UI(QMainWindow):
 	def update_cdaq_data(self,data):
 		for i,v in data.items():
 			self.cdaq_data[i] = v[-1]
+		#self.cdaq_data = data
 
 	def update_plot(self):
 		#print(f'Print labels: {val}')
 		gins = self.gins_data
 		cdaq = self.cdaq_data
-		self.t += 0.1
+		# cdaq = {}
+		# for i,v in self.cdaq_data.items():
+		# 	cdaq[i] = v[-1]
+		# self.t += 0.1
 		#val = round(self.t,2)] + self.val1 + self.val2
 		if self.tabs_pruebas.currentIndex()==0: #Prueba de frenado
 			vx = 3.6*sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
@@ -560,9 +676,9 @@ class UI(QMainWindow):
 		if self.tabs_pruebas.currentIndex()==1: #Prueba de estabilidad
 			vx = 3.6*sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
 				(gins["nav_vel_U"])**2)
-			self.label_e_vx.setText(f'{vx}')
-			self.label_e_ay.setText(f'{gins["acc_x"]}') # Aceleración lateral
-			self.label_e_delta.setText(f'{cdaq["Vol"]}')
+			self.label_e_vx.setText(f'{round(vx,3)}')
+			self.label_e_ay.setText(f'{round(gins["acc_x"],3)}') # Aceleración lateral
+			self.label_e_delta.setText(f'{round(cdaq["Vol"],3)}')
 			
 			self.ydata[0] = self.ydata[0][1:]  # Remove the first
 			self.ydata[1] = self.ydata[1][1:]  # Remove the first
@@ -575,9 +691,9 @@ class UI(QMainWindow):
 			self.line2.setData(self.xdata, self.ydata[i])
 		
 		if self.tabs_pruebas.currentIndex()==2: #Prueba de vibraciones
-			self.label_v_ax.setText(f'{round(1*cdaq["AccX"],4)}')
-			self.label_v_ay.setText(f'{round(1*cdaq["AccY"],4)}') # Aceleración lateral
-			self.label_v_az.setText(f'{round(1*cdaq["AccZ"],4)}')
+			self.label_v_ax.setText(f'{round(1*cdaq["AccX"],3)}')
+			self.label_v_ay.setText(f'{round(1*cdaq["AccY"],3)}') # Aceleración lateral
+			self.label_v_az.setText(f'{round(1*cdaq["AccZ"],3)}')
 
 			self.ydata[0] = self.ydata[0][1:]  # Remove the first
 			self.ydata[1] = self.ydata[1][1:]  # Remove the first
@@ -591,28 +707,29 @@ class UI(QMainWindow):
 		
 		if self.tabs_pruebas.currentIndex()==4: #Modo de prueba
 			if self.combo_prueba.currentIndex()==0: #cDAQ-9188
-				self.label_p_ax.setText(f'{cdaq["AccX"]}')
-				self.label_p_ay.setText(f'{cdaq["AccY"]}')
-				self.label_p_az.setText(f'{cdaq["AccZ"]}')
-				self.label_p_fp_Gx.setText(f'{cdaq["fp"]}')
-				self.label_p_d_Gy.setText(f'{cdaq["Vol"]}')
+				self.label_p_ax.setText(f'{round(cdaq["AccX"],3)}')
+				self.label_p_ay.setText(f'{round(cdaq["AccY"],3)}')
+				self.label_p_az.setText(f'{round(cdaq["AccZ"],3)}')
+				self.label_p_fp_Gx.setText(f'{round(9.8*57.57*cdaq["fp"]*1e3,3)}')
+				self.label_p_d_Gy.setText(f'{round(cdaq["Vol"],3)}')
 				# self.label_p_Gz.setText()
 				# self.label_p_Mx.setText()
 				# self.label_p_My.setText()
 				# self.label_p_Mz.setText()
 				# self.label_p_T.setText()
-				self.label_p_vrF_rollNav.setText(f'{cdaq["Rdel"]}')
-				self.label_p_vrR_pitchNav.setText(f'{cdaq["Rder"]}')
-				self.label_p_vrL_yawNav.setText(f'{cdaq["Rizq"]}')
-				self.label_p_v5r_velENav.setText(f'{cdaq["5aR"]}')
+				self.label_p_vrF_rollNav.setText(f'{round(cdaq["Rdel"],3)}')
+				self.label_p_vrR_pitchNav.setText(f'{round(cdaq["Rder"],3)}')
+				self.label_p_vrL_yawNav.setText(f'{round(cdaq["Rizq"],3)}')
+				self.label_p_v5r_velENav.setText(f'{round(cdaq["5aR"],3)}')
 				# self.label_p_velNNav.setText()
 				# self.label_p_velUNav.setText()
 				# self.label_p_LonNav.setText()
 				# self.label_p_LatNav.setText()
 				# self.label_p_altNav.setText()
 				# self.label_p_Hbar.setText()
-				self.label_p_Td_rollGPS.setText(f'{cdaq["Td"]}')
-				self.label_p_Ti_pitchGPS.setText(f'{cdaq["Ti"]}')
+				SensTem=9e-3
+				self.label_p_Td_rollGPS.setText(f'{round((cdaq["Td"]-0.25)/SensTem,3)}')
+				self.label_p_Ti_pitchGPS.setText(f'{round((cdaq["Ti"]-0.25)/SensTem,3)}')
 				# self.label_p_B1_yawGPS.setText(f'{cdaq["B1"]}')
 				# self.label_p_B2_velEGPS.setText(f'{cdaq["B2"]}')
 				# self.label_p_velNGPS.setText()
@@ -621,35 +738,35 @@ class UI(QMainWindow):
 				# self.label_p_LatGPS.setText()
 				# self.label_p_AltGPS.setText()
 			else:
-				self.label_p_ax.setText(f'{gins["acc_x"]}')
-				self.label_p_ay.setText(f'{gins["acc_y"]}')
-				self.label_p_az.setText(f'{gins["acc_z"]}')
-				self.label_p_fp_Gx.setText(f'{gins["gyro_x"]}')
-				self.label_p_d_Gy.setText(f'{gins["gyro_y"]}')
-				self.label_p_Gz.setText(f'{gins["gyro_z"]}')
-				self.label_p_Mx.setText(f'{gins["magn_x"]}')
-				self.label_p_My.setText(f'{gins["magn_y"]}')
-				self.label_p_Mz.setText(f'{gins["magn_z"]}')
-				self.label_p_T.setText(f'{gins["T"]}')
-				self.label_p_vrF_rollNav.setText(f'{gins["nav_roll"]}')
-				self.label_p_vrR_pitchNav.setText(f'{gins["nav_pitch"]}')
-				self.label_p_vrL_yawNav.setText(f'{gins["nav_yaw"]}')
-				self.label_p_v5r_velENav.setText(f'{gins["nav_vel_E"]}')
-				self.label_p_velNNav.setText(f'{gins["nav_vel_N"]}')
-				self.label_p_velUNav.setText(f'{gins["nav_vel_U"]}')
-				self.label_p_LonNav.setText(f'{gins["nav_Lon"]}')
-				self.label_p_LatNav.setText(f'{gins["nav_Lat"]}')
-				self.label_p_altNav.setText(f'{gins["nav_alt"]}')
-				self.label_p_Hbar.setText(f'{gins["h_bar"]}')
+				self.label_p_ax.setText(f'{round(gins["acc_x"],3)}')
+				self.label_p_ay.setText(f'{round(gins["acc_y"],3)}')
+				self.label_p_az.setText(f'{round(gins["acc_z"],3)}')
+				self.label_p_fp_Gx.setText(f'{round(gins["gyro_x"],3)}')
+				self.label_p_d_Gy.setText(f'{round(gins["gyro_y"],3)}')
+				self.label_p_Gz.setText(f'{round(gins["gyro_z"],3)}')
+				self.label_p_Mx.setText(f'{round(gins["magn_x"],3)}')
+				self.label_p_My.setText(f'{round(gins["magn_y"],3)}')
+				self.label_p_Mz.setText(f'{round(gins["magn_z"],3)}')
+				self.label_p_T.setText(f'{round(gins["T"],3)}')
+				self.label_p_vrF_rollNav.setText(f'{round(gins["nav_roll"],3)}')
+				self.label_p_vrR_pitchNav.setText(f'{round(gins["nav_pitch"],3)}')
+				self.label_p_vrL_yawNav.setText(f'{round(gins["nav_yaw"],3)}')
+				self.label_p_v5r_velENav.setText(f'{round(gins["nav_vel_E"],3)}')
+				self.label_p_velNNav.setText(f'{round(gins["nav_vel_N"],3)}')
+				self.label_p_velUNav.setText(f'{round(gins["nav_vel_U"],3)}')
+				self.label_p_LonNav.setText(f'{round(gins["nav_Lon"],3)}')
+				self.label_p_LatNav.setText(f'{round(gins["nav_Lat"],3)}')
+				self.label_p_altNav.setText(f'{round(gins["nav_alt"],3)}')
+				self.label_p_Hbar.setText(f'{round(gins["h_bar"],3)}')
 				#self.label_p_Td_rollGPS.setText(f'{gins["Td"]}')
 				#self.label_p_Ti_pitchGPS.setText(f'{gins["Ti"]}')
-				self.label_p_B1_yawGPS.setText(f'{gins["gps_yaw"]}')
-				self.label_p_B2_velEGPS.setText(f'{gins["gps_vel_E"]}')
-				self.label_p_velNGPS.setText(f'{gins["gps_vel_N"]}')
-				self.label_p_velUGPS.setText(f'{gins["gps_vel_U"]}')
-				self.label_p_LonGPS.setText(f'{gins["gps_Lon"]}')
-				self.label_p_LatGPS.setText(f'{gins["gps_Lat"]}')
-				self.label_p_AltGPS.setText(f'{gins["gps_alt"]}')
+				self.label_p_B1_yawGPS.setText(f'{round(gins["gps_yaw"],3)}')
+				self.label_p_B2_velEGPS.setText(f'{round(gins["gps_vel_E"],3)}')
+				self.label_p_velNGPS.setText(f'{round(gins["gps_vel_N"],3)}')
+				self.label_p_velUGPS.setText(f'{round(gins["gps_vel_U"],3)}')
+				self.label_p_LonGPS.setText(f'{round(gins["gps_Lon"],3)}')
+				self.label_p_LatGPS.setText(f'{round(gins["gps_Lat"],3)}')
+				self.label_p_AltGPS.setText(f'{round(gins["gps_alt"],3)}')
 		# if val[0]>0:
 		# 	self.line1.clear()
 		# if len(self.xdata)>=15:
@@ -794,6 +911,7 @@ class CDaq(QThread):
 	task2 = None
 	task3 = None
 	data = pyqtSignal(dict)
+	data_db = pyqtSignal(dict)
 	datos = {}
 	read_flag = False
 	devC = nidaqmx.system.device.Device('cDAQ9188')
@@ -935,7 +1053,8 @@ class CDaq(QThread):
 				#time.sleep(0.000001)
 			
 				#time.sleep(0.000001)
-			self.data.emit(self.datos)			
+			self.data.emit(self.datos)
+			#self.data_db.emit(self.datos)			
 			#t = time.time() - t1
 			#self.datos["t_cdaq"] = t
 			#print(str(self.datos["AccX"])+str(self.datos["AccX"][0]))
@@ -949,13 +1068,14 @@ class CDaq(QThread):
 		self.terminate()
 
 
-class Dict2Db():
+class Dict2Db(QThread):
 	list_indexes = []
 	list_values = []
 	create_table_str = ''
 	db_conn = None
-	def __init__(self,db_table,db_name):
-		super(Dict2Db, self).__init__()
+	def __init__(self,db_table,db_name,index=0,parent=None):
+		super(Dict2Db, self).__init__(parent)
+		self.index=index
 		self.db_table = db_table
 		self.db_name = db_name
 		self.db_conn = sqlite3.connect("database/" + self.db_name)
@@ -989,43 +1109,47 @@ class Dict2Db():
 		return tuple(dict_keys),tup_list,create_table_str
 
 	def insert2db(self,data):
-		if isinstance(list(data.values())[0],list):
-			tup_keys,list_values,create_table_str = self.dict2tuplist(data)
-			#tup_keys,tup_values,create_table_str = self.dict2tup(data)
-			#print(f'tup_values = {tup_values}')
-			print(f'tup_keys = {tup_keys}')
-			print(f'list_values = {list_values}')
-			try:
-				#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
-				self.cursor.execute(create_table_str)
-				#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
-				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
-				#values = ', '.join(map(str, list_values))
-				sql = "INSERT INTO " + self.db_table + " " + str(tup_keys) + " VALUES ("
-				for i in range(len(tup_keys)):
-					if i==0:
-						sql += "?"
-					else:
-						sql += ",?"
-				sql += ")"
-				print(f'sql = {sql}')
-				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
-				self.cursor.executemany(sql,list_values)
-				self.db_conn.commit()
-			except Exception as ex:
-				print(ex)
-		else:
-			tup_keys,tup_values,create_table_str = self.dict2tup(data)
-			#print(f'tup_values = {tup_values}')
-			try:
-				#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
-				self.cursor.execute(create_table_str)
-				#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
-				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
-				self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
-				self.db_conn.commit()
-			except Exception as ex:
-				print(ex)
+		print(data)
+		if data != {}:
+			print("Not empty!!")
+			if isinstance(list(data.values())[0],np.ndarray):
+				tup_keys,list_values,create_table_str = self.dict2tuplist(data)
+				#tup_keys,tup_values,create_table_str = self.dict2tup(data)
+				#print(f'tup_values = {tup_values}')
+				#print(f'tup_keys = {tup_keys}')
+				#print(f'list_values = {list_values}')
+				try:
+					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+					print(create_table_str)
+					self.cursor.execute(create_table_str)
+					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
+					#values = ', '.join(map(str, list_values))
+					sql = "INSERT INTO " + self.db_table + " " + str(tup_keys) + " VALUES ("
+					for i in range(len(tup_keys)):
+						if i==0:
+							sql += "?"
+						else:
+							sql += ",?"
+					sql += ")"
+					print(f'sql = {sql}')
+					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
+					self.cursor.executemany(sql,list_values)
+					self.db_conn.commit()
+				except Exception as ex:
+					print(ex)
+			else:
+				tup_keys,tup_values,create_table_str = self.dict2tup(data)
+				#print(f'tup_values = {tup_values}')
+				try:
+					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+					self.cursor.execute(create_table_str)
+					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
+					self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
+					self.db_conn.commit()
+				except Exception as ex:
+					print(ex)
 
 
 if __name__ == '__main__':
