@@ -1,13 +1,15 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget,QAction
+from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget,QAction,QMessageBox
+from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
 from pyqtgraph import PlotWidget, plot, mkPen
+#from PyQt5.QtCore import QTranslator,QLocale,QLibraryInfo
 
 class UI(QMainWindow):
 	def __init__(self):
 		super(UI,self).__init__()
 		uic.loadUi("interfaz_app.ui",self)
-		
+		self.setWindowIcon(QIcon('icons/app_icon.png'))
 		self.xdata = [x*0.1 for x in list(range(15))]
 		self.ydata = [x*0 for x in list(range(15))]
 
@@ -37,8 +39,18 @@ class UI(QMainWindow):
 		print(f'Current tab: {self.tab_index}')
 
 		self.button_start = self.findChild(QPushButton,"button_start")
+		# self.button_start.setStyleSheet("border :2px solid ;"
+        #                      "border-top-color : green; "
+        #                      "border-left-color :green;"
+        #                      "border-right-color :green;"
+        #                      "border-bottom-color : green")
 		self.button_start.clicked.connect(self.start_acquisition)
 		self.button_stop = self.findChild(QPushButton,"button_stop")
+		# self.button_stop.setStyleSheet("border :2px solid ;"
+        #                      "border-top-color : red; "
+        #                      "border-left-color :red;"
+        #                      "border-right-color :red;"
+        #                      "border-bottom-color : red")
 		self.button_stop.clicked.connect(self.stop_acquisition)
 		self.button_stop.setEnabled(False)
 
@@ -61,6 +73,8 @@ class UI(QMainWindow):
 
 
 		#Fase de frenado - Labels de salida
+		self.label_f_tit = self.findChild(QLabel,"label_fre_titulo")
+		self.label_f_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
 		self.label_f_1.setText("v<sub>x</sub> (km/h)")
 		self.label_f_2 = self.findChild(QLabel,"label_fre_2")
@@ -86,17 +100,23 @@ class UI(QMainWindow):
 		self.label_f_Ti.hide()
 		self.label_f_t_dr.hide()
 		self.button_f_fase = self.findChild(QPushButton,"button_fre_fase")
+		self.button_f_fase.setStyleSheet("QPushButton { color: green; }")
 		self.button_f_fase.clicked.connect(self.cambiar_fase)
 		self.button_f_rst = self.findChild(QPushButton,"button_fre_rst")
+		self.button_f_rst.setStyleSheet("QPushButton { color: red; }")
 		self.button_f_rst.clicked.connect(self.reiniciar_fase)
 
 		#Prueba de estabilidad - Labels de salida
+		self.label_e_tit = self.findChild(QLabel,"label_est_titulo")
+		self.label_e_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_e_1 = self.findChild(QLabel,"label_est_1")
 		self.label_e_1.setText("v<sub>x</sub> (km/h)")
 		self.label_e_2 = self.findChild(QLabel,"label_est_2")
 		self.label_e_2.setText("a<sub>y</sub> (m/s<sup>2</sup>)")
 		
 		#Prueba de aceleración - Labels de salida
+		self.label_v_tit = self.findChild(QLabel,"label_vib_titulo")
+		self.label_v_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_v_1 = self.findChild(QLabel,"label_vib_1")
 		self.label_v_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_v_2 = self.findChild(QLabel,"label_vib_2")
@@ -106,6 +126,8 @@ class UI(QMainWindow):
 		
 		
 		#Fase de centro de gravedad - Labels de salida
+		self.label_c_tit = self.findChild(QLabel,"label_cog_titulo")
+		self.label_c_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_c_1 = self.findChild(QLabel,"label_cog_1")
 		self.label_c_1.setText("l<sub>a</sub> (mm)")
 		self.label_c_2 = self.findChild(QLabel,"label_cog_2")
@@ -130,6 +152,8 @@ class UI(QMainWindow):
 		#Modo de prueba - ComboBox
 		self.combo_prueba = self.findChild(QComboBox,"combo_prueba")
 		#Modo de prueba - Labels de título
+		self.label_p_tit = self.findChild(QLabel,"label_prb_titulo")
+		self.label_p_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_p_1 = self.findChild(QLabel,"label_prb_1")
 		self.label_p_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_p_2 = self.findChild(QLabel,"label_prb_2")
@@ -181,8 +205,12 @@ class UI(QMainWindow):
 		self.label_p_28 = self.findChild(QLabel,"label_prb_28")
 		self.label_p_29 = self.findChild(QLabel,"label_prb_29")
 		self.label_p_30 = self.findChild(QLabel,"label_prb_30")
+		self.label_p_30.setStyleSheet("QLabel { color: red; }")
 		self.label_p_31 = self.findChild(QLabel,"label_prb_31")
+		self.label_p_31.setStyleSheet("QLabel { color: green; }")
 		self.label_p_32 = self.findChild(QLabel,"label_prb_32")
+		self.label_p_32.setStyleSheet("QLabel { color: blue; }")
+
 		#Modo de prueba - Labels de salida
 		self.label_p_ax = self.findChild(QLabel,"label_prb_ax")
 		self.label_p_ay = self.findChild(QLabel,"label_prb_ay")
@@ -253,6 +281,8 @@ class UI(QMainWindow):
 		self.label_p_31.setText('Sensores')
 		self.combo_prueba.activated.connect(self.cambiar_disp_prueba)
 
+		self.combo_f_plt = self.findChild(QComboBox,"combo_fre_plot")
+
 		self.fre_widget_plot = self.findChild(PlotWidget,"fre_widget_plot")
 		self.fre_widget_plot.setBackground('w')
 
@@ -285,14 +315,16 @@ class UI(QMainWindow):
 	@pyqtSlot()
 	def activeModoExper(self):
 		print("modo exper")
+		self.tabs_pruebas.setCurrentIndex(4)
 		self.tabs_pruebas.setTabEnabled(0, False)
 		self.tabs_pruebas.setTabEnabled(1, False)
 		self.tabs_pruebas.setTabEnabled(2, False)
 		self.tabs_pruebas.setTabEnabled(3, False)
-		self.tabs_pruebas.setTabEnabled(4, True)		
+		self.tabs_pruebas.setTabEnabled(4, True)
 	@pyqtSlot()
 	def activeModoEnsay(self):
 		print("modo ensay")
+		self.tabs_pruebas.setCurrentIndex(0)
 		self.tabs_pruebas.setTabEnabled(0, True)
 		self.tabs_pruebas.setTabEnabled(1, True)
 		self.tabs_pruebas.setTabEnabled(2, True)
@@ -348,16 +380,22 @@ class UI(QMainWindow):
 			if self.fase_frenado==2:
 				self.label_f_4.setText('T<sub>d</sub> (°C)')
 				self.label_f_6.setText('t (s)')
+				self.combo_f_plt.clear()
+				self.combo_f_plt.addItems(['vx','ax','fp','Td','Ti','t'])
 
 			if self.fase_frenado==4:
 				self.label_f_4.setText('T<sub>d</sub> (°C)')
 				self.label_f_6.setText('d<sub>r</sub> (m)')
+				self.combo_f_plt.clear()
+				self.combo_f_plt.addItems(['vx','ax','fp','Td','Ti','dr'])
 		else:
 			self.label_f_5.hide()
 			self.label_f_6.hide()
 			self.label_f_Ti.hide()
 			self.label_f_t_dr.hide()
 			self.label_f_4.setText('d<sub>f</sub> (m)')
+			self.combo_f_plt.clear()
+			self.combo_f_plt.addItems(["vx","ax","fp","dr"])
 		
 		if self.fase_frenado>=5:
 			self.button_f_fase.setText('Finalizar')
@@ -476,9 +514,31 @@ class UI(QMainWindow):
 			self.label_p_LonGPS.show()
 			self.label_p_LatGPS.show()
 			self.label_p_AltGPS.show()
+
+	def closeEvent(self, event):
+		box = QMessageBox()
+		box.setIcon(QMessageBox.Question)
+		box.setWindowTitle('SALIR')
+		box.setText('¿Desea salir del aplicativo?')
+		box.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
+		buttonY = box.button(QMessageBox.Yes)
+		buttonY.setText('Sí')
+		buttonN = box.button(QMessageBox.No)
+		buttonN.setText('No')
+		box.setWindowIcon(QIcon('icons/close_icon.png'))
+		box.exec_()
+
+		if box.clickedButton() == buttonY:
+			print('Bye!')
+			#self.stop_workers()
+			event.accept()
+		else:
+			event.ignore()
 		
 if __name__ == '__main__':
 	import sys
 	app = QApplication(sys.argv)
 	UIWindow = UI()
 	app.exec_()
+
+	

@@ -23,7 +23,6 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComb
 from PyQt5.QtCore import pyqtSlot,QTimer,Qt,QObject, QThread, pyqtSignal
 from PyQt5 import uic
 
-
 class UI(QMainWindow):
 	def __init__(self):
 		QMainWindow.__init__(self)

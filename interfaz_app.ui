@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>571</height>
+    <height>581</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="maximumSize">
    <size>
     <width>800</width>
-    <height>571</height>
+    <height>581</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,10 +27,16 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget { 
-	background-color: #f0f0f0 }
+	background-color: #f0f0f0 
+}
 
 QLineEdit { 
-	background-color: #ffffff }
+	background-color: #ffffff 
+}
+
+QLabel, QLineEdit{ 
+	font-family: Arial;
+}
 
 QComboBox { 
 	background-color: #fafafa ;
@@ -38,6 +44,7 @@ QComboBox {
 }
 
 QPushButton{
+	font-family: Arial;
 	background-color: #f0f0f0;
 	border-style: outset;
 	border-radius: 4px;
@@ -47,6 +54,10 @@ QPushButton{
 	border-left: 2px solid GhostWhite;
 	border-bottom: 2px solid gray;
 	border-right: 2px solid gray;
+}
+
+QPushButton:hover{
+	background-color: rgb(232, 232, 232);
 }
 
 QPushButton:pressed{
@@ -73,8 +84,8 @@ QTabBar::tab {
 }
 
 QTabBar::tab:selected {
-	background: rgb(240, 240, 240);
-	color: black;
+	background: rgb(223, 223, 223);
+	color: rgb(0, 0, 127);
 	font-weight: bold;
 	border-radius: 4px;
 	 border: 1px solid   rgb(0, 0, 80);;
@@ -111,8 +122,8 @@ QTabBar::tab:!selected {
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>9</y>
+      <x>10</x>
+      <y>10</y>
       <width>781</width>
       <height>501</height>
      </rect>
@@ -131,7 +142,7 @@ QTabBar::tab:!selected {
         <string notr="true"/>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab_frenado">
         <attribute name="title">
@@ -148,6 +159,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -183,10 +195,13 @@ QTabBar::tab:!selected {
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>10</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
+          </property>
+          <property name="maxVisibleItems">
+           <number>9</number>
           </property>
           <item>
            <property name="text">
@@ -221,6 +236,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -254,6 +270,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -278,6 +295,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -302,6 +320,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -326,6 +345,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -349,6 +369,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -372,6 +393,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -396,6 +418,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -419,6 +442,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -443,6 +467,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -466,6 +491,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -489,6 +515,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -513,6 +540,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -536,6 +564,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -556,6 +585,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -593,7 +623,7 @@ QTabBar::tab:!selected {
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>10</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -615,7 +645,7 @@ QTabBar::tab:!selected {
           </item>
          </widget>
         </widget>
-        <widget class="QLabel" name="label_33">
+        <widget class="QLabel" name="label_est_titulo">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -626,6 +656,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -646,6 +677,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -669,6 +701,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -693,6 +726,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -717,6 +751,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -740,6 +775,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -764,6 +800,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -800,6 +837,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -823,6 +861,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -846,6 +885,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -870,6 +910,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -899,6 +940,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -922,6 +964,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -946,6 +989,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -970,6 +1014,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -993,6 +1038,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1017,6 +1063,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1037,6 +1084,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1082,7 +1130,7 @@ QTabBar::tab:!selected {
           </property>
           <property name="font">
            <font>
-            <pointsize>11</pointsize>
+            <pointsize>10</pointsize>
             <weight>75</weight>
             <bold>true</bold>
            </font>
@@ -1120,6 +1168,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1143,6 +1192,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1167,6 +1217,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1191,6 +1242,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1214,6 +1266,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1237,6 +1290,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1289,6 +1343,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1313,6 +1368,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1337,6 +1393,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1360,6 +1417,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1384,6 +1442,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1407,6 +1466,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1430,6 +1490,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1453,6 +1514,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1476,6 +1538,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1499,6 +1562,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1522,6 +1586,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1545,6 +1610,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1568,6 +1634,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1591,6 +1658,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1606,6 +1674,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1621,6 +1690,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1636,6 +1706,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1651,6 +1722,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -1671,6 +1743,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1694,6 +1767,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1718,6 +1792,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1742,6 +1817,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1766,6 +1842,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1789,6 +1866,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1812,6 +1890,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>14</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1832,6 +1911,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1856,6 +1936,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1879,6 +1960,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1903,6 +1985,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1927,6 +2010,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1950,6 +2034,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -1973,6 +2058,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -1997,6 +2083,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2020,6 +2107,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2044,6 +2132,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2068,6 +2157,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2091,6 +2181,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2114,6 +2205,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2138,6 +2230,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2161,6 +2254,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2185,6 +2279,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
           </font>
          </property>
@@ -2209,6 +2304,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2232,6 +2328,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2255,6 +2352,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2279,6 +2377,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2393,7 +2492,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>11</pointsize>
            <weight>50</weight>
            <bold>false</bold>
           </font>
@@ -2446,6 +2545,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2470,6 +2570,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2494,6 +2595,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2518,6 +2620,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2541,6 +2644,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2565,6 +2669,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2588,6 +2693,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2612,6 +2718,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2635,6 +2742,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2658,6 +2766,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2681,6 +2790,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2705,6 +2815,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2729,6 +2840,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2753,6 +2865,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2776,6 +2889,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2800,6 +2914,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2823,6 +2938,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2847,6 +2963,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2870,6 +2987,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2893,6 +3011,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -2916,6 +3035,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2940,6 +3060,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2964,6 +3085,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -2988,6 +3110,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3011,6 +3134,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -3035,6 +3159,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3058,6 +3183,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -3082,6 +3208,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3105,6 +3232,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3128,6 +3256,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3151,6 +3280,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
           </font>
          </property>
@@ -3175,6 +3305,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3198,6 +3329,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3224,6 +3356,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3250,6 +3383,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>11</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3289,6 +3423,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3318,6 +3453,7 @@ QTabBar::tab:!selected {
          </property>
          <property name="font">
           <font>
+           <family>Arial</family>
            <pointsize>12</pointsize>
            <weight>75</weight>
            <bold>true</bold>
@@ -3364,7 +3500,7 @@ QTabBar::tab:!selected {
     </property>
     <addaction name="actionConfiguracion"/>
     <addaction name="actionListaUsuarios"/>
-    <addaction name="actionDatos_del_veh_xulo"/>
+    <addaction name="actionDatosVehiculo"/>
     <addaction name="separator"/>
     <addaction name="actionSalir"/>
    </widget>
@@ -3437,9 +3573,9 @@ QTabBar::tab:!selected {
     <string>Lista de etiquetas</string>
    </property>
   </action>
-  <action name="actionDatos_del_veh_xulo">
+  <action name="actionDatosVehiculo">
    <property name="text">
-    <string>Datos del vehíxulo</string>
+    <string>Datos del vehículo</string>
    </property>
   </action>
  </widget>
