@@ -1,14 +1,15 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget,QAction,QMessageBox
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon,QImage
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
-from pyqtgraph import PlotWidget, plot, mkPen
+from pyqtgraph import PlotWidget, plot, mkPen, ImageItem, imageToArray
+import numpy as np
 #from PyQt5.QtCore import QTranslator,QLocale,QLibraryInfo
 
 class UI(QMainWindow):
 	def __init__(self):
 		super(UI,self).__init__()
-		uic.loadUi("interfaz_app.ui",self)
+		uic.loadUi("interfaz_app_v2.ui",self)
 		self.setWindowIcon(QIcon('icons/app_icon.png'))
 		self.xdata = [x*0.1 for x in list(range(15))]
 		self.ydata = [x*0 for x in list(range(15))]
@@ -74,7 +75,7 @@ class UI(QMainWindow):
 
 		#Fase de frenado - Labels de salida
 		self.label_f_tit = self.findChild(QLabel,"label_fre_titulo")
-		self.label_f_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		#self.label_f_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
 		self.label_f_1.setText("v<sub>x</sub> (km/h)")
 		self.label_f_2 = self.findChild(QLabel,"label_fre_2")
@@ -108,7 +109,7 @@ class UI(QMainWindow):
 
 		#Prueba de estabilidad - Labels de salida
 		self.label_e_tit = self.findChild(QLabel,"label_est_titulo")
-		self.label_e_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		#self.label_e_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_e_1 = self.findChild(QLabel,"label_est_1")
 		self.label_e_1.setText("v<sub>x</sub> (km/h)")
 		self.label_e_2 = self.findChild(QLabel,"label_est_2")
@@ -116,7 +117,7 @@ class UI(QMainWindow):
 		
 		#Prueba de aceleración - Labels de salida
 		self.label_v_tit = self.findChild(QLabel,"label_vib_titulo")
-		self.label_v_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		#self.label_v_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_v_1 = self.findChild(QLabel,"label_vib_1")
 		self.label_v_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_v_2 = self.findChild(QLabel,"label_vib_2")
@@ -127,17 +128,17 @@ class UI(QMainWindow):
 		
 		#Fase de centro de gravedad - Labels de salida
 		self.label_c_tit = self.findChild(QLabel,"label_cog_titulo")
-		self.label_c_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		#self.label_c_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
 		self.label_c_1 = self.findChild(QLabel,"label_cog_1")
-		self.label_c_1.setText("l<sub>a</sub> (mm)")
+		self.label_c_1.setText("𝒍<sub>a</sub> (mm)")
 		self.label_c_2 = self.findChild(QLabel,"label_cog_2")
-		self.label_c_2.setText("l<sub>l</sub> (mm)")
+		self.label_c_2.setText("𝒍<sub>l</sub> (mm)")
 		self.label_c_3 = self.findChild(QLabel,"label_cog_3")
-		self.label_c_3.setText("h (m)")
+		self.label_c_3.setText("𝒉 (m)")
 		self.label_c_4 = self.findChild(QLabel,"label_cog_4")
-		self.label_c_4.setText("d<sub>a</sub> (m)")
+		self.label_c_4.setText("𝒅<sub>a</sub> (m)")
 		self.label_c_5 = self.findChild(QLabel,"label_cog_5")
-		self.label_c_5.setText("d<sub>r</sub> (m)")
+		self.label_c_5.setText("𝒅<sub>r</sub> (m)")
 		self.label_c_6 = self.findChild(QLabel,"label_cog_6")
 		self.label_c_6.setText("B<sub>1</sub> (kg)")
 		self.label_c_7 = self.findChild(QLabel,"label_cog_7")
@@ -153,7 +154,8 @@ class UI(QMainWindow):
 		self.combo_prueba = self.findChild(QComboBox,"combo_prueba")
 		#Modo de prueba - Labels de título
 		self.label_p_tit = self.findChild(QLabel,"label_prb_titulo")
-		self.label_p_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		#self.label_p_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}") #v1
+		self.label_p_tit.setStyleSheet("QLabel {color: white;}") #v2
 		self.label_p_1 = self.findChild(QLabel,"label_prb_1")
 		self.label_p_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_p_2 = self.findChild(QLabel,"label_prb_2")
@@ -207,9 +209,9 @@ class UI(QMainWindow):
 		self.label_p_30 = self.findChild(QLabel,"label_prb_30")
 		self.label_p_30.setStyleSheet("QLabel { color: red; }")
 		self.label_p_31 = self.findChild(QLabel,"label_prb_31")
-		self.label_p_31.setStyleSheet("QLabel { color: green; }")
+		self.label_p_31.setStyleSheet("QLabel { color: #00ff00; }")
 		self.label_p_32 = self.findChild(QLabel,"label_prb_32")
-		self.label_p_32.setStyleSheet("QLabel { color: blue; }")
+		self.label_p_32.setStyleSheet("QLabel { color: #00ffff; }")
 
 		#Modo de prueba - Labels de salida
 		self.label_p_ax = self.findChild(QLabel,"label_prb_ax")
@@ -283,8 +285,18 @@ class UI(QMainWindow):
 
 		self.combo_f_plt = self.findChild(QComboBox,"combo_fre_plot")
 
+		# add an image, scaled
+		# img = ImageItem(np.random.normal(size=(100,100)))
+		# img.scale(0.2, 0.1)
+		# img.setZValue(-100)
+		img = QImage(":\icons\app_icon.png")
+		img = img.convertToFormat(QImage.Format_ARGB32_Premultiplied)
+		imgArray = imageToArray(img, copy=True)
+		imgitem = ImageItem(imgArray)
+
 		self.fre_widget_plot = self.findChild(PlotWidget,"fre_widget_plot")
-		self.fre_widget_plot.setBackground('w')
+		#self.fre_widget_plot.setBackground('w')
+		self.fre_widget_plot.addItem(imgitem)
 
 		self.est_widget_plot = self.findChild(PlotWidget,"est_widget_plot")
 		self.est_widget_plot.setBackground('w')
