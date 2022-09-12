@@ -21,7 +21,10 @@ from bitstring import BitArray
 from pyqtgraph import PlotWidget, plot, mkPen
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget, QMessageBox, QAction
 from PyQt5.QtCore import pyqtSlot,QTimer,Qt,QObject, QThread, pyqtSignal
+from PyQt5.QtGui import QIcon
 from PyQt5 import uic
+
+startDb = False
 
 class UI(QMainWindow):
 	def __init__(self):
@@ -60,7 +63,8 @@ class UI(QMainWindow):
 		self.timer = QTimer()
 
 	def setupUi(self):
-		uic.loadUi("interfaz_app.ui",self)
+		uic.loadUi("interfaz_app_v2.ui",self)
+		self.setWindowIcon(QIcon('icons/app_icon.png'))
 				
 		self.tabs_pruebas = self.findChild(QTabWidget,"tabs_pruebas")
 		self.tabs_pruebas.currentChanged.connect(self.tab_change)
@@ -73,7 +77,27 @@ class UI(QMainWindow):
 		self.button_stop.clicked.connect(self.stop_acquisition)
 		self.button_stop.setEnabled(False)
 
+		#Menú y submenús
+		self.menuConfig = self.findChild(QAction,"actionConfiguracion")
+		#self.menuConfig.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
+		self.menuListaUsuarios = self.findChild(QAction,"actionListaUsuarios")
+		#self.menuListaUsuarios.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
+		self.menuSalir = self.findChild(QAction,"actionSalir")
+		self.menuSalir.triggered.connect(self.close) #Debe abrir el menú de configuración
+
+		self.modoAdmin = self.findChild(QAction,"actionModoAdmin")
+		self.modoAdmin.triggered.connect(self.activeModoAdmin) #Debe abrir el menú de configuración
+		self.modoExper = self.findChild(QAction,"actionModoExper")
+		self.modoExper.triggered.connect(self.activeModoExper) #Debe abrir el menú de configuración
+		self.modoEnsay = self.findChild(QAction,"actionModoEnsay")
+		self.modoEnsay.triggered.connect(self.activeModoEnsay) #Debe abrir el menú de configuración
+		self.modoRepor = self.findChild(QAction,"actionModoRepor")
+		self.modoRepor.triggered.connect(self.activeModoRepor) #Debe abrir el menú de configuración
+
 		#Fase de frenado - Labels de salida
+		self.label_f_tit = self.findChild(QLabel,"label_fre_titulo")
+		#self.label_f_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		self.label_f_tit.setStyleSheet("QLabel {color: white;}")
 		self.label_f_1 = self.findChild(QLabel,"label_fre_1")
 		self.label_f_1.setText("v<sub>x</sub> (km/h)")
 		self.label_f_2 = self.findChild(QLabel,"label_fre_2")
@@ -106,6 +130,9 @@ class UI(QMainWindow):
 		#self.combo_f_plot.activated.connect(self.cambiar_f_plot)
 
 		#Prueba de estabilidad - Labels de salida
+		self.label_e_tit = self.findChild(QLabel,"label_est_titulo")
+		#self.label_e_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		self.label_e_tit.setStyleSheet("QLabel {color: white;}")
 		self.label_e_1 = self.findChild(QLabel,"label_est_1")
 		self.label_e_1.setText("v<sub>x</sub> (km/h)")
 		self.label_e_2 = self.findChild(QLabel,"label_est_2")
@@ -118,6 +145,9 @@ class UI(QMainWindow):
 		self.combo_e_plot = self.findChild(QComboBox,"combo_est_plot")
 
 		#Prueba de vibraciones - Labels de salida
+		self.label_v_tit = self.findChild(QLabel,"label_vib_titulo")
+		#self.label_v_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		self.label_v_tit.setStyleSheet("QLabel {color: white;}")
 		self.label_v_1 = self.findChild(QLabel,"label_vib_1")
 		self.label_v_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_v_2 = self.findChild(QLabel,"label_vib_2")
@@ -131,6 +161,9 @@ class UI(QMainWindow):
 
 
 		#Fase de centro de gravedad - Labels de salida
+		self.label_c_tit = self.findChild(QLabel,"label_cog_titulo")
+		#self.label_c_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		self.label_c_tit.setStyleSheet("QLabel {color: white;}")
 		self.label_c_1 = self.findChild(QLabel,"label_cog_1")
 		self.label_c_1.setText("l<sub>a</sub> (mm)")
 		self.label_c_2 = self.findChild(QLabel,"label_cog_2")
@@ -156,6 +189,9 @@ class UI(QMainWindow):
 		#Modo de prueba - ComboBox
 		self.combo_prueba = self.findChild(QComboBox,"combo_prueba")
 		#Modo de prueba - Labels de título
+		self.label_p_tit = self.findChild(QLabel,"label_prb_titulo")
+		#self.label_p_tit.setStyleSheet("QLabel {color: rgb(0, 0, 127);}")
+		self.label_p_tit.setStyleSheet("QLabel {color: white;}")
 		self.label_p_1 = self.findChild(QLabel,"label_prb_1")
 		self.label_p_1.setText("a<sub>x</sub> (m/s<sup>2</sup>)")
 		self.label_p_2 = self.findChild(QLabel,"label_prb_2")
@@ -279,6 +315,8 @@ class UI(QMainWindow):
 		self.label_p_31.setText('Sensores')
 		self.combo_prueba.activated.connect(self.cambiar_disp_prueba)
 
+		self.combo_f_plt = self.findChild(QComboBox,"combo_fre_plot")
+
 		self.fre_widget_plot = self.findChild(PlotWidget,"fre_widget_plot")
 		self.fre_widget_plot.setBackground('w')
 
@@ -307,14 +345,16 @@ class UI(QMainWindow):
 	@pyqtSlot()
 	def activeModoExper(self):
 		print("modo exper")
+		self.tabs_pruebas.setCurrentIndex(4)
 		self.tabs_pruebas.setTabEnabled(0, False)
 		self.tabs_pruebas.setTabEnabled(1, False)
 		self.tabs_pruebas.setTabEnabled(2, False)
 		self.tabs_pruebas.setTabEnabled(3, False)
-		self.tabs_pruebas.setTabEnabled(4, True)		
+		self.tabs_pruebas.setTabEnabled(4, True)
 	@pyqtSlot()
 	def activeModoEnsay(self):
 		print("modo ensay")
+		self.tabs_pruebas.setCurrentIndex(0)
 		self.tabs_pruebas.setTabEnabled(0, True)
 		self.tabs_pruebas.setTabEnabled(1, True)
 		self.tabs_pruebas.setTabEnabled(2, True)
@@ -329,7 +369,6 @@ class UI(QMainWindow):
 		self.tabs_pruebas.setTabEnabled(3, False)
 		self.tabs_pruebas.setTabEnabled(4, False)
 
-
 	@pyqtSlot()
 	def tab_change(self):
 		self.tab_index = self.tabs_pruebas.currentIndex()
@@ -341,6 +380,7 @@ class UI(QMainWindow):
 
 	@pyqtSlot()
 	def start_acquisition(self):
+		global startDb
 		print('Configuring devices...') # Mostrar un mensaje en pantalla
 		time.sleep(1)
 		print('Start acquisition')
@@ -356,11 +396,15 @@ class UI(QMainWindow):
 		#self.timer.timeout.connect(lambda: self.cdaq2db.insert2db(self.cdaq_data))
 		self.timer.start()
 
+		startDb = True
+		#self.thread[4].start()
+
 		self.button_start.setEnabled(False)
 		self.button_stop.setEnabled(True)
 
 	@pyqtSlot()
 	def stop_acquisition(self):
+		global startDb
 		print('Stop acquisition')
 		self.timer.stop()
 
@@ -370,6 +414,8 @@ class UI(QMainWindow):
 		for index in (0,1,2,3,4):
 			self.tabs_pruebas.setTabEnabled(index,True)
 
+		startDb = False
+
 	@pyqtSlot()
 	def cambiar_fase(self):
 		self.xdata = [x*0.1 for x in list(range(15))]
@@ -377,7 +423,6 @@ class UI(QMainWindow):
 		self.ydata = [self.ydata, self.ydata, self.ydata, self.ydata,self.ydata,self.ydata]
 		self.t = -0.1
 		#self.line1 = self.fre_widget_plot.plot(self.xdata,self.ydata[0],pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
-		
 		
 		self.fase_frenado = self.fase_frenado + 1
 		if self.fase_frenado>5:
@@ -393,16 +438,22 @@ class UI(QMainWindow):
 			if self.fase_frenado==2:
 				self.label_f_4.setText('T<sub>d</sub> (°C)')
 				self.label_f_6.setText('t (s)')
+				self.combo_f_plt.clear()
+				self.combo_f_plt.addItems(['vx','ax','fp','Td','Ti','t'])
 
 			if self.fase_frenado==4:
 				self.label_f_4.setText('T<sub>d</sub> (°C)')
 				self.label_f_6.setText('d<sub>r</sub> (m)')
+				self.combo_f_plt.clear()
+				self.combo_f_plt.addItems(['vx','ax','fp','Td','Ti','dr'])
 		else:
 			self.label_f_5.hide()
 			self.label_f_6.hide()
 			self.label_f_Ti.hide()
 			self.label_f_t_dr.hide()
 			self.label_f_4.setText('d<sub>f</sub> (m)')
+			self.combo_f_plt.clear()
+			self.combo_f_plt.addItems(["vx","ax","fp","dr"])
 		
 		if self.fase_frenado>=5:
 			self.button_f_fase.setText('Finalizar')
@@ -541,14 +592,14 @@ class UI(QMainWindow):
 		self.thread[1].data.connect(self.update_gins_data)
 		self.thread[1].start()
 		
-		self.thread[4] = Dict2Db("cDAQ data","prueba-29-08-22.db",parent=None,index=4)
+		#self.thread[4] = Dict2Db("cDAQ data","prueba-06-09-22.db",parent=None,index=4)
 		# self.thread[3].data.connect(self.update_cdaq_data)
 		# self.thread[2].data_db.connect(self.cdaq2db.insert2db)
-		self.thread[4].start()
+		# self.thread[4].start()
 
 		self.thread[2] = CDaq(parent=None,index=2)
 		self.thread[2].data.connect(self.update_cdaq_data)
-		self.thread[2].data_db.connect(self.thread[4].insert2db)
+		#self.thread[2].data_db.connect(self.thread[4].insert_cdaq_data)
 		self.thread[2].start()
 
 	def stop_workers(self):
@@ -606,6 +657,7 @@ class UI(QMainWindow):
 		# 	cdaq[i] = v[-1]
 		# self.t += 0.1
 		#val = round(self.t,2)] + self.val1 + self.val2
+		#cdaq["fp"] *= 9.8*57.57*1e3
 		if self.tabs_pruebas.currentIndex()==0: #Prueba de frenado
 			vx = 3.6*sqrt((gins["nav_vel_E"])**2 + (gins["nav_vel_N"])**2 + 
 				(gins["nav_vel_U"])**2) #km/h
@@ -690,6 +742,12 @@ class UI(QMainWindow):
 			self.line2.setData(self.xdata, self.ydata[i])
 		
 		if self.tabs_pruebas.currentIndex()==2: #Prueba de vibraciones
+			sensAccX=10.10e-3; #V/ms-2  
+			sensAccY= 9.899e-3; #V/ms-2   
+			sensAccZ=10.38e-3; #V/ms-2
+			cdaq["AccX"] *= sensAccX
+			cdaq["AccY"] *= sensAccY
+			cdaq["AccZ"] *= sensAccZ
 			self.label_v_ax.setText(f'{round(1*cdaq["AccX"],3)}')
 			self.label_v_ay.setText(f'{round(1*cdaq["AccY"],3)}') # Aceleración lateral
 			self.label_v_az.setText(f'{round(1*cdaq["AccZ"],3)}')
@@ -709,7 +767,7 @@ class UI(QMainWindow):
 				self.label_p_ax.setText(f'{round(cdaq["AccX"],3)}')
 				self.label_p_ay.setText(f'{round(cdaq["AccY"],3)}')
 				self.label_p_az.setText(f'{round(cdaq["AccZ"],3)}')
-				self.label_p_fp_Gx.setText(f'{round(9.8*57.57*cdaq["fp"]*1e3,3)}')
+				self.label_p_fp_Gx.setText(f'{round(cdaq["fp"],3)}')
 				self.label_p_d_Gy.setText(f'{round(cdaq["Vol"],3)}')
 				# self.label_p_Gz.setText()
 				# self.label_p_Mx.setText()
@@ -776,13 +834,123 @@ class UI(QMainWindow):
 		# self.line1 = self.plot_widget.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=20, symbolBrush=('b'))
 
 	def closeEvent(self, event):
-		close = QMessageBox.question(self,"SALIR","¿Desea salir del aplicativo?",QMessageBox.Yes | QMessageBox.No)
-		if close == QMessageBox.Yes:
+		box = QMessageBox()
+		box.setIcon(QMessageBox.Question)
+		box.setWindowTitle('SALIR')
+		box.setText('¿Desea salir del aplicativo?')
+		box.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
+		buttonY = box.button(QMessageBox.Yes)
+		buttonY.setText('Sí')
+		buttonN = box.button(QMessageBox.No)
+		buttonN.setText('No')
+		box.setWindowIcon(QIcon('icons/close_icon.png'))
+		box.exec_()
+
+		if box.clickedButton() == buttonY:
 			print('Bye!')
-			self.stop_workers()
+			#self.stop_workers()
 			event.accept()
 		else:
 			event.ignore()
+
+
+class Dict2Db():
+	list_indexes = []
+	list_values = []
+	create_table_str = ''
+	db_conn = None
+	def __init__(self,db_table,db_name):
+		super(Dict2Db, self).__init__()
+		self.db_table = db_table
+		self.db_name = db_name
+		self.db_conn = sqlite3.connect("database/" + self.db_name + ".db",check_same_thread=False)
+		self.cursor = self.db_conn.cursor()
+		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " (t REAL AUTO_INCREMENT, "
+
+	def dict2tup(self,data):
+		create_table_str = self.create_table_str
+		dict_keys = list(data.keys())
+		dict_values = list(data.values())
+		for indx in dict_keys:
+			create_table_str += indx + " REAL NOT NULL, "
+		create_table_str += "PRIMARY KEY (t))" 
+
+		return tuple(dict_keys),tuple(dict_values),create_table_str
+	
+	def dict2tuplist(self,data):
+		create_table_str = self.create_table_str
+		dict_keys = list(data.keys())
+		dict_values = list(data.values())
+		for indx in dict_keys:
+			create_table_str += indx + " REAL NOT NULL, "
+		create_table_str += "PRIMARY KEY (t))" 
+		# print(f'k_data = {dict_keys}')
+		tup_list = []
+		for i in range(len(dict_values[0])):
+			tup = []
+			for k in dict_values:
+				tup.append(k[i])
+			tup_list.append(tuple(tup))
+		return tuple(dict_keys),tup_list,create_table_str
+
+	def insert_cdaq(self,data):
+		print(data)
+
+	def insert2db(self,data):
+		#print(data)
+		if data != {}:
+			#print("Not empty!!")
+			if isinstance(list(data.values())[0],np.ndarray):
+				tup_keys,list_values,create_table_str = self.dict2tuplist(data)
+				#tup_keys,tup_values,create_table_str = self.dict2tup(data)
+				#print(f'tup_values = {tup_values}')
+				#print(f'tup_keys = {tup_keys}')
+				#print(f'list_values = {list_values}')
+				try:
+					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+					#print(create_table_str)
+					self.cursor.execute(create_table_str)
+					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
+					#values = ', '.join(map(str, list_values))
+					sql = "INSERT INTO " + self.db_table + " " + str(tup_keys) + " VALUES ("
+					for i in range(len(tup_keys)):
+						if i==0:
+							sql += "?"
+						else:
+							sql += ",?"
+					sql += ")"
+					#print(f'sql = {sql}')
+					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
+					self.cursor.executemany(sql,list_values)
+					self.db_conn.commit()
+				except Exception as ex:
+					print(ex)
+			else:
+				tup_keys,tup_values,create_table_str = self.dict2tup(data)
+				#print(f'tup_values = {tup_values}')
+				try:
+					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+					self.cursor.execute(create_table_str)
+					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
+					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
+					self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
+					self.db_conn.commit()
+				except Exception as ex:
+					print(ex)
+
+	# def run(self):
+	# 	print("Tarea DB iniciada en hilo ->",self.index)
+	# 	while True:
+			
+	# 		#time.sleep(0.000001)
+	# 		if not self.is_running:
+	# 			break
+
+	# def stop(self):
+	# 	self.is_running = False
+	# 	print("Tarea DB terminada en hilo ->",self.index)
+	# 	self.terminate()
 
 
 class Gins(QThread):
@@ -797,6 +965,9 @@ class Gins(QThread):
 		self.port=serial.Serial(port,baud,bytesize=serial.EIGHTBITS,
 			parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1) #Para el GINS200
 		self.port_open()
+
+		self.gins_db = Dict2Db("Variables GINS","prueba_ginsDB_07_09_22_v1")
+
 	def port_open(self):
 		if not self.port.isOpen():
 			self.port.open()
@@ -808,30 +979,6 @@ class Gins(QThread):
 	def flush(self):
 		self.port.flushInput()
 		self.port.flushOutput()
-	def run(self):
-		print("GINS iniciado en hilo ->",self.index)
-		while True:
-			time.sleep(0.01)
-			#t1 = time.time()
-			#t1 = datetime.now()
-			if not self.is_running:
-				break
-			out = ''
-			while self.port.inWaiting() > 0: 
-				out = self.port.read(self.port.inWaiting())#.decode('uint8')
-			if out != '':
-				self.message = self.get_gins_values(out.hex())
-				#t = datetime.now() - t1
-				#dt = t.total_seconds()
-				#self.message["t_gins"] = dt
-				self.data.emit(self.message)
-				
-			#time.sleep(0.05)
-	def stop(self):
-		self.is_running = False
-		print('GINS finalizado en hilo ->',self.index)
-		self.port_close()
-		self.terminate()
 	def get_gins_values(self,data):
 		try:
 			#data = str(hex(int(BitArray(in_stream).bin,2)))
@@ -903,6 +1050,34 @@ class Gins(QThread):
 
 	#def hex2uint(self,val,num_bytes):
 	#	return int(val,8*num_bytes)
+	def run(self):
+		global startDb
+		print("GINS iniciado en hilo ->",self.index)
+		while True:
+			time.sleep(0.01)
+			#t1 = time.time()
+			#t1 = datetime.now()
+			if not self.is_running:
+				break
+			out = ''
+			while self.port.inWaiting() > 0: 
+				out = self.port.read(self.port.inWaiting())#.decode('uint8')
+			if out != '':
+				self.message = self.get_gins_values(out.hex())
+				#t = datetime.now() - t1
+				#dt = t.total_seconds()
+				#self.message["t_gins"] = dt
+				self.data.emit(self.message)
+
+				if startDb:
+					self.cdaq_db.insert2db(self.datos)
+				
+			#time.sleep(0.05)
+	def stop(self):
+		self.is_running = False
+		print('GINS finalizado en hilo ->',self.index)
+		self.port_close()
+		self.terminate()
 
 
 class CDaq(QThread):
@@ -921,7 +1096,6 @@ class CDaq(QThread):
 	data_task2=np.zeros((7, 1200))
 	data_task3=np.zeros((3, 1200))
 
-	
 	def __init__(self,index=0,parent=None):
 		super(CDaq, self).__init__(parent)
 		self.index=index
@@ -929,6 +1103,8 @@ class CDaq(QThread):
 		self.task1 = nidaqmx.Task() 
 		self.task2 = nidaqmx.Task()
 		self.task3 = nidaqmx.Task()
+
+		self.cdaq_db = Dict2Db("Variables cDAQ","prueba_cdaqDB_07_09_22_v1")
 
 		#Config módulo 7
 		self.task1.ai_channels.add_ai_bridge_chan("cDAQ9188Mod7/ai0",name_to_assign_to_channel='c7_0',
@@ -1000,11 +1176,11 @@ class CDaq(QThread):
 
 	def list2dict(self):
 		res = dict() #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
-		res["fp"] = self.data_task1[0,:]
+		res["fp"] = 9.8*57.57*1e3*self.data_task1[0,:]
 		res["Td"] = self.data_task2[0,:]
 		res["Ti"] = self.data_task2[1,:]
 		res["Rdel"] = self.data_task2[2,:]
-		res["5aR"] = self.data_task2[3,:]
+		res["R5a"] = self.data_task2[3,:]
 		res["Rder"] = self.data_task2[4,:]
 		res["Rizq"] = self.data_task2[5,:]
 		res["Vol"] = self.data_task2[6,:]
@@ -1042,6 +1218,7 @@ class CDaq(QThread):
 		return 0
 		
 	def run(self):
+		global startDb
 		print("Tarea cDAQ iniciada en hilo ->",self.index)
 		while True:
 			
@@ -1053,7 +1230,9 @@ class CDaq(QThread):
 			
 				#time.sleep(0.000001)
 			self.data.emit(self.datos)
-			#self.data_db.emit(self.datos)			
+			#self.data_db.emit(self.datos)
+			if startDb:
+				self.cdaq_db.insert2db(self.datos)
 			#t = time.time() - t1
 			#self.datos["t_cdaq"] = t
 			#print(str(self.datos["AccX"])+str(self.datos["AccX"][0]))
@@ -1065,90 +1244,6 @@ class CDaq(QThread):
 		print("Tarea cDAQ terminada en hilo ->",self.index)
 		self.task_close()
 		self.terminate()
-
-
-class Dict2Db(QThread):
-	list_indexes = []
-	list_values = []
-	create_table_str = ''
-	db_conn = None
-	def __init__(self,db_table,db_name,index=0,parent=None):
-		super(Dict2Db, self).__init__(parent)
-		self.index=index
-		self.db_table = db_table
-		self.db_name = db_name
-		self.db_conn = sqlite3.connect("database/" + self.db_name)
-		self.cursor = self.db_conn.cursor()
-		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " (t REAL AUTO_INCREMENT, "
-
-	def dict2tup(self,data):
-		create_table_str = self.create_table_str
-		dict_keys = list(data.keys())
-		dict_values = list(data.values())
-		for indx in dict_keys:
-			create_table_str += indx + " REAL NOT NULL, "
-		create_table_str += "PRIMARY KEY (t))" 
-
-		return tuple(dict_keys),tuple(dict_values),create_table_str
-	
-	def dict2tuplist(self,data):
-		create_table_str = self.create_table_str
-		dict_keys = list(data.keys())
-		dict_values = list(data.values())
-		for indx in dict_keys:
-			create_table_str += indx + " REAL NOT NULL, "
-		create_table_str += "PRIMARY KEY (t))" 
-		# print(f'k_data = {dict_keys}')
-		tup_list = []
-		for i in range(len(dict_values[0])):
-			tup = []
-			for k in dict_values:
-				tup.append(k[i])
-			tup_list.append(tuple(tup))
-		return tuple(dict_keys),tup_list,create_table_str
-
-	def insert2db(self,data):
-		print(data)
-		if data != {}:
-			print("Not empty!!")
-			if isinstance(list(data.values())[0],np.ndarray):
-				tup_keys,list_values,create_table_str = self.dict2tuplist(data)
-				#tup_keys,tup_values,create_table_str = self.dict2tup(data)
-				#print(f'tup_values = {tup_values}')
-				#print(f'tup_keys = {tup_keys}')
-				#print(f'list_values = {list_values}')
-				try:
-					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
-					print(create_table_str)
-					self.cursor.execute(create_table_str)
-					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
-					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
-					#values = ', '.join(map(str, list_values))
-					sql = "INSERT INTO " + self.db_table + " " + str(tup_keys) + " VALUES ("
-					for i in range(len(tup_keys)):
-						if i==0:
-							sql += "?"
-						else:
-							sql += ",?"
-					sql += ")"
-					print(f'sql = {sql}')
-					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
-					self.cursor.executemany(sql,list_values)
-					self.db_conn.commit()
-				except Exception as ex:
-					print(ex)
-			else:
-				tup_keys,tup_values,create_table_str = self.dict2tup(data)
-				#print(f'tup_values = {tup_values}')
-				try:
-					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
-					self.cursor.execute(create_table_str)
-					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
-					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
-					self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
-					self.db_conn.commit()
-				except Exception as ex:
-					print(ex)
 
 
 if __name__ == '__main__':
