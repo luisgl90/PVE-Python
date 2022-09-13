@@ -162,7 +162,14 @@ d2db.insert2db(data_cdaq)
 # db_Table = "Variables_cDAQ1"
 db_conn = sqlite3.connect("database/" + db_Name + ".db")
 cursor = db_conn.cursor()
-cursor.execute("SELECT fp FROM " + db_Table)
+cursor.execute("SELECT * FROM " + db_Table)
 col_db = cursor.fetchall()
 
-print("col_deb =",col_db)
+print("col_deb =\n",col_db)
+col_proms = []
+db_cols = list(zip(*col_db))
+for col in db_cols:
+	if col[0] is None:
+		continue
+	col_proms.append(round(sum(col)/len(col),3))
+print(col_proms)

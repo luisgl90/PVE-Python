@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget,QAction,QMessageBox
+from time import sleep
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QPushButton, QLabel,QComboBox,QTabWidget,QAction,QMessageBox
 from PyQt5.QtGui import QIcon,QImage
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
@@ -34,6 +35,7 @@ class UI(QMainWindow):
 		self.fases_frenado = ['Eficiencia en frío','Calentamiento','Eficiencia en caliente',
 			'Recuperación','Eficiencia de recuperación']
 		
+		self.cent_win = self.findChild(QWidget,"centralwidget")
 		self.tabs_pruebas = self.findChild(QTabWidget,"tabs_pruebas")
 		self.tabs_pruebas.currentChanged.connect(self.tab_change)
 		self.tab_index = self.tabs_pruebas.currentIndex()
@@ -311,6 +313,12 @@ class UI(QMainWindow):
 		self.line3 = self.vib_widget_plot.plot(self.xdata,self.ydata,pen=self.red_pen,symbol='+', symbolSize=10, symbolBrush=('b'))
 
 		self.show()
+
+		self.cent_win.setEnabled(False)
+		for i in range(5):
+			sleep(1)
+			print(i+1)
+		self.cent_win.setEnabled(True)
 
 	@pyqtSlot()
 	def printConfigMsg(self):

@@ -71,10 +71,12 @@ class Dict2Db():
 			except Exception as ex:
 				print(ex)
 		else:
+			print("list - gins200")
 			tup_keys,tup_values,create_table_str = self.dict2tup(data)
 			#print(f'tup_values = {tup_values}')
 			try:
 				#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+				print(create_table_str)
 				self.cursor.execute(create_table_str)
 				#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
 				#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")

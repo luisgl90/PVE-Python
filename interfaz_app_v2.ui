@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -189,7 +192,7 @@ QTabBar{
         <string notr="true"/>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_frenado">
         <property name="styleSheet">
@@ -1369,7 +1372,7 @@ QTabBar{
            <x>400</x>
            <y>10</y>
            <width>361</width>
-           <height>421</height>
+           <height>411</height>
           </rect>
          </property>
          <property name="text">

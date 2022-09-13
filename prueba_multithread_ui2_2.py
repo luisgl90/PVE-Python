@@ -3,6 +3,7 @@
 #  para la adquisición con un tiempo de muestreo determinado
 # Se agregan funcionalidades a los labels y gráficas por prueba
 import numpy as np
+from datetime import datetime
 from nidaqmx import constants
 from ast import Continue
 #import nidaqmx as daq
@@ -19,12 +20,30 @@ import nidaqmx
 #from nidaqmx.constants import TerminalConfiguration
 from bitstring import BitArray
 from pyqtgraph import PlotWidget, plot, mkPen
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QLabel,QComboBox,QTabWidget, QMessageBox, QAction
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QPushButton, QLabel,QComboBox,QTabWidget, QMessageBox, QAction
 from PyQt5.QtCore import pyqtSlot,QTimer,Qt,QObject, QThread, pyqtSignal
 from PyQt5.QtGui import QIcon
 from PyQt5 import uic
 
-startDb = False
+startDb = False #Bandera para almacenar datos en DB
+offset_acq = True #Bandera de adquisición inicial -> captura de offset
+cnt_ms = 0 #Contador de iteraciones de 100ms para configuración inicial
+
+cdaq_offset = dict() #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
+cdaq_offset["fp"] = 0
+cdaq_offset["B1"] = 0
+cdaq_offset["B2"] = 0
+cdaq_offset["Td"] = 0
+cdaq_offset["Ti"] = 0
+cdaq_offset["Rdel"] = 0
+cdaq_offset["R5a"] = 0
+cdaq_offset["Rder"] = 0
+cdaq_offset["Rizq"] = 0
+cdaq_offset["Vol"] = 0
+cdaq_offset["AccX"] = 0
+cdaq_offset["AccY"] = 0
+cdaq_offset["AccZ"] = 0
+
 
 class UI(QMainWindow):
 	def __init__(self):
@@ -33,6 +52,10 @@ class UI(QMainWindow):
 		self.fase_frenado = 1
 		self.fases_frenado = ['Eficiencia en frío','Calentamiento','Eficiencia en caliente',
 			'Recuperación','Eficiencia de recuperación']
+
+		self.prueba_activa = ['Frenado','Estabilidad','Vibraciones',
+			'Centro de gravedad','Prueba de sensores']
+
 		self.setupUi()
 		#icon = QtGui.QIcon()
 		#icon.addPixmap(QtGui.QPixmap("PyShine.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -43,9 +66,9 @@ class UI(QMainWindow):
 		self.cdaq_data = {}
 		self.sensors_data = {}
 
-		db_Name = "pruebaDB_cDAQ3.db"
-		db_Table = "Variables_cDAQ"
-		self.cdaq2db = Dict2Db(db_Table,db_Name)
+		# db_Name = "pruebaDB_cDAQ3.db"
+		# db_Table = "Variables_cDAQ"
+		# self.cdaq2db = Dict2Db(db_Table,db_Name)
 		
 
 		self.xdata = [x*0.1 for x in list(range(15))]
@@ -65,7 +88,9 @@ class UI(QMainWindow):
 	def setupUi(self):
 		uic.loadUi("interfaz_app_v2.ui",self)
 		self.setWindowIcon(QIcon('icons/app_icon.png'))
-				
+		
+		self.cent_win = self.findChild(QWidget,"centralwidget")
+
 		self.tabs_pruebas = self.findChild(QTabWidget,"tabs_pruebas")
 		self.tabs_pruebas.currentChanged.connect(self.tab_change)
 		self.tab_index = self.tabs_pruebas.currentIndex()
@@ -333,6 +358,9 @@ class UI(QMainWindow):
 
 		self.show()
 
+		#Enviar adquisición
+		#self.start_acquisition()
+
 
 	@pyqtSlot()
 	def activeModoAdmin(self):
@@ -380,41 +408,54 @@ class UI(QMainWindow):
 
 	@pyqtSlot()
 	def start_acquisition(self):
-		global startDb
-		print('Configuring devices...') # Mostrar un mensaje en pantalla
-		time.sleep(1)
-		print('Start acquisition')
-		self.button_start.setEnabled(False)
-		self.button_stop.setEnabled(True)
-		self.combo_prueba.setEnabled(False)
-		for index in (0,1,2,3,4):
-			if index!=self.tab_index:
-				self.tabs_pruebas.setTabEnabled(index,False)
-
+		global startDb,offset_acq
+		#print('Configuring devices...') # Mostrar un mensaje en pantalla
+		#time.sleep(1)
+		
 		self.timer.setInterval(100)
 		self.timer.timeout.connect(self.update_plot)
 		#self.timer.timeout.connect(lambda: self.cdaq2db.insert2db(self.cdaq_data))
 		self.timer.start()
+		
+		if not offset_acq:
+			print('Start acquisition')
+			self.button_start.setEnabled(False)
+			self.button_stop.setEnabled(True)
+			self.combo_prueba.setEnabled(False)
+			self.button_start.setEnabled(False)
+			self.button_stop.setEnabled(True)
+			
+			for index in (0,1,2,3,4):
+				if index!=self.tab_index:
+					self.tabs_pruebas.setTabEnabled(index,False)
 
-		startDb = True
-		#self.thread[4].start()
+			startDb = True
 
-		self.button_start.setEnabled(False)
-		self.button_stop.setEnabled(True)
+		else:
+			print("Configurando sensores...")
+			print("Interfaz bloqueada")
+			self.cent_win.setEnabled(False)
 
 	@pyqtSlot()
 	def stop_acquisition(self):
-		global startDb
-		print('Stop acquisition')
+		global startDb,offset_acq
+		
 		self.timer.stop()
 
-		self.button_start.setEnabled(True)
-		self.button_stop.setEnabled(False)
-		self.combo_prueba.setEnabled(True)
-		for index in (0,1,2,3,4):
-			self.tabs_pruebas.setTabEnabled(index,True)
+		if not offset_acq:
+			print('Stop acquisition')
+			self.button_start.setEnabled(True)
+			self.button_stop.setEnabled(False)
+			self.combo_prueba.setEnabled(True)
+			for index in (0,1,2,3,4):
+				self.tabs_pruebas.setTabEnabled(index,True)
 
-		startDb = False
+			startDb = False
+		else:
+			print("Sensores configurados")
+			print("Valores de offset adquiridos")
+			offset_acq = False
+			self.cent_win.setEnabled(True)
 
 	@pyqtSlot()
 	def cambiar_fase(self):
@@ -605,7 +646,7 @@ class UI(QMainWindow):
 	def stop_workers(self):
 		self.thread[1].stop()
 		self.thread[2].stop()
-		self.thread[4].stop()
+		#self.thread[4].stop()
 		#self.pushButton.setEnabled(True)
 
 	# def start_aqcuisiton(self):
@@ -649,6 +690,17 @@ class UI(QMainWindow):
 		#self.cdaq_data = data
 
 	def update_plot(self):
+		global offset_acq, cnt_ms
+
+		if offset_acq:
+			cnt_ms += 1
+			print(f'cnt_ms = {cnt_ms}')
+			if cnt_ms>=200:
+				cnt_ms = 0
+				self.stop_acquisition()
+			else:
+				return
+
 		#print(f'Print labels: {val}')
 		gins = self.gins_data
 		cdaq = self.cdaq_data
@@ -859,10 +911,11 @@ class Dict2Db():
 	list_values = []
 	create_table_str = ''
 	db_conn = None
-	def __init__(self,db_table,db_name):
+	def __init__(self,db_table,db_name,dev):
 		super(Dict2Db, self).__init__()
 		self.db_table = db_table
 		self.db_name = db_name
+		self.dev_name = dev
 		self.db_conn = sqlite3.connect("database/" + self.db_name + ".db",check_same_thread=False)
 		self.cursor = self.db_conn.cursor()
 		self.create_table_str = "CREATE TABLE IF NOT EXISTS " + self.db_table + " (t REAL AUTO_INCREMENT, "
@@ -901,6 +954,7 @@ class Dict2Db():
 		if data != {}:
 			#print("Not empty!!")
 			if isinstance(list(data.values())[0],np.ndarray):
+				#print("np.array",self.dev_name)
 				tup_keys,list_values,create_table_str = self.dict2tuplist(data)
 				#tup_keys,tup_values,create_table_str = self.dict2tup(data)
 				#print(f'tup_values = {tup_values}')
@@ -909,6 +963,7 @@ class Dict2Db():
 				try:
 					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
 					#print(create_table_str)
+					# print(f'create_table_str = {create_table_str}')
 					self.cursor.execute(create_table_str)
 					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
 					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
@@ -920,17 +975,19 @@ class Dict2Db():
 						else:
 							sql += ",?"
 					sql += ")"
-					#print(f'sql = {sql}')
+					# print(f'sql = {sql}')
 					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tup_keys} VALUES {str(tup_values)}")
 					self.cursor.executemany(sql,list_values)
 					self.db_conn.commit()
 				except Exception as ex:
 					print(ex)
 			else:
+				#print("list",self.dev_name)
 				tup_keys,tup_values,create_table_str = self.dict2tup(data)
 				#print(f'tup_values = {tup_values}')
 				try:
 					#cursor.execute("CREATE TABLE IF NOT EXISTS " + db_Table + " (t REAL NOT NULL, Dist REAL NOT NULL, Fp REAL NOT NULL, Vx REAL NOT NULL, Vy REAL NOT NULL, Vz REAL NOT NULL, Ax REAL NOT NULL, Ay REAL NOT NULL, Az REAL NOT NULL, Ti REAL NOT NULL, Td REAL NOT NULL, PRIMARY KEY (t))")
+					# print(f'create_table_str = {create_table_str}')
 					self.cursor.execute(create_table_str)
 					#cursor.execute("INSERT INTO " + db_Table + "(t, Dist, Fp, Vx, Vy, Vz, Ax, Ay, Az, Ti, Td) VALUES(?,?,?,?,?,?,?,?,?,?,?)",tuple(data))
 					#self.cursor.execute(f"\n\nINSERT INTO {self.db_table} {tuple(list_indexes)} VALUES {str(tuple(list_values))}")
@@ -966,7 +1023,10 @@ class Gins(QThread):
 			parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=1) #Para el GINS200
 		self.port_open()
 
-		self.gins_db = Dict2Db("Variables GINS","prueba_ginsDB_07_09_22_v1")
+		now = datetime.now()
+		db_name = "ginsDB_" + now.strftime("%d-%m-%Y_%H-%M")
+		print("gins DB name:", db_name)
+		self.gins_db = Dict2Db("Variables_GINS",db_name,"GINS200")
 
 	def port_open(self):
 		if not self.port.isOpen():
@@ -1032,7 +1092,7 @@ class Gins(QThread):
 			self.vals["nav_Lat"] = sens_lon_lat*float(self.hex2sint(out_stream[168:176],4))
 			self.vals["nav_alt"] = sens_alt*float(self.hex2sint(out_stream[176:182],3))
 			
-			self.vals["T"] = sens_T*float(self.hex2sint(out_stream[192:196],2))
+			self.vals["Temp"] = sens_T*float(self.hex2sint(out_stream[192:196],2))
 
 			return self.vals # Retorna un diccionario con todas las mediciones
 		except Exception as ex:
@@ -1070,7 +1130,7 @@ class Gins(QThread):
 				self.data.emit(self.message)
 
 				if startDb:
-					self.cdaq_db.insert2db(self.datos)
+					self.gins_db.insert2db(self.message)
 				
 			#time.sleep(0.05)
 	def stop(self):
@@ -1092,9 +1152,11 @@ class CDaq(QThread):
 	devC.reserve_network_device(True)
 	min_V = -10
 	max_V = 10
-	data_task1=np.zeros((1, 1200))
-	data_task2=np.zeros((7, 1200))
-	data_task3=np.zeros((3, 1200))
+	min_V_basc = -1
+	max_V_basc = 1
+	# data_task1=np.zeros((1, 1200))
+	# data_task2=np.zeros((7, 1200))
+	# data_task3=np.zeros((3, 1200))
 
 	def __init__(self,index=0,parent=None):
 		super(CDaq, self).__init__(parent)
@@ -1103,8 +1165,12 @@ class CDaq(QThread):
 		self.task1 = nidaqmx.Task() 
 		self.task2 = nidaqmx.Task()
 		self.task3 = nidaqmx.Task()
+		self.task4 = nidaqmx.Task()
 
-		self.cdaq_db = Dict2Db("Variables cDAQ","prueba_cdaqDB_07_09_22_v1")
+		now = datetime.now()
+		db_name = "cDaqDB_" + now.strftime("%d-%m-%Y_%H-%M")
+		print("cDaq DB name:", db_name)
+		self.cdaq_db = Dict2Db("Variables_cDAQ",db_name,"cDAQ")
 
 		#Config módulo 7
 		self.task1.ai_channels.add_ai_bridge_chan("cDAQ9188Mod7/ai0",name_to_assign_to_channel='c7_0',
@@ -1112,6 +1178,12 @@ class CDaq(QThread):
 			nominal_bridge_resistance=700.0)	#Pedal
 		#print(c7_0)
 		#print(c7_0.ai_meas_type)
+
+		#Config módulo 1
+		self.task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod1/ai0",name_to_assign_to_channel='c1_0',
+			min_val=self.min_V_basc,max_val=self.max_V_basc)	#Báscula 1
+		self.task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod1/ai1",name_to_assign_to_channel='c1_1',
+			min_val=self.min_V_basc,max_val=self.max_V_basc)	#Báscula 2
 		#Config módulo 2
 		self.task2.ai_channels.add_ai_voltage_chan("cDAQ9188Mod2/ai0",name_to_assign_to_channel='c2_0',
 			min_val=self.min_V,max_val=self.max_V)	#Temp der
@@ -1146,10 +1218,10 @@ class CDaq(QThread):
 			units=nidaqmx.constants.AccelUnits.METERS_PER_SECOND_SQUARED, 
 			sensitivity=sensZ, sensitivity_units=nidaqmx.constants.AccelSensitivityUnits.VOLTS_PER_G)	#Acc z
 		
-		bufsize_callback=1200
-		self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=144000)
-		self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=144000)
-		self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=144000)
+		bufsize_callback=1250
+		self.task1.timing.cfg_samp_clk_timing(rate=5000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=60000)
+		self.task2.timing.cfg_samp_clk_timing(rate=5000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=60000)
+		self.task3.timing.cfg_samp_clk_timing(rate=5000,sample_mode=nidaqmx.constants.AcquisitionType.CONTINUOUS, samps_per_chan=60000)
 		#self.task1.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
 		#self.task2.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
 		#self.task3.timing.cfg_samp_clk_timing(rate=12000,sample_mode=nidaqmx.constants.AcquisitionType.FINITE,samps_per_chan=6000)
@@ -1177,13 +1249,15 @@ class CDaq(QThread):
 	def list2dict(self):
 		res = dict() #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
 		res["fp"] = 9.8*57.57*1e3*self.data_task1[0,:]
-		res["Td"] = self.data_task2[0,:]
-		res["Ti"] = self.data_task2[1,:]
-		res["Rdel"] = self.data_task2[2,:]
-		res["R5a"] = self.data_task2[3,:]
-		res["Rder"] = self.data_task2[4,:]
-		res["Rizq"] = self.data_task2[5,:]
-		res["Vol"] = self.data_task2[6,:]
+		res["B1"] = self.data_task2[0,:]
+		res["B2"] = self.data_task2[1,:]
+		res["Td"] = self.data_task2[2,:]
+		res["Ti"] = self.data_task2[3,:]
+		res["Rdel"] = self.data_task2[4,:]
+		res["R5a"] = self.data_task2[5,:]
+		res["Rder"] = self.data_task2[6,:]
+		res["Rizq"] = self.data_task2[7,:]
+		res["Vol"] = self.data_task2[8,:]
 		res["AccX"] = self.data_task3[0,:]
 		res["AccY"] = self.data_task3[1,:]
 		res["AccZ"] = self.data_task3[2,:]	
@@ -1200,7 +1274,7 @@ class CDaq(QThread):
 		return 0
 		
 	def reading_task2_callback(self,task_idx, event_type, num_samples, callback_data):
-		buffertask2 = np.zeros((7, num_samples))
+		buffertask2 = np.zeros((9, num_samples))
 		self.readertask2.read_many_sample(buffertask2, num_samples,
                                    timeout=constants.WAIT_INFINITELY)
 		# Convert the data from channel as a row order to channel as a column
@@ -1219,7 +1293,7 @@ class CDaq(QThread):
 		
 	def run(self):
 		global startDb
-		print("Tarea cDAQ iniciada en hilo ->",self.index)
+		print("cDAQ iniciado en hilo ->",self.index)
 		while True:
 			
 			#time.sleep(0.000001)
