@@ -29,7 +29,7 @@ startDb = False #Bandera para almacenar datos en DB
 offset_acq = True #Bandera de adquisición inicial -> captura de offset
 cnt_ms = 0 #Contador de iteraciones de 100ms para configuración inicial
 
-cdaq_offset = dict() #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
+cdaq_offset = {} #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
 cdaq_offset["fp"] = 0
 cdaq_offset["B1"] = 0
 cdaq_offset["B2"] = 0
@@ -44,6 +44,20 @@ cdaq_offset["AccX"] = 0
 cdaq_offset["AccY"] = 0
 cdaq_offset["AccZ"] = 0
 
+cdaq_offset_list = {}
+cdaq_offset_list["fp"] = []
+cdaq_offset_list["B1"] = []
+cdaq_offset_list["B2"] = []
+cdaq_offset_list["Td"] = []
+cdaq_offset_list["Ti"] = []
+cdaq_offset_list["Rdel"] = []
+cdaq_offset_list["R5a"] = []
+cdaq_offset_list["Rder"] = []
+cdaq_offset_list["Rizq"] = []
+cdaq_offset_list["Vol"] = []
+cdaq_offset_list["AccX"] = []
+cdaq_offset_list["AccY"] = []
+cdaq_offset_list["AccZ"] = []
 
 class UI(QMainWindow):
 	def __init__(self):
@@ -87,7 +101,7 @@ class UI(QMainWindow):
 
 	def setupUi(self):
 		uic.loadUi("interfaz_app_v2.ui",self)
-		self.setWindowIcon(QIcon('icons/app_icon.png'))
+		self.setWindowIcon(QIcon('icons/Univalle.png'))
 		
 		self.cent_win = self.findChild(QWidget,"centralwidget")
 
@@ -209,7 +223,8 @@ class UI(QMainWindow):
 		self.label_c_9.setText("Y<sub>cog</sub> (mm)")
 		self.label_c_10 = self.findChild(QLabel,"label_cog_10")
 		self.label_c_10.setText("Z<sub>cog</sub> (mm)")
-
+		self.label_c_B1 = self.findChild(QLabel,"label_cog_B1")
+		self.label_c_B2 = self.findChild(QLabel,"label_cog_B2")
 
 		#Modo de prueba - ComboBox
 		self.combo_prueba = self.findChild(QComboBox,"combo_prueba")
@@ -690,20 +705,26 @@ class UI(QMainWindow):
 		#self.cdaq_data = data
 
 	def update_plot(self):
-		global offset_acq, cnt_ms
-
+		global offset_acq, cnt_ms, cdaq_offset
+		gins = self.gins_data
+		cdaq = self.cdaq_data
+		
 		if offset_acq:
 			cnt_ms += 1
 			print(f'cnt_ms = {cnt_ms}')
-			if cnt_ms>=200:
+			if cnt_ms >= 100:
+				for k,v in cdaq.items():
+					cdaq_offset_list[k].append(v)
+			if cnt_ms >= 200:
 				cnt_ms = 0
+				for k,v in cdaq_offset_list.items():
+					cdaq_offset[k] = sum(v)/len(v)
+				print(cdaq_offset)
 				self.stop_acquisition()
 			else:
 				return
 
 		#print(f'Print labels: {val}')
-		gins = self.gins_data
-		cdaq = self.cdaq_data
 		# cdaq = {}
 		# for i,v in self.cdaq_data.items():
 		# 	cdaq[i] = v[-1]
@@ -814,6 +835,14 @@ class UI(QMainWindow):
 			i = self.combo_v_plot.currentIndex()
 			self.line3.setData(self.xdata, self.ydata[i])  # Update the data.
 		
+		if self.tabs_pruebas.currentIndex()==3: #Prueba de CoG
+			sensB1=1; #kg/mV  
+			sensB2=1; #kg/mV   
+			cdaq["B1"] *= sensB1
+			cdaq["B2"] *= sensB2
+			self.label_c_B1.setText(f'{round(cdaq["B1"],3)}') # Báscula 1
+			self.label_c_B2.setText(f'{round(cdaq["B2"],3)}') # Báscula 2
+
 		if self.tabs_pruebas.currentIndex()==4: #Modo de prueba
 			if self.combo_prueba.currentIndex()==0: #cDAQ-9188
 				self.label_p_ax.setText(f'{round(cdaq["AccX"],3)}')
@@ -1248,19 +1277,19 @@ class CDaq(QThread):
 
 	def list2dict(self):
 		res = dict() #'[fp,Td,Ti,Rdel,5aR,Rder,Rizq,Vol,AccX,AccY,AccZ]'
-		res["fp"] = 9.8*57.57*1e3*self.data_task1[0,:]
-		res["B1"] = self.data_task2[0,:]
-		res["B2"] = self.data_task2[1,:]
-		res["Td"] = self.data_task2[2,:]
-		res["Ti"] = self.data_task2[3,:]
-		res["Rdel"] = self.data_task2[4,:]
-		res["R5a"] = self.data_task2[5,:]
-		res["Rder"] = self.data_task2[6,:]
-		res["Rizq"] = self.data_task2[7,:]
-		res["Vol"] = self.data_task2[8,:]
-		res["AccX"] = self.data_task3[0,:]
-		res["AccY"] = self.data_task3[1,:]
-		res["AccZ"] = self.data_task3[2,:]	
+		res["fp"] = 9.8*57.57*1e3*(self.data_task1[0,:]-cdaq_offset["fp"])
+		res["B1"] = 2000*(self.data_task2[0,:]-cdaq_offset["B1"]) # mV
+		res["B2"] = 2000*(self.data_task2[1,:]-cdaq_offset["B2"]) # mV
+		res["Td"] = self.data_task2[2,:]-cdaq_offset["Td"]
+		res["Ti"] = self.data_task2[3,:]-cdaq_offset["Ti"]
+		res["Rdel"] = self.data_task2[4,:]-cdaq_offset["Rdel"]
+		res["R5a"] = self.data_task2[5,:]-cdaq_offset["R5a"]
+		res["Rder"] = self.data_task2[6,:]-cdaq_offset["Rder"]
+		res["Rizq"] = self.data_task2[7,:]-cdaq_offset["Rizq"]
+		res["Vol"] = self.data_task2[8,:]-cdaq_offset["Vol"]
+		res["AccX"] = self.data_task3[0,:]-cdaq_offset["AccX"]
+		res["AccY"] = self.data_task3[1,:]-cdaq_offset["AccY"]
+		res["AccZ"] = self.data_task3[2,:]--cdaq_offset["AccZ"]
 		return res
 
 	def reading_task1_callback(self, task_idx, event_type, num_samples, callback_data):

@@ -1,5 +1,5 @@
 from time import sleep
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QPushButton, QLabel,QComboBox,QTabWidget,QAction,QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QDialog, QWidget, QPushButton, QLabel, QLineEdit,QComboBox,QTabWidget,QAction,QMessageBox
 from PyQt5.QtGui import QIcon,QImage
 from PyQt5.QtCore import pyqtSlot
 from PyQt5 import uic
@@ -7,11 +7,36 @@ from pyqtgraph import PlotWidget, plot, mkPen, ImageItem, imageToArray
 import numpy as np
 #from PyQt5.QtCore import QTranslator,QLocale,QLibraryInfo
 
+class UI_Info(QDialog):
+	def __init__(self):
+		super(UI_Info,self).__init__()
+		uic.loadUi("interfaz_info.ui",self)
+		self.button_cerrar = self.findChild(QPushButton,"button_cerrar")
+		self.button_cerrar.clicked.connect(self.close)
+
+class UI_Vehiculo(QDialog):
+	def __init__(self):
+		super(UI_Vehiculo,self).__init__()
+		uic.loadUi("interfaz_datos_vehiculo.ui",self)
+		self.edit_marca = self.findChild(QLineEdit,"edit_marca")
+		self.edit_modelo = self.findChild(QLineEdit,"edit_modelo")
+		self.edit_placa = self.findChild(QLineEdit,"edit_placa")
+		self.edit_comentario = self.findChild(QLineEdit,"edit_comentario")
+		self.button_guardar = self.findChild(QPushButton,"button_guardar")
+		self.button_guardar.clicked.connect(self.accept)
+
+	def getValues(self):
+		return {'Marca': self.edit_marca.text(),'Modelo': self.edit_modelo.text(),
+			'Placa': self.edit_placa.text(),'Comentario': self.edit_comentario.text()}
+
+
 class UI(QMainWindow):
 	def __init__(self):
 		super(UI,self).__init__()
 		uic.loadUi("interfaz_app_v2.ui",self)
-		self.setWindowIcon(QIcon('icons/app_icon.png'))
+		self.setWindowIcon(QIcon('icons/Univalle.png'))
+		
+		self.infoVehiculo = {}
 		self.xdata = [x*0.1 for x in list(range(15))]
 		self.ydata = [x*0 for x in list(range(15))]
 
@@ -62,6 +87,8 @@ class UI(QMainWindow):
 		self.menuConfig.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
 		self.menuListaUsuarios = self.findChild(QAction,"actionListaUsuarios")
 		self.menuListaUsuarios.triggered.connect(self.printConfigMsg) #Debe abrir el menú de configuración
+		self.menuDatosVehiculo = self.findChild(QAction,"actionDatosVehiculo")
+		self.menuDatosVehiculo.triggered.connect(self.openDatosVehiculo) #Debe abrir el menú de configuración
 		self.menuSalir = self.findChild(QAction,"actionSalir")
 		self.menuSalir.triggered.connect(self.close) #Debe abrir el menú de configuración
 
@@ -74,6 +101,8 @@ class UI(QMainWindow):
 		self.modoRepor = self.findChild(QAction,"actionModoRepor")
 		self.modoRepor.triggered.connect(self.activeModoRepor) #Debe abrir el menú de configuración
 
+		self.menuInfo = self.findChild(QAction,"actionInformacion")
+		self.menuInfo.triggered.connect(self.openInfo) #Debe abrir el menú de configuración
 
 		#Fase de frenado - Labels de salida
 		self.label_f_tit = self.findChild(QLabel,"label_fre_titulo")
@@ -138,9 +167,9 @@ class UI(QMainWindow):
 		self.label_c_3 = self.findChild(QLabel,"label_cog_3")
 		self.label_c_3.setText("𝒉 (m)")
 		self.label_c_4 = self.findChild(QLabel,"label_cog_4")
-		self.label_c_4.setText("𝒅<sub>a</sub> (m)")
+		self.label_c_4.setText("𝒅<sub>a</sub> (mm)")
 		self.label_c_5 = self.findChild(QLabel,"label_cog_5")
-		self.label_c_5.setText("𝒅<sub>r</sub> (m)")
+		self.label_c_5.setText("𝒅<sub>r</sub> (mm)")
 		self.label_c_6 = self.findChild(QLabel,"label_cog_6")
 		self.label_c_6.setText("B<sub>1</sub> (kg)")
 		self.label_c_7 = self.findChild(QLabel,"label_cog_7")
@@ -314,15 +343,33 @@ class UI(QMainWindow):
 
 		self.show()
 
-		self.cent_win.setEnabled(False)
-		for i in range(5):
-			sleep(1)
-			print(i+1)
-		self.cent_win.setEnabled(True)
+		# self.cent_win.setEnabled(False)
+		# for i in range(5):
+		# 	sleep(1)
+		# 	print(i+1)
+		# self.cent_win.setEnabled(True)
 
 	@pyqtSlot()
 	def printConfigMsg(self):
 		print("printConfigMsg")
+
+	@pyqtSlot()
+	def openDatosVehiculo(self):
+		print("Ventana datos vehículo")
+		
+		datosVehiculoUI = UI_Vehiculo()
+		datosVehiculoUI.exec_()
+
+		if datosVehiculoUI.exec():
+            # get the value from the dialog
+			self.infoVehiculo = datosVehiculoUI.getValues()
+			print(self.infoVehiculo)
+
+	@pyqtSlot()
+	def openInfo(self):
+		print("Ventana info")
+		infoUI = UI_Info()
+		infoUI.exec_()
 
 	@pyqtSlot()
 	def activeModoAdmin(self):

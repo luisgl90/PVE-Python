@@ -1703,7 +1703,7 @@ QTabBar{
         <widget class="QLineEdit" name="edit_cog_la">
          <property name="geometry">
           <rect>
-           <x>130</x>
+           <x>120</x>
            <y>80</y>
            <width>71</width>
            <height>31</height>
@@ -1719,7 +1719,7 @@ QTabBar{
         <widget class="QLineEdit" name="edit_cog_ll">
          <property name="geometry">
           <rect>
-           <x>130</x>
+           <x>120</x>
            <y>110</y>
            <width>71</width>
            <height>31</height>
@@ -1735,7 +1735,7 @@ QTabBar{
         <widget class="QLineEdit" name="edit_cog_h">
          <property name="geometry">
           <rect>
-           <x>130</x>
+           <x>120</x>
            <y>140</y>
            <width>71</width>
            <height>31</height>
@@ -1751,7 +1751,7 @@ QTabBar{
         <widget class="QLineEdit" name="edit_cog_da">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>300</x>
            <y>80</y>
            <width>71</width>
            <height>31</height>
@@ -1767,7 +1767,7 @@ QTabBar{
         <widget class="QLineEdit" name="edit_cog_dr">
          <property name="geometry">
           <rect>
-           <x>310</x>
+           <x>300</x>
            <y>110</y>
            <width>71</width>
            <height>31</height>
