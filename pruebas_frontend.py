@@ -11,6 +11,7 @@ class UI_Info(QDialog):
 	def __init__(self):
 		super(UI_Info,self).__init__()
 		uic.loadUi("interfaz_info.ui",self)
+		self.setWindowIcon(QIcon('icons/Univalle.png'))
 		self.button_cerrar = self.findChild(QPushButton,"button_cerrar")
 		self.button_cerrar.clicked.connect(self.close)
 
@@ -18,6 +19,7 @@ class UI_Vehiculo(QDialog):
 	def __init__(self):
 		super(UI_Vehiculo,self).__init__()
 		uic.loadUi("interfaz_datos_vehiculo.ui",self)
+		self.setWindowIcon(QIcon('icons/Univalle.png'))
 		self.edit_marca = self.findChild(QLineEdit,"edit_marca")
 		self.edit_modelo = self.findChild(QLineEdit,"edit_modelo")
 		self.edit_placa = self.findChild(QLineEdit,"edit_placa")

@@ -1,0 +1,3 @@
+Se realizaron mediciones de masa al vehículo prototipo
+
+Se encontró que la mayor cantidad de masa trasera está ubicada hacia la llanta izquierda, y que la mayor cantidad de masa delantera está ubicada hacia la llanta derecha.

@@ -13,6 +13,119 @@
   <property name="windowTitle">
    <string>Proyecto vehículo eléctrico</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QDialog{ 
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,stop: 0 black, stop: 0.6 black, stop: 0.9 rgb(170, 0, 0), stop: 1 red);
+}
+
+QLineEdit { 
+	background-color: #ffffff;
+	border-radius: 4px;
+	margin: 2px;
+}
+
+QLabel, QLineEdit{ 
+	font-family: Arial;
+}
+
+QWidget QLabel{ 
+	color: white;
+}
+
+QComboBox { 
+	background-color: #fafafa ;
+	border-bottom: 2px solid DimGrey;
+}
+
+QPushButton{
+	font-family: Arial;
+	background-color: #f0f0f0;
+	border-style: outset;
+	border-radius: 4px;
+	border-color: gray;
+	padding: 2px;
+	border-top: 2px solid GhostWhite;
+	border-left: 2px solid GhostWhite;
+	border-bottom: 2px solid gray;
+	border-right: 2px solid gray;
+}
+
+QPushButton:hover{
+	background-color: rgb(232, 232, 232);
+}
+
+QPushButton:pressed{
+	background-color: #f0f0f0;
+	border-style: outset;
+	border-radius: 4px;
+	border-color: gray;
+	padding: 2px;
+	border-top: 2px solid gray;
+	border-left: 2px solid gray;
+	border-bottom: 2px solid WhiteSmoke;
+	border-right: 2px solid WhiteSmoke;
+}
+
+QTabWidget::pane {
+	border: 3px solid white;
+	border-radius: 2px;
+}
+
+QTabBar::tab {
+	border-radius: 2px;
+	border: 2px;
+	padding: 2px;
+}
+
+QTabBar::tab:selected {
+	background: rgb(223, 223, 223);
+	color: rgb(170, 0, 0);
+	font-weight: bold;
+	border-radius: 4px;
+	border: 1px solid   rgb(0, 0, 80);;
+	padding-right: 4px;
+	padding-left: 4px;
+}
+
+QTabBar::tab:!selected {
+	background: #f0f0f0;
+	color: black;
+	font-weight: normal;
+	border-radius: 2px;
+	border: 2px solid gray;
+	padding-right: 4px;
+	padding-left: 4px;
+}
+
+QMenuBar{
+	color: white;
+	font-weight: bold;
+	background-color: transparent;
+}
+
+QMenu:hover{
+ 	background-color: rgb(0, 170, 0);
+ 	color: rgb(255, 255, 255);
+ }
+
+QMenuBar::item:pressed{
+	background-color: #f0f0f0;
+	color: black;
+	font-weight: bold;
+}
+
+QMenuBar QMenu:selected{
+	background-color: black;
+	color: white;
+	font-weight: bold;
+}
+
+QTabBar{ 
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,stop: 0 black, stop: 0.5 rgb(0, 0, 127), stop: 1 blue);
+}
+
+</string>
+  </property>
   <widget class="QPushButton" name="button_cerrar">
    <property name="geometry">
     <rect>
@@ -36,6 +149,7 @@
    </property>
    <property name="font">
     <font>
+     <family>Arial</family>
      <pointsize>10</pointsize>
      <weight>50</weight>
      <bold>false</bold>
@@ -62,6 +176,7 @@
    </property>
    <property name="font">
     <font>
+     <family>Arial</family>
      <pointsize>12</pointsize>
      <weight>75</weight>
      <bold>true</bold>
@@ -91,6 +206,7 @@
    </property>
    <property name="font">
     <font>
+     <family>Arial</family>
      <pointsize>11</pointsize>
      <weight>75</weight>
      <bold>true</bold>
@@ -119,7 +235,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Interfaz para pruebas en vehículos&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;&lt;br/&gt;Versión 1.0.0&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;La interfaz permite realizar pruebas al vehículo mediante &lt;br/&gt;la adquisición de señales de un conjunto de sensores.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Para mayor información, comunicarse con: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;mailto:direccioncientifica.vehiculoelectrico@correounivalle.edu.co&quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Dirección cientifica - Proyecto Vehículo Eléctrico&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;a href=&quot;mailto:coordinacionadministrativa.vehiculoelectrico@correounivalle.edu.co &quot;&gt;&lt;span style=&quot; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Coordinación administrativa - Proyecto Vehículo Eléctrico&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Interfaz para pruebas en vehículos&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;&lt;br/&gt;Versión 1.0.0&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;La interfaz permite realizar pruebas al vehículo mediante &lt;br/&gt;la adquisición de señales de un conjunto de sensores.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;Para mayor información, comunicarse con: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;mailto:direccioncientifica.vehiculoelectrico@correounivalle.edu.co&quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#ff0000;&quot;&gt;Dirección cientifica - Proyecto Vehículo Eléctrico&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:11pt; color:#ff0000;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;a href=&quot;mailto:coordinacionadministrativa.vehiculoelectrico@correounivalle.edu.co &quot;&gt;&lt;span style=&quot; font-size:11pt; text-decoration: underline; color:#ff0000;&quot;&gt;Coordinación administrativa - Proyecto Vehículo Eléctrico&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="openExternalLinks">
     <bool>true</bool>

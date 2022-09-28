@@ -41,7 +41,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QMainWindow &gt; QWidget{ 
-	background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,stop: 0 black, stop: 0.4 black, stop: 0.9 rgb(0, 0, 127), stop: 1 blue);
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,stop: 0 black, stop: 0.6 black, stop: 0.9 rgb(170, 0, 0), stop: 1 red);
 }
 
 QLineEdit { 
@@ -3541,7 +3541,7 @@ QTabBar{
      <x>0</x>
      <y>0</y>
      <width>831</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuInicio">
